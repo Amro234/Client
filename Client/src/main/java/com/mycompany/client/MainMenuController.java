@@ -4,16 +4,27 @@
  */
 package com.mycompany.client;
 
+import javafx.fxml.FXML;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+
 /**
  *
- * @author DELL
+ * @author Amro Mohamed
  */
 public class MainMenuController {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        // TODO code application logic here
+    @FXML
+    private Text titleText; // We'll add fx:id to FXML
+    
+    @FXML
+    public void initialize() {
+        // Apply bold Inter font programmatically
+        if (titleText != null) {
+            Font font = Font.font("Inter", FontWeight.BOLD, 32);
+            titleText.setFont(font);
+        }
+        
+        System.out.println("Main Menu loaded!");
     }
 }

@@ -7,13 +7,367 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Author     : eslam
 */
 
+/*
+=============================================
+INTER FONT STYLES
+=============================================
+*/
+
+/* Inter - Thin (100) */
+.inter-thin {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 100;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.inter-thin-italic {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 100;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Inter - Extra Light (200) */
+.inter-extralight {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 200;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.inter-extralight-italic {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 200;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Inter - Light (300) */
+.inter-light {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 300;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.inter-light-italic {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 300;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Inter - Regular (400) */
+.inter-regular {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 400;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.inter-regular-italic {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 400;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Inter - Medium (500) */
+.inter-medium {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 500;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.inter-medium-italic {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 500;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Inter - Semi Bold (600) */
+.inter-semibold {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.inter-semibold-italic {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Inter - Bold (700) */
+.inter-bold {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 700;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.inter-bold-italic {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 700;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Inter - Extra Bold (800) */
+.inter-extrabold {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 800;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.inter-extrabold-italic {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 800;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Inter - Black (900) */
+.inter-black {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 900;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.inter-black-italic {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 900;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/*
+=============================================
+ROBOTO FONT STYLES
+=============================================
+*/
+
+/* Roboto - Thin (100) */
+.roboto-thin {
+    -fx-font-family: "Roboto";
+    -fx-font-weight: 100;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.roboto-thin-italic {
+    -fx-font-family: "Roboto";
+    -fx-font-weight: 100;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Roboto - Light (300) */
+.roboto-light {
+    -fx-font-family: "Roboto";
+    -fx-font-weight: 300;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.roboto-light-italic {
+    -fx-font-family: "Roboto";
+    -fx-font-weight: 300;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Roboto - Regular (400) */
+.roboto-regular {
+    -fx-font-family: "Roboto";
+    -fx-font-weight: 400;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.roboto-regular-italic {
+    -fx-font-family: "Roboto";
+    -fx-font-weight: 400;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Roboto - Medium (500) */
+.roboto-medium {
+    -fx-font-family: "Roboto";
+    -fx-font-weight: 500;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.roboto-medium-italic {
+    -fx-font-family: "Roboto";
+    -fx-font-weight: 500;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Roboto - Bold (700) */
+.roboto-bold {
+    -fx-font-family: "Roboto";
+    -fx-font-weight: 700;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.roboto-bold-italic {
+    -fx-font-family: "Roboto";
+    -fx-font-weight: 700;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/* Roboto - Black (900) */
+.roboto-black {
+    -fx-font-family: "Roboto";
+    -fx-font-weight: 900;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+.roboto-black-italic {
+    -fx-font-family: "Roboto";
+    -fx-font-weight: 900;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-fill: #1a1a1a;
+}
+
+/*
+=============================================
+COMMON TEXT STYLES (for specific use cases)
+=============================================
+*/
+
+/* Main Title */
+.title-label {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 700;
+    -fx-font-size: 32px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+    -fx-text-alignment: center;
+}
+
+/* Subtitle */
+.subtitle-label {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 400;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #666666;
+    -fx-text-alignment: center;
+}
+
+/* Heading 1 */
+.heading-1 {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 700;
+    -fx-font-size: 28px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+/* Heading 2 */
+.heading-2 {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 600;
+    -fx-font-size: 24px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+/* Heading 3 */
+.heading-3 {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 600;
+    -fx-font-size: 20px;
+    -fx-font-style: normal;
+    -fx-fill: #1a1a1a;
+}
+
+/* Body Text */
+.body-text {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 400;
+    -fx-font-size: 16px;
+    -fx-font-style: normal;
+    -fx-fill: #333333;
+}
+
+/* Small Text */
+.small-text {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 400;
+    -fx-font-size: 12px;
+    -fx-font-style: normal;
+    -fx-fill: #666666;
+}
+
+/* Caption */
+.caption-text {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 400;
+    -fx-font-size: 11px;
+    -fx-font-style: normal;
+    -fx-fill: #999999;
+}
+
+/* Button Text */
+.button-text {
+    -fx-font-family: "Inter";
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-font-style: normal;
+    -fx-fill: #ffffff;
+}
 
 .card {
     -fx-background-color: white;
     -fx-background-radius: 12;
     -fx-border-radius: 12;
     -fx-padding: 16;
-
     -fx-effect: dropshadow(
         gaussian,
         rgba(0, 0, 0, 0.2),
@@ -24,14 +378,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     );
 }
 
-
 .switch {
     -fx-background-color: transparent;
     -fx-padding: 0;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
-
 
 #switchTrack {
     -fx-background-color: #cfd8dc;
@@ -47,7 +399,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-background-color: #2b8cee;
 }
 
-
 #switchThumb {
     -fx-fill: white;
     -fx-effect: dropshadow(
@@ -60,7 +411,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     );
 }
 
-
 .slider {
     -fx-pref-height: 4px;
 }
@@ -69,12 +419,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 .slider .track {
     -fx-background-color:
         linear-gradient(
-            to right,
-            #2b8cee 0%,
-            #2b8cee 50%,
-            #d0d7de 50%,
-            #d0d7de 100%
-        );
+        to right,
+        #2b8cee 0%,
+        #2b8cee 50%,
+        #d0d7de 50%,
+        #d0d7de 100%
+    );
     -fx-background-radius: 2;
 }
 
