@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" stylesheets="@/styles/customStyles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.SettingsController">
+
+    <children>
+        <StackPane prefHeight="720.0" prefWidth="1280.0">
+            <padding>
+                <Insets left="300.0" right="300.0" top="20.0" />
+            </padding>
+
+            <children>
+                <VBox prefWidth="680" spacing="12">
+
+                    <!-- Title -->
+                    <Text text="Settings">
+                        <font>
+                            <Font name="System Bold" size="35" />
+                        </font>
+                    </Text>
+
+                    <Text fill="#4c739a" text="Manage your game preferences and account details">
+                        <font>
+                            <Font size="16" />
+                        </font>
+                    </Text>
+
+                    <Region prefHeight="12" />
+
+                    <!-- Card -->
+                    <VBox prefWidth="680" spacing="16" styleClass="card">
+
+                        <!-- Header -->
+                        <HBox alignment="CENTER_LEFT">
+                            <Text text="Audio Settings">
+                                <font>
+                                    <Font name="System Bold" size="20" />
+                                </font>
+                            </Text>
+
+                            <Region HBox.hgrow="ALWAYS" />
+
+                            <Text fill="#2b8cee" text="Restore defaults">
+                                <font>
+                                    <Font name="System Bold" size="14" />
+                                </font>
+                            </Text>
+                        </HBox>
+
+                        <!-- Master Volume -->
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+
+                            <StackPane prefHeight="38" prefWidth="38">
+                                <Circle fill="#e7edf3" radius="19" />
+                                <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/assets/images/level.png" />
+                                    </image>
+                                </ImageView>
+                            </StackPane>
+
+                            <VBox spacing="4">
+                                <Text text="Master Volume" />
+                                <Text fill="#4c739a" text="Enable or disable all game sounds" />
+                            </VBox>
+
+                            <Region HBox.hgrow="ALWAYS" />
+
+                            <ToggleButton fx:id="masterVolumeToggle" focusTraversable="false" styleClass="switch">
+                                <graphic>
+                                    <StackPane fx:id="switchTrack" prefHeight="24" prefWidth="44">
+                                        <Circle fx:id="switchThumb" fill="WHITE" radius="10" translateX="-10" />
+                                    </StackPane>
+                                </graphic>
+                            </ToggleButton>
+                        </HBox>
+
+                        <!-- Background Music -->
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+
+                            <StackPane prefHeight="38" prefWidth="38">
+                                <Circle fill="#e7edf3" radius="19" />
+                                <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/assets/images/tone.png" />
+                                    </image>
+                                </ImageView>
+                            </StackPane>
+
+                            <Text text="Background Music" />
+
+                            <Region HBox.hgrow="ALWAYS" />
+
+                            <Slider fx:id="musicSlider" max="100" maxWidth="220" min="0" minWidth="220" prefWidth="220" value="100" />
+
+                            <!-- Percentage text -->
+                            <Text fx:id="musicPercentText" fill="#4c739a" textAlignment="RIGHT" wrappingWidth="30.0" />
+                        </HBox>
+
+                        <!-- Sound Effects -->
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+
+                            <StackPane prefHeight="38" prefWidth="38">
+                                <Circle fill="#e7edf3" radius="19" />
+                                <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/assets/images/diff-length-lines.png" />
+                                    </image>
+                                </ImageView>
+                            </StackPane>
+
+                            <Text text="Sound Effects" />
+
+                            <Region HBox.hgrow="ALWAYS" />
+
+                            <Slider fx:id="effectsSlider" max="100" maxWidth="220" min="0" minWidth="220" prefWidth="220" value="100" />
+
+                            <!-- Percentage text -->
+                            <Text fx:id="effectsPercentText" fill="#4c739a" textAlignment="RIGHT" wrappingWidth="30.0" />
+                        </HBox>
+
+                    </VBox>
+                </VBox>
+            </children>
+        </StackPane>
+    </children>
+</AnchorPane>
