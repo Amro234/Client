@@ -1,0 +1,92 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 16 Dec 2025, 02:17:50
+    Author     : eslam
+*/
+
+
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 16;
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(0, 0, 0, 0.2),
+        18,
+        0.12,
+        0,
+        3
+    );
+}
+
+
+.switch {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+
+#switchTrack {
+    -fx-background-color: #cfd8dc;
+    -fx-background-radius: 12;
+    -fx-min-width: 44;
+    -fx-min-height: 24;
+    -fx-max-width: 44;
+    -fx-max-height: 24;
+}
+
+/* Track color when ON */
+.switch:selected #switchTrack {
+    -fx-background-color: #2b8cee;
+}
+
+
+#switchThumb {
+    -fx-fill: white;
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(0, 0, 0, 0.25),
+        6,
+        0.15,
+        0,
+        1
+    );
+}
+
+
+.slider {
+    -fx-pref-height: 4px;
+}
+
+/* Filled part (active track) */
+.slider .track {
+    -fx-background-color:
+        linear-gradient(
+            to right,
+            #2b8cee 0%,
+            #2b8cee 50%,
+            #d0d7de 50%,
+            #d0d7de 100%
+        );
+    -fx-background-radius: 2;
+}
+
+/* Thumb (circle handle) */
+.slider .thumb {
+    -fx-background-color: #2b8cee;
+    -fx-background-radius: 50%;
+    -fx-pref-width: 14;
+    -fx-pref-height: 14;
+}
+
+/* Hover effect (optional) */
+.slider:hover .thumb {
+    -fx-background-color: derive(#2b8cee, -10%);
+}
