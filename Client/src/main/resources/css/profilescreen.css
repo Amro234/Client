@@ -1,0 +1,232 @@
+/* Root Styling */
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+/* Button Hover Effects */
+.button:hover {
+    -fx-opacity: 0.85;
+    -fx-cursor: hand;
+}
+
+.button:pressed {
+    -fx-opacity: 0.7;
+}
+
+/* Primary Button */
+.primary-button {
+    -fx-background-color: #3B82F6;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 12 24;
+    -fx-background-radius: 19;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.primary-button:hover {
+    -fx-background-color: #2563EB;
+}
+
+/* Secondary Button */
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-border-radius: 19;
+    -fx-background-radius: 19;
+    -fx-text-fill: #64748b;
+    -fx-font-size: 14px;
+    -fx-padding: 12 24;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #f8fafc;
+}
+
+/* Card Styling */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);
+}
+
+/* Progress Bar Custom */
+.progress-bar {
+    -fx-background-color: #e2e8f0;
+    -fx-background-radius: 10;
+}
+
+.progress-bar .bar {
+    -fx-background-color: #3B82F6;
+    -fx-background-radius: 10;
+    -fx-background-insets: 0;
+    -fx-padding: 0.5em;
+}
+
+.progress-bar .track {
+    -fx-background-color: #e2e8f0;
+    -fx-background-radius: 10;
+}
+
+/* Text Area Custom */
+.text-area {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.text-area .content {
+    -fx-background-color: transparent;
+}
+
+.text-area:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Circle Styling for Avatar */
+.avatar-circle {
+    -fx-fill: linear-gradient(to bottom right, #3B82F6, #60A5FA);
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.3), 8, 0, 0, 2);
+}
+
+/* Online Status Circle */
+.online-dot {
+    -fx-fill: #10B981;
+    -fx-stroke: white;
+    -fx-stroke-width: 3;
+}
+
+/* Match Item Styling */
+.match-victory {
+    -fx-background-color: #f0fdf4;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+}
+
+.match-defeat {
+    -fx-background-color: #fef2f2;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+}
+
+.match-draw {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+}
+
+/* Badge Styling */
+.badge-primary {
+    -fx-background-color: #3B82F6;
+    -fx-text-fill: white;
+    -fx-padding: 5 12;
+    -fx-background-radius: 5;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.badge-secondary {
+    -fx-background-color: #e0e7ff;
+    -fx-text-fill: #3B82F6;
+    -fx-padding: 5 12;
+    -fx-background-radius: 5;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+/* Stat Card */
+.stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 8, 0, 0, 1);
+}
+
+.stat-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 3);
+}
+
+/* Header Navigation */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #64748b;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+}
+
+.nav-button:hover {
+    -fx-background-color: #f8fafc;
+}
+
+.nav-button-active {
+    -fx-background-color: transparent;
+    -fx-text-fill: #3B82F6;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 8 16;
+}
+
+/* Scroll Bar Styling */
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #cbd5e1;
+    -fx-background-radius: 5;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #94a3b8;
+}
+
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .increment-button, .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Label Styles */
+.title-large {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.title-medium {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.title-small {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.text-muted {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 13px;
+}
+
+.text-success {
+    -fx-text-fill: #10B981;
+    -fx-font-weight: bold;
+}
+
+.text-danger {
+    -fx-text-fill: #EF4444;
+    -fx-font-weight: bold;
+}

@@ -1,0 +1,48 @@
+.root {
+    -fx-font-family: "Spline Sans";
+    -fx-background-color: #fff4f1;
+}
+
+.sidebar {
+    -fx-background-color: white;
+}
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4C739A;
+    -fx-font-size: 16;
+    -fx-padding: 10 20;
+    -fx-background-radius: 12;
+}
+
+.menu-button:hover {
+    -fx-background-color: #eaf3fd;
+-fx-text-fill: #2B8cEE;
+}
+
+
+.logout-button {
+    -fx-background-color: #e7edf3;
+    -fx-background-radius: 20;
+-fx-font-size: 14;
+    -fx-padding: 10 20;
+}
+
+.quick-play {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: #fefeff;
+    -fx-background-radius: 20;
+}
+
+.table-view {
+    -fx-background-radius: 15;
+}
+.text-field {
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-padding: 8 12;
+}
+
+.combo-box {
+    -fx-background-radius: 20;
+}
