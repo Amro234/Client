@@ -17,7 +17,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 1280 , 720);
+        scene = new Scene(loadFXML("game_board"), 1280 , 720);
+        scene.getStylesheets().add(App.class.getResource("/styles/game_board.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
