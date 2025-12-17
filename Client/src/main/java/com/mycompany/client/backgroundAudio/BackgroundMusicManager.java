@@ -1,5 +1,6 @@
 package com.mycompany.client.backgroundAudio;
 
+import com.mycompany.client.settings.SettingsManager;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -10,8 +11,7 @@ public class BackgroundMusicManager {
 
     private static final List<String> TRACKS = List.of(
             "/assets/audios/Ground Theme.mp3",
-            "/assets/audios/Underwater Theme.mp3"
-    );
+            "/assets/audios/Underwater Theme.mp3");
 
     private static int currentIndex = 0;
     private static MediaPlayer mediaPlayer;
@@ -19,6 +19,12 @@ public class BackgroundMusicManager {
 
     public static void init() {
         if (mediaPlayer == null) {
+            // Load saved settings
+            SettingsManager.init();
+            currentIndex = SettingsManager.getCurrentTrackIndex();
+            volume = SettingsManager.isMasterVolumeOn()
+                    ? SettingsManager.getMusicVolume() / 100.0
+                    : 0;
             playCurrent();
         }
     }
@@ -62,6 +68,14 @@ public class BackgroundMusicManager {
         return TRACKS.get(currentIndex)
                 .replace("/assets/audios/", "")
                 .replace(".mp3", "");
+    }
+
+    public static int getTrackCount() {
+        return TRACKS.size();
+    }
+
+    public static int getCurrentIndex() {
+        return currentIndex;
     }
 
     public static void pause() {
