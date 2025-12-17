@@ -1,5 +1,6 @@
 package com.mycompany.client;
 
+import com.mycompany.client.backgroundAudio.BackgroundMusicManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.TranslateTransition;
@@ -31,20 +32,39 @@ public class SettingsController implements Initializable {
     @FXML
     private Text effectsPercentText;
 
+    @FXML
+    private Text currentSongText;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        masterVolumeToggle.setSelected(true);
+        switchThumb.setTranslateX(10);
         masterVolumeToggle.selectedProperty().addListener((obs, oldVal, isOn) -> {
-            TranslateTransition tt
-                    = new TranslateTransition(Duration.millis(180), switchThumb);
+            TranslateTransition tt = new TranslateTransition(Duration.millis(180), switchThumb);
             tt.setToX(isOn ? 10 : -10);
             tt.play();
+        });
+        
+        
+
+        // Initialize slider with current volume
+        musicSlider.setValue(BackgroundMusicManager.getVolume() * 100);
+
+        musicSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            double volume = newVal.doubleValue() / 100.0;
+            BackgroundMusicManager.setVolume(volume);
         });
 
         setupSliderFill(musicSlider);
         setupSliderFill(effectsSlider);
+
         bindPercentageText(musicSlider, musicPercentText);
         bindPercentageText(effectsSlider, effectsPercentText);
+
+        masterVolumeToggle.selectedProperty().addListener((obs, oldVal, isOn) -> {
+            BackgroundMusicManager.setVolume(isOn ? musicSlider.getValue() / 100.0 : 0);
+        });
+
     }
 
     private void setupSliderFill(Slider slider) {
@@ -57,6 +77,8 @@ public class SettingsController implements Initializable {
                 updateSliderTrack(slider);
             });
         });
+
+        updateSongName();
     }
 
     private void updateSliderTrack(Slider slider) {
@@ -79,11 +101,27 @@ public class SettingsController implements Initializable {
     }
 
     private void bindPercentageText(Slider slider, Text text) {
-        
+
         text.setText((int) slider.getValue() + "%");
 
         slider.valueProperty().addListener((obs, oldVal, newVal) -> {
             text.setText(newVal.intValue() + "%");
         });
+    }
+
+    @FXML
+    private void nextSong() {
+        BackgroundMusicManager.next();
+        updateSongName();
+    }
+
+    @FXML
+    private void previousSong() {
+        BackgroundMusicManager.previous();
+        updateSongName();
+    }
+
+    private void updateSongName() {
+        currentSongText.setText(BackgroundMusicManager.getCurrentTrackName());
     }
 }

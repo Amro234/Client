@@ -1,5 +1,6 @@
 package com.mycompany.client;
 
+import com.mycompany.client.backgroundAudio.BackgroundMusicManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,7 +18,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 1280 , 720);
+        BackgroundMusicManager.init();
+        scene = new Scene(loadFXML("settings"), 1280 , 720);
         stage.setScene(scene);
         stage.show();
     }

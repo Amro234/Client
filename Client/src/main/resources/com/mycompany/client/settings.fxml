@@ -131,7 +131,49 @@
                             <!-- Percentage text -->
                             <Text fx:id="effectsPercentText" fill="#4c739a" textAlignment="RIGHT" wrappingWidth="30.0" />
                         </HBox>
+                        <!-- Music Selector -->
+                        <HBox alignment="CENTER_LEFT" spacing="12">
 
+                            <StackPane prefHeight="38" prefWidth="38">
+                                <Circle fill="#e7edf3" radius="19" />
+                                <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/assets/images/tone.png" />
+                                    </image>
+                                </ImageView>
+                            </StackPane>
+
+                            <Text text="Music Theme" />
+
+                            <Region HBox.hgrow="ALWAYS" />
+
+                            <!-- Left button -->
+                            <Text onMouseClicked="#previousSong"
+                                  style="-fx-cursor: hand;"
+                                  text="&lt;"
+                                fill="#2b8cee">
+                                <font>
+                                    <Font name="System Bold" size="16" />
+                                </font>
+                            </Text>
+
+                            <!-- Current song -->
+                            <Text fx:id="currentSongText"
+                                  fill="#4c739a"
+                                  wrappingWidth="180"
+                                  textAlignment="CENTER" />
+
+                            <!-- Right button -->
+                            <Text onMouseClicked="#nextSong"
+                                  style="-fx-cursor: hand;"
+                                  text="&gt;"
+                                  fill="#2b8cee">
+                                <font>
+                                    <Font name="System Bold" size="16" />
+                                </font>
+                            </Text>
+
+                        </HBox>
                     </VBox>
                 </VBox>
             </children>
