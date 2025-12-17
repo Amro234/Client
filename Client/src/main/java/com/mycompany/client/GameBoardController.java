@@ -178,10 +178,11 @@ public class GameBoardController {
         
         Label label = labels[row][col];
         label.setText(String.valueOf(symbol));
+        label.getStyleClass().removeAll("cell-label", "cell-label-x", "cell-label-o");
         if (symbol == 'X') {
-            label.setStyle("-fx-text-fill: #4A90E2;");
+            label.getStyleClass().add("cell-label-x");
         } else {
-            label.setStyle("-fx-text-fill: #D0021B;");
+            label.getStyleClass().add("cell-label-o");
         }
         
         
@@ -374,27 +375,35 @@ public class GameBoardController {
             case HORIZONTAL:
                 int row = winInfo.index;
                 for (int col = 0; col < 3; col++) {
-                    cells[row][col].setStyle("-fx-background-color: #D1FAE5; -fx-background-radius: 16; -fx-alignment: center; -fx-cursor: hand;");
+                    cells[row][col].getStyleClass().remove("game-cell");
+                    cells[row][col].getStyleClass().add("winning-cell");
                 }
                 break;
                 
             case VERTICAL:
                 int col = winInfo.index;
                 for (int r = 0; r < 3; r++) {
-                    cells[r][col].setStyle("-fx-background-color: #D1FAE5; -fx-background-radius: 16; -fx-alignment: center; -fx-cursor: hand;");
+                    cells[r][col].getStyleClass().remove("game-cell");
+                    cells[r][col].getStyleClass().add("winning-cell");
                 }
                 break;
                 
             case DIAGONAL_MAIN:
-                cells[0][0].setStyle("-fx-background-color: #D1FAE5; -fx-background-radius: 16; -fx-alignment: center; -fx-cursor: hand;");
-                cells[1][1].setStyle("-fx-background-color: #D1FAE5; -fx-background-radius: 16; -fx-alignment: center; -fx-cursor: hand;");
-                cells[2][2].setStyle("-fx-background-color: #D1FAE5; -fx-background-radius: 16; -fx-alignment: center; -fx-cursor: hand;");
+                cells[0][0].getStyleClass().remove("game-cell");
+                cells[0][0].getStyleClass().add("winning-cell");
+                cells[1][1].getStyleClass().remove("game-cell");
+                cells[1][1].getStyleClass().add("winning-cell");
+                cells[2][2].getStyleClass().remove("game-cell");
+                cells[2][2].getStyleClass().add("winning-cell");
                 break;
                 
             case DIAGONAL_ANTI:
-                cells[0][2].setStyle("-fx-background-color: #D1FAE5; -fx-background-radius: 16; -fx-alignment: center; -fx-cursor: hand;");
-                cells[1][1].setStyle("-fx-background-color: #D1FAE5; -fx-background-radius: 16; -fx-alignment: center; -fx-cursor: hand;");
-                cells[2][0].setStyle("-fx-background-color: #D1FAE5; -fx-background-radius: 16; -fx-alignment: center; -fx-cursor: hand;");
+                cells[0][2].getStyleClass().remove("game-cell");
+                cells[0][2].getStyleClass().add("winning-cell");
+                cells[1][1].getStyleClass().remove("game-cell");
+                cells[1][1].getStyleClass().add("winning-cell");
+                cells[2][0].getStyleClass().remove("game-cell");
+                cells[2][0].getStyleClass().add("winning-cell");
                 break;
         }
     }
@@ -413,12 +422,24 @@ public class GameBoardController {
     private void updateUI() {
         if (isPlayer1Turn) {
             turnIndicatorLabel.setText("Your Turn");
-            player1TurnLabel.setVisible(true);
+            // Player 1: Active turn (blue background)
+            player1TurnLabel.setText("Your Turn");
+            player1TurnLabel.getStyleClass().removeAll("player-waiting-label", "player-turn-label-p2");
+            player1TurnLabel.getStyleClass().add("player-turn-label-p1");
+            // Player 2: Waiting (gray, no background)
             player2StatusLabel.setText("Waiting...");
+            player2StatusLabel.getStyleClass().removeAll("player-turn-label-p1", "player-turn-label-p2");
+            player2StatusLabel.getStyleClass().add("player-waiting-label");
         } else {
             turnIndicatorLabel.setText("Player 2's Turn");
-            player1TurnLabel.setVisible(false);
+            // Player 1: Waiting (gray, no background)
+            player1TurnLabel.setText("Waiting...");
+            player1TurnLabel.getStyleClass().removeAll("player-turn-label-p1", "player-turn-label-p2");
+            player1TurnLabel.getStyleClass().add("player-waiting-label");
+            // Player 2: Active turn (red background)
             player2StatusLabel.setText("Your Turn");
+            player2StatusLabel.getStyleClass().removeAll("player-waiting-label", "player-turn-label-p1");
+            player2StatusLabel.getStyleClass().add("player-turn-label-p2");
         }
     }
     
@@ -465,9 +486,11 @@ public class GameBoardController {
         
       
         if (timeRemaining <= 10) {
-            timerLabel.setStyle("-fx-text-fill: #D0021B;"); 
+            timerLabel.getStyleClass().remove("timer-label");
+            timerLabel.getStyleClass().add("timer-label-warning");
         } else {
-            timerLabel.setStyle("-fx-text-fill: #9CA3AF;"); 
+            timerLabel.getStyleClass().remove("timer-label-warning");
+            timerLabel.getStyleClass().add("timer-label");
         }
     }
     
@@ -525,7 +548,10 @@ public class GameBoardController {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 labels[i][j].setText("");
-                cells[i][j].setStyle("-fx-background-color: #F5F7FB; -fx-background-radius: 16; -fx-alignment: center; -fx-cursor: hand;");
+                labels[i][j].getStyleClass().removeAll("cell-label", "cell-label-x", "cell-label-o");
+                labels[i][j].getStyleClass().add("cell-label");
+                cells[i][j].getStyleClass().remove("winning-cell");
+                cells[i][j].getStyleClass().add("game-cell");
             }
         }
         

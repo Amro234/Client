@@ -1,0 +1,126 @@
+
+.root {
+    -fx-background-color: #FFEFF5;
+}
+
+
+.top-hbox {
+    -fx-background-color: transparent;
+}
+
+.back-button {
+    -fx-background-color: transparent;
+    -fx-font-size: 18;
+    -fx-text-fill: #111827;
+}
+
+.icon-button {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 6 12 6 12;
+    -fx-text-fill: #111827;
+}
+
+
+.player-panel-1 {
+    -fx-background-color: white;
+    -fx-background-radius: 24;
+    -fx-border-color: #4A90E2;
+    -fx-border-width: 1;
+    -fx-border-radius: 24;
+}
+
+.player-panel-2 {
+    -fx-background-color: white;
+    -fx-background-radius: 24;
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 1;
+    -fx-border-radius: 24;
+}
+
+
+.avatar-icon {
+    -fx-font-size: 40;
+}
+
+.symbol-label {
+    -fx-font-weight: bold;
+}
+
+
+.player-turn-label-p1 {
+    -fx-background-color: #4A90E2;
+    -fx-background-radius: 16;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+}
+
+.player-turn-label-p2 {
+    -fx-background-color: #D0021B;
+    -fx-background-radius: 16;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+}
+
+.player-waiting-label {
+    -fx-background-color: transparent;
+    -fx-text-fill: #9CA3AF;
+    -fx-alignment: center;
+}
+
+.score-hbox {
+    -fx-background-color: #F5F7FB;
+    -fx-background-radius: 16;
+    -fx-padding: 12;
+}
+
+.board-grid {
+    -fx-background-color: white;
+    -fx-background-radius: 24;
+    -fx-padding: 15;
+    -fx-hgap: 25;
+    -fx-vgap: 30;
+}
+
+.game-cell {
+    -fx-background-color: #D1D5DB;
+    -fx-background-radius: 16;
+    -fx-alignment: center;
+    -fx-cursor: hand;
+}
+
+.game-cell:hover {
+    -fx-background-color: #9CA3AF;
+}
+
+.winning-cell {
+    -fx-background-color: #D1FAE5;
+    -fx-background-radius: 16;
+    -fx-alignment: center;
+    -fx-cursor: hand;
+}
+
+.cell-label {
+    -fx-text-fill: #111827;
+}
+
+.cell-label-x {
+    -fx-text-fill: #4A90E2;
+}
+
+.cell-label-o {
+    -fx-text-fill: #D0021B;
+}
+
+.timer-icon {
+    -fx-font-size: 16;
+}
+
+.timer-label {
+    -fx-text-fill: #9CA3AF;
+}
+
+.timer-label-warning {
+    -fx-text-fill: #D0021B;
+}
+
