@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" stylesheets="@../../../css/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.GameLobbyController">
+   <left>
+      <VBox prefHeight="200.0" prefWidth="220.0" spacing="20.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets top="20.0" />
+         </padding>
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Circle fill="DODGERBLUE" radius="26.0" stroke="BLACK" strokeType="INSIDE" />
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="1.0">
+                     <children>
+                        <Label text="Mohamed_ALi">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="1250 pts" textFill="#02142682">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" />
+               </VBox.margin>
+            </HBox>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+               <children>
+                  <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="👥       Lobby">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Button>
+                  <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="📊      My Stats" />
+                  <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="👤       Friends" />
+                  <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="⚙       Settings" />
+               </children>
+            </VBox>
+            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="logout-button" text="🚪      Log Out">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="13.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="30.0" left="99.0" right="30.0" top="30.0" />
+         </padding>
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="250.0" text="Game Lobby">
+                           <font>
+                              <Font name="System Bold" size="17.0" />
+                           </font>
+                        </Label>
+                        <Label text="342 Online • 50 Matches in Progress" textFill="#567a9ffa" />
+                     </children>
+                  </VBox>
+                  <Region minWidth="400.0" prefHeight="100.0" prefWidth="541.0" />
+                  <Button alignment="CENTER_RIGHT" mnemonicParsing="false" styleClass="quick-play" text="Quick Play" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="15.0">
+               <children>
+                  <TextField minHeight="36.0" prefWidth="450.0" promptText="✍  Search players by name..." styleClass="text-field" />
+                  <ComboBox minHeight="36.0" prefWidth="150.0" promptText="All Statuses" />
+               </children>
+            </HBox>
+            <TableView prefHeight="400.0" prefWidth="200.0">
+              <columns>
+                <TableColumn prefWidth="300.0" text="Player" />
+                <TableColumn prefWidth="100.0" text="Rank" />
+                  <TableColumn prefWidth="150.0" text="Status" />
+                  <TableColumn prefWidth="150.0" text="Action" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
