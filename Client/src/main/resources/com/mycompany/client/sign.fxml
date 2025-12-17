@@ -62,7 +62,7 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: Bold;" text="Confirm Password" translateX="-165.0" translateY="50.0" />
             <StackPane maxHeight="48.0" maxWidth="454.0" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 30;" translateY="160.0">
                <children>
-                  <Button maxHeight="46.0" maxWidth="454.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 25; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;" text="Sign Up &amp; Play">
+                  <Button maxHeight="46.0" maxWidth="454.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 25; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;" text="Sign Up &amp; Play" translateX="-10.0">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" translateX="145.0">
                            <image>
@@ -76,7 +76,7 @@
             <HBox maxHeight="20.0" maxWidth="170.0" prefHeight="20.0" prefWidth="170.0" translateY="200.0">
                <children>
                   <Label text="Already a player?" textFill="#64748b" />
-                  <Label prefHeight="18.0" prefWidth="59.0" text=" Log In" textFill="#2b8cee" />
+                  <Label fx:id="navigateLogin" onDragDetected="#NavigateLogin" prefHeight="18.0" prefWidth="59.0" text=" Log In" textFill="#2b8cee" />
                </children>
             </HBox>
          </children>

@@ -4,9 +4,13 @@
  */
 package com.mycompany.client;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 
 /**
  * FXML Controller class
@@ -15,6 +19,9 @@ import javafx.fxml.Initializable;
  */
 public class SignController implements Initializable {
 
+    @FXML
+    private Label navigateLogin;
+
     /**
      * Initializes the controller class.
      */
@@ -22,5 +29,14 @@ public class SignController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
+
+    @FXML
+    private void NavigateLogin(MouseEvent event) {
+              try {
+            App.setRoot("login");
+        } catch (IOException ex) {
+            System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
     
 }
