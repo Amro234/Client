@@ -55,7 +55,7 @@
                </children>
             </VBox>
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-            <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="logout-button" text="🚪      Log Out">
+            <Button fx:id="logOutBtn" maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" onAction="#onLogOutPressed" styleClass="logout-button" text="🚪      Log Out">
                <VBox.margin>
                   <Insets bottom="10.0" left="13.0" top="10.0" />
                </VBox.margin>
