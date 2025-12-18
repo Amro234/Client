@@ -45,6 +45,8 @@
 
 .symbol-label {
     -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-size: 14;
 }
 
 
@@ -53,6 +55,7 @@
     -fx-background-radius: 16;
     -fx-text-fill: white;
     -fx-alignment: center;
+    -fx-font-size: 14;
 }
 
 .player-turn-label-p2 {
@@ -60,12 +63,14 @@
     -fx-background-radius: 16;
     -fx-text-fill: white;
     -fx-alignment: center;
+    -fx-font-size: 14;
 }
 
 .player-waiting-label {
     -fx-background-color: transparent;
     -fx-text-fill: #9CA3AF;
     -fx-alignment: center;
+    -fx-font-size: 14;
 }
 
 .score-hbox {
@@ -102,14 +107,17 @@
 
 .cell-label {
     -fx-text-fill: #111827;
+    -fx-font-size: 32;
 }
 
 .cell-label-x {
     -fx-text-fill: #4A90E2;
+    -fx-font-size: 32;
 }
 
 .cell-label-o {
     -fx-text-fill: #D0021B;
+    -fx-font-size: 32;
 }
 
 .timer-icon {
@@ -122,5 +130,56 @@
 
 .timer-label-warning {
     -fx-text-fill: #D0021B;
+}
+
+/* New styles extracted from inline FXML to centralize appearance */
+
+.match-label {
+    -fx-text-fill: #0b1120;
+    -fx-font-size: 20;
+    -fx-font-weight: bold;
+}
+
+.player-name-label {
+    -fx-text-fill: #111827;
+    -fx-font-size: 16;
+}
+
+.wins-caption-label {
+    -fx-text-fill: #9CA3AF;
+    -fx-font-size: 14;
+}
+
+.wins-score-label {
+    -fx-text-fill: #111827;
+    -fx-font-size: 32;
+    -fx-font-weight: bold;
+}
+
+.score-caption-label {
+    -fx-text-fill: #9CA3AF;
+    -fx-font-size: 12;
+}
+
+.score-value-label-p1 {
+    -fx-text-fill: #4A90E2;
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+}
+
+.score-value-label-neutral {
+    -fx-text-fill: #111827;
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+}
+
+.turn-indicator-label {
+    -fx-text-fill: #111827;
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+}
+
+.timer-text-label {
+    -fx-font-size: 14;
 }
 

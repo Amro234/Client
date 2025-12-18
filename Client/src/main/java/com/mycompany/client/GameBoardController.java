@@ -6,6 +6,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -16,6 +19,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
@@ -422,7 +427,6 @@ public class GameBoardController {
     private void updateUI() {
         if (isPlayer1Turn) {
             turnIndicatorLabel.setText("Your Turn");
-            // Player 1: Active turn (blue background)
             player1TurnLabel.setText("Your Turn");
             player1TurnLabel.getStyleClass().removeAll("player-waiting-label", "player-turn-label-p2");
             player1TurnLabel.getStyleClass().add("player-turn-label-p1");
@@ -432,11 +436,9 @@ public class GameBoardController {
             player2StatusLabel.getStyleClass().add("player-waiting-label");
         } else {
             turnIndicatorLabel.setText("Player 2's Turn");
-            // Player 1: Waiting (gray, no background)
             player1TurnLabel.setText("Waiting...");
             player1TurnLabel.getStyleClass().removeAll("player-turn-label-p1", "player-turn-label-p2");
             player1TurnLabel.getStyleClass().add("player-waiting-label");
-            // Player 2: Active turn (red background)
             player2StatusLabel.setText("Your Turn");
             player2StatusLabel.getStyleClass().removeAll("player-waiting-label", "player-turn-label-p1");
             player2StatusLabel.getStyleClass().add("player-turn-label-p2");
@@ -572,27 +574,40 @@ public class GameBoardController {
     
     @FXML
     private void handleBackButton() throws IOException {
-        App.setRoot("primary");
+        try{
+            stopTimer();
+            App.setRoot("main-menu");
+        }catch (IOException ex) {
+            System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }
     
     @FXML
     private void handleSettingsButton() {
-        
-        System.out.println("Settings button clicked");
+    
         try {
-            App.setRoot("settings");
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("settings.fxml"));
+            Parent root = loader.load();
+
+            Stage settingsStage = new Stage();
+            settingsStage.setTitle("Settings");
+            settingsStage.initOwner(settingsButton.getScene().getWindow()); 
+            settingsStage.initModality(Modality.WINDOW_MODAL);              
+            settingsStage.setScene(new Scene(root));
+            settingsStage.show();                                          
         } catch (IOException ex) {
             System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
         }
     }
     
     @FXML
     private void handleMenuButton() {
   
-        System.out.println("Menu button clicked");
-        try {
+        try{
+            stopTimer();
             App.setRoot("main-menu");
-        } catch (IOException ex) {
+        }catch (IOException ex) {
             System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
