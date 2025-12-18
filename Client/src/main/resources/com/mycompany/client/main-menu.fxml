@@ -62,7 +62,8 @@
                         </Button>
                         
                         <!-- Two Players Button -->
-                        <Button fx:id="twoPlayersButton" styleClass="game-mode-button" prefWidth="350" prefHeight="50">
+                        <Button fx:id="twoPlayersButton" styleClass="game-mode-button" prefWidth="350" prefHeight="50"
+                                onAction="#onTwoPlayersClicked">
                             <graphic>
                                 <HBox alignment="CENTER" spacing="8">
                                     <Label text="👥" style="-fx-font-size: 18;"/>
@@ -90,7 +91,8 @@
                             <!-- Recordings Label -->
                             <Label fx:id="recordingsLabel" text="🎥 Recordings" styleClass="menu-label"/>
                             <!-- Settings Label -->
-                            <Label fx:id="settingsLabel" text="⚡ Settings" styleClass="menu-label"/>
+                            <Label fx:id="settingsLabel" text="⚡ Settings" styleClass="menu-label"
+                                   onMouseClicked="#onSettingsClicked"/>
                         </HBox>
                     </children>
                     <padding>
