@@ -19,7 +19,13 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         BackgroundMusicManager.init();
-        scene = new Scene(loadFXML("settings"), 1280 , 720);
+        // scene = new Scene(loadFXML("settings"), 1280 , 720);
+        scene = new Scene(loadFXML("sign"), 1280, 720);
+        scene.getStylesheets().add(
+                getClass().getResource("/styles/customStyles.css").toExternalForm());
+
+        // scene = new Scene(loadFXML("game_board"), 1280 , 720);
+        // scene.getStylesheets().add(App.class.getResource("/styles/game_board.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
