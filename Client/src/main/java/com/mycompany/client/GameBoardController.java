@@ -579,12 +579,22 @@ public class GameBoardController {
     private void handleSettingsButton() {
         
         System.out.println("Settings button clicked");
+        try {
+            App.setRoot("settings");
+        } catch (IOException ex) {
+            System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }
     
     @FXML
     private void handleMenuButton() {
   
         System.out.println("Menu button clicked");
+        try {
+            App.setRoot("main-menu");
+        } catch (IOException ex) {
+            System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }
     
     
