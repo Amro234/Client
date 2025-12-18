@@ -7,97 +7,171 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Author     : eslam
 */
 
-.card {
-  -fx-background-color: white;
-  -fx-background-radius: 12;
-  -fx-border-radius: 12;
-  -fx-padding: 16;
 
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 18, 0.12, 0, 3);
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 16;
+
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 18, 0.12, 0, 3);
 }
 
 .switch {
-  -fx-background-color: transparent;
-  -fx-padding: 0;
-  -fx-focus-color: transparent;
-  -fx-faint-focus-color: transparent;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 #switchTrack {
-  -fx-background-color: #cfd8dc;
-  -fx-background-radius: 12;
-  -fx-min-width: 44;
-  -fx-min-height: 24;
-  -fx-max-width: 44;
-  -fx-max-height: 24;
+    -fx-background-color: #cfd8dc;
+    -fx-background-radius: 12;
+    -fx-min-width: 44;
+    -fx-min-height: 24;
+    -fx-max-width: 44;
+    -fx-max-height: 24;
 }
 
 /* Track color when ON */
 .switch:selected #switchTrack {
-  -fx-background-color: #2b8cee;
+    -fx-background-color: #2b8cee;
 }
 
 #switchThumb {
-  -fx-fill: white;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 6, 0.15, 0, 1);
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 6, 0.15, 0, 1);
 }
 
 .slider {
-  -fx-pref-height: 4px;
+    -fx-pref-height: 4px;
 }
 
 /* Filled part (active track) */
 .slider .track {
-  -fx-background-color: linear-gradient(
-    to right,
-    #2b8cee 0%,
-    #2b8cee 50%,
-    #d0d7de 50%,
-    #d0d7de 100%
-  );
-  -fx-background-radius: 2;
+    -fx-background-color: linear-gradient(to right,
+            #2b8cee 0%,
+            #2b8cee 50%,
+            #d0d7de 50%,
+            #d0d7de 100%);
+    -fx-background-radius: 2;
 }
 
 /* Thumb (circle handle) */
 .slider .thumb {
-  -fx-background-color: #2b8cee;
-  -fx-background-radius: 50%;
-  -fx-pref-width: 14;
-  -fx-pref-height: 14;
+    -fx-background-color: #2b8cee;
+    -fx-background-radius: 50%;
+    -fx-pref-width: 14;
+    -fx-pref-height: 14;
 }
 
 /* Hover effect (optional) */
 .slider:hover .thumb {
-  -fx-background-color: derive(#2b8cee, -10%);
+    -fx-background-color: derive(#2b8cee, -10%);
+}
+
+/*
+=============================================
+MAIN MENU BUTTON STYLES
+=============================================
+*/
+
+/* Main Game Mode Buttons (Single Player, Two Players, Play Online) */
+.game-mode-button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 2;
+    -fx-border-radius: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 5, 0, 0, 1);
+    -fx-cursor: hand;
+}
+
+.game-mode-button:hover {
+    -fx-background-color: #0093cb;
+    -fx-text-fill: white;
+    -fx-border-color: #0093cb;
+}
+
+/* Guest Button */
+.guest-button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 2;
+    -fx-border-radius: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 5, 0, 0, 1);
+    -fx-cursor: hand;
+}
+
+.guest-button:hover {
+    -fx-background-color: #0093cb;
+    -fx-text-fill: white;
+    -fx-border-color: #0093cb;
+}
+
+/* Sound Button */
+.sound-button {
+    -fx-background-color: #ffffff;
+    -fx-font-size: 20;
+    -fx-background-radius: 25;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 2;
+    -fx-border-radius: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 5, 0, 0, 1);
+    -fx-cursor: hand;
+}
+
+.sound-button:hover {
+    -fx-background-color: #0093cb;
+    -fx-border-color: #0093cb;
+}
+
+/* Settings and Recordings Label */
+.menu-label {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 13;
+    -fx-cursor: hand;
+}
+
+.menu-label:hover {
+    -fx-text-fill: #2c3e50;
+    -fx-underline: true;
 }
 
 /* Discard Button */
 .btn-discard {
-  -fx-background-color: #e7edf3;
-  -fx-text-fill: black;
-  -fx-font-weight: bold;
-  -fx-font-size: 12;
-  -fx-background-radius: 200;
-  -fx-padding: 5 15;
-  -fx-cursor: hand;
+    -fx-background-color: #e7edf3;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+    -fx-background-radius: 200;
+    -fx-padding: 5 15;
+    -fx-cursor: hand;
 }
 
 .btn-discard:hover {
-  -fx-background-color: derive(#e7edf3, -10%);
+    -fx-background-color: derive(#e7edf3, -10%);
 }
 
 /* Save Changes Button */
 .btn-save {
-  -fx-background-color: #2b8cee;
-  -fx-text-fill: white;
-  -fx-font-weight: bold;
-  -fx-font-size: 12;
-  -fx-background-radius: 200;
-  -fx-padding: 5 15;
-  -fx-cursor: hand;
-  -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.3), 10, 0, 0, 2);
+    -fx-background-color: #2b8cee;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+    -fx-background-radius: 200;
+    -fx-padding: 5 15;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.3), 10, 0, 0, 2);
 }
 
 .btn-save:hover {
-  -fx-background-color: derive(#2b8cee, -10%);
+    -fx-background-color: derive(#2b8cee, -10%);
 }
