@@ -62,7 +62,7 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: Bold;" text="Confirm Password" translateX="-165.0" translateY="50.0" />
             <StackPane maxHeight="48.0" maxWidth="454.0" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 30;" translateY="160.0">
                <children>
-                  <Button maxHeight="46.0" maxWidth="454.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 25; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;" text="Sign Up &amp; Play" translateX="-10.0">
+                  <Button fx:id="signUpButton" maxHeight="46.0" maxWidth="454.0" mnemonicParsing="false" onAction="#SignUpButton" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 25; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;" text="Sign Up &amp; Play" translateX="-10.0">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" translateX="145.0">
                            <image>
