@@ -51,11 +51,11 @@
                      </font></Button>
                   <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="📊      My Stats" />
                   <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="👤       Friends" />
-                  <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="⚙       Settings" />
+                  <Button fx:id="settingsBtn" maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" onAction="#onSettingsPressed" styleClass="menu-button" text="⚙       Settings" />
                </children>
             </VBox>
             <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-            <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="logout-button" text="🚪      Log Out">
+            <Button fx:id="logOutBtn" maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" onAction="#onLogOutPressed" styleClass="logout-button" text="🚪      Log Out">
                <VBox.margin>
                   <Insets bottom="10.0" left="13.0" top="10.0" />
                </VBox.margin>
@@ -71,24 +71,46 @@
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
+                  <VBox prefHeight="200.0">
                      <children>
-                        <Label maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="250.0" text="Game Lobby">
+                        <Label maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="135.0" text="Game Lobby">
                            <font>
-                              <Font name="System Bold" size="17.0" />
+                              <Font name="System Bold" size="21.0" />
                            </font>
                         </Label>
-                        <Label text="342 Online • 50 Matches in Progress" textFill="#567a9ffa" />
+                        <HBox alignment="BASELINE_LEFT" prefHeight="74.0" prefWidth="326.0">
+                           <children>
+                              <Circle fill="#059669" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Label text=" 342 Online " textFill="#4c739a">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label text="  • " />
+                              <Circle fill="#fb923c" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Label text=" 50 Matches in Progress" textFill="#4c739a">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
-                  <Region minWidth="400.0" prefHeight="100.0" prefWidth="541.0" />
-                  <Button alignment="CENTER_RIGHT" mnemonicParsing="false" styleClass="quick-play" text="Quick Play" HBox.hgrow="ALWAYS" />
+                  <Region minWidth="355.0" prefHeight="100.0" prefWidth="355.0" />
+                  <Button fx:id="quickPlayBtn" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onQuickPlayPressed" styleClass="quick-play" text="Quick Play">
+                     <HBox.margin>
+                        <Insets right="10.0" top="10.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="18.0" />
+                     </font></Button>
                </children>
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="15.0">
                <children>
                   <TextField minHeight="36.0" prefWidth="450.0" promptText="✍  Search players by name..." styleClass="text-field" />
-                  <ComboBox minHeight="36.0" prefWidth="150.0" promptText="All Statuses" />
+                  <ComboBox fx:id="statusComboBox" minHeight="36.0" prefWidth="150.0" promptText="All Statuses" />
                </children>
             </HBox>
             <TableView prefHeight="400.0" prefWidth="200.0">

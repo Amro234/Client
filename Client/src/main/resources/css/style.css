@@ -32,6 +32,8 @@
     -fx-background-color: #3b82f6;
     -fx-text-fill: #fefeff;
     -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.5), 20, 0.2, 0, 6);
+
 }
 
 .table-view {
