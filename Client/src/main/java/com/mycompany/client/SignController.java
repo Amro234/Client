@@ -42,6 +42,7 @@ public class SignController implements Initializable {
         } catch (IOException ex) {
             System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+              
     }
 
   
