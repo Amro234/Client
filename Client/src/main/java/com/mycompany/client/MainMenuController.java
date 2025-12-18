@@ -15,6 +15,9 @@ import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import java.io.IOException;
 import javafx.stage.Modality;
+import javafx.scene.image.Image;
+import com.mycompany.client.settings.SettingsManager;
+import com.mycompany.client.backgroundAudio.BackgroundMusicManager;
 
 public class MainMenuController {
 
@@ -34,7 +37,7 @@ public class MainMenuController {
     private Label guestLabel;
 
     @FXML
-    private Label soundLabel;
+    private javafx.scene.image.ImageView soundIcon;
 
     @FXML
     private Label recordingsLabel;
@@ -65,15 +68,42 @@ public class MainMenuController {
         if (guestLabel != null) {
             guestLabel.setCursor(Cursor.HAND);
         }
-        if (soundLabel != null) {
-            soundLabel.setCursor(Cursor.HAND);
+        if (soundIcon != null) {
+            soundIcon.setCursor(Cursor.HAND);
         }
         if (recordingsLabel != null) {
             recordingsLabel.setCursor(Cursor.HAND);
         }
 
+        // Set initial sound icon based on current master volume state
+        if (soundIcon != null) {
+            boolean isSoundOn = SettingsManager.isMasterVolumeOn();
+            if (isSoundOn) {
+                soundIcon.setImage(new Image(App.class.getResource("/assets/images/sound.png").toExternalForm()));
+            } else {
+                soundIcon.setImage(new Image(App.class.getResource("/assets/images/muted-sound.png").toExternalForm()));
+            }
+        }
+
         System.out.println("Main Menu loaded!");
         System.out.println("Cursors set programmatically");
+    }
+
+    @FXML
+    private void onSinglePlayerClicked(ActionEvent event) {
+        try {
+            System.out.println("Single Player clicked - navigating to difficulty selection");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("single-player.fxml"));
+            Parent singlePlayerRoot = loader.load();
+
+            Stage stage = (Stage) singlePlayerButton.getScene().getWindow();
+            Scene scene = new Scene(singlePlayerRoot);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading single-player.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -84,7 +114,7 @@ public class MainMenuController {
 
             Stage settingsStage = new Stage();
             settingsStage.setTitle("Settings");
-            settingsStage.initOwner(settingsLabel.getScene().getWindow()); 
+            settingsStage.initOwner(settingsLabel.getScene().getWindow());
             settingsStage.initModality(Modality.WINDOW_MODAL);
             settingsStage.setScene(new Scene(root));
             settingsStage.show();
@@ -100,7 +130,7 @@ public class MainMenuController {
             System.out.println("Two Players clicked - navigating to Game Board");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("game_board.fxml"));
             Parent gameBoardRoot = loader.load();
-            
+
             Stage stage = (Stage) twoPlayersButton.getScene().getWindow();
             Scene scene = new Scene(gameBoardRoot);
             scene.getStylesheets().add(App.class.getResource("/styles/game_board.css").toExternalForm());
@@ -110,6 +140,46 @@ public class MainMenuController {
             System.err.println("Error loading game_board.fxml: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void onGuestClicked(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("sign.fxml"));
+            Parent root = loader.load();
+
+            Stage signInStage = new Stage();
+            signInStage.setTitle("Sign In");
+            signInStage.initOwner(guestLabel.getScene().getWindow());
+            signInStage.initModality(Modality.WINDOW_MODAL);
+            signInStage.setScene(new Scene(root));
+            signInStage.show();
+        } catch (IOException ex) {
+            System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
+
+    @FXML
+    private void onSoundClicked(MouseEvent event) {
+        // Toggle the master volume state using SettingsManager
+        boolean newState = !SettingsManager.isMasterVolumeOn();
+        SettingsManager.setMasterVolumeOn(newState);
+
+        // Update the BackgroundMusicManager volume
+        if (newState) {
+            // Sound enabled - restore volume
+            BackgroundMusicManager.setVolume(SettingsManager.getMusicVolume() / 100.0);
+            soundIcon.setImage(new Image(App.class.getResource("/assets/images/sound.png").toExternalForm()));
+            System.out.println("Sound enabled!");
+        } else {
+            // Sound muted - set volume to 0
+            BackgroundMusicManager.setVolume(0);
+            soundIcon.setImage(new Image(App.class.getResource("/assets/images/muted-sound.png").toExternalForm()));
+            System.out.println("Sound muted!");
+        }
+
+        // Save the settings
+        SettingsManager.saveSettings();
     }
 
 }
