@@ -4,7 +4,10 @@ module com.mycompany.client {
     requires java.base;
     requires javafx.base;
     requires javafx.graphics;
+    requires javafx.media;
 
     opens com.mycompany.client to javafx.fxml;
+
     exports com.mycompany.client;
+
 }

@@ -59,7 +59,7 @@
             <HBox maxHeight="20.0" maxWidth="200.0" prefHeight="20.0" prefWidth="100.0" translateY="200.0">
                <children>
                   <Label prefWidth="89.0" text="New Player? " textFill="#64748b" />
-                  <Label fx:id="createAccount" onDragDetected="#CreateAccount" prefHeight="18.0" prefWidth="141.0" text="Create an account" textFill="#2b8cee" />
+                  <Label fx:id="createAccount" onDragDetected="#CreateAccount" prefHeight="50.0" prefWidth="141.0" text="Create an account" textFill="#2b8cee" />
                </children>
             </HBox>
          </children>
