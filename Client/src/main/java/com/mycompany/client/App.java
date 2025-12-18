@@ -23,7 +23,10 @@ public class App extends Application {
                 getClass().getResource("/styles/customStyles.css").toExternalForm(),
                
                 App.class.getResource("/css/profilescreen.css").toExternalForm(),
-                App.class.getResource("/css/style.css").toExternalForm());
+                App.class.getResource("/css/style.css").toExternalForm(),
+                 App.class.getResource("/css/table.css").toExternalForm()
+                );
+        
 
         stage.setScene(scene);
         stage.show();
