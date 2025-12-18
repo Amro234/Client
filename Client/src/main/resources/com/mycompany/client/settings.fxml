@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
@@ -26,19 +27,29 @@
                 <VBox prefWidth="680" spacing="12">
 
                     <!-- Title -->
-                    <Text text="Settings">
-                        <font>
-                            <Font name="System Bold" size="35" />
-                        </font>
-                    </Text>
+                    <HBox alignment="BOTTOM_CENTER" spacing="12">
+                        <VBox spacing="4">
+                            <Text text="Settings">
+                                <font>
+                                    <Font name="System Bold" size="35" />
+                                </font>
+                            </Text>
 
-                    <Text fill="#4c739a" text="Manage your game preferences and account details">
-                        <font>
-                            <Font size="16" />
-                        </font>
-                    </Text>
+                            <Text fill="#4c739a" text="Manage your game preferences and account details">
+                                <font>
+                                    <Font size="16" />
+                                </font>
+                            </Text>
+                        </VBox>
+                        
+                        <Region HBox.hgrow="ALWAYS" />
+                        
+                        <Button fx:id="discardBtn" styleClass="btn-discard" text="Discard" onAction="#discardChanges" />
+                        
+                        <Button fx:id="saveBtn" styleClass="btn-save" text="Save Changes" onAction="#saveChanges" />
+                    </HBox>
 
-                    <Region prefHeight="12" />
+                    <Region prefHeight="5.0" prefWidth="680.0" />
 
                     <!-- Card -->
                     <VBox prefWidth="680" spacing="16" styleClass="card">
@@ -53,7 +64,7 @@
 
                             <Region HBox.hgrow="ALWAYS" />
 
-                            <Text fill="#2b8cee" text="Restore defaults">
+                            <Text fill="#2b8cee" text="Restore defaults" onMouseClicked="#restoreDefaults" style="-fx-cursor: hand;">
                                 <font>
                                     <Font name="System Bold" size="14" />
                                 </font>
@@ -131,7 +142,40 @@
                             <!-- Percentage text -->
                             <Text fx:id="effectsPercentText" fill="#4c739a" textAlignment="RIGHT" wrappingWidth="30.0" />
                         </HBox>
+                        <!-- Music Selector -->
+                        <HBox alignment="CENTER_LEFT" spacing="12">
 
+                            <StackPane prefHeight="38" prefWidth="38">
+                                <Circle fill="#e7edf3" radius="19" />
+                                <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/assets/images/tone.png" />
+                                    </image>
+                                </ImageView>
+                            </StackPane>
+
+                            <Text text="Music Theme" />
+
+                            <Region HBox.hgrow="ALWAYS" />
+
+                            <!-- Left button -->
+                            <Text fill="#2b8cee" onMouseClicked="#previousSong" style="-fx-cursor: hand;" text="&lt;">
+                                <font>
+                                    <Font name="System Bold" size="16" />
+                                </font>
+                            </Text>
+
+                            <!-- Current song -->
+                            <Text fx:id="currentSongText" fill="#4c739a" textAlignment="CENTER" wrappingWidth="180" />
+
+                            <!-- Right button -->
+                            <Text fill="#2b8cee" onMouseClicked="#nextSong" style="-fx-cursor: hand;" text="&gt;">
+                                <font>
+                                    <Font name="System Bold" size="16" />
+                                </font>
+                            </Text>
+
+                        </HBox>
                     </VBox>
                 </VBox>
             </children>

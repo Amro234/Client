@@ -1,5 +1,6 @@
 package com.mycompany.client;
 
+import com.mycompany.client.backgroundAudio.BackgroundMusicManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,21 +15,16 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        // Load the Inter and Roboto fonts from your fonts folder
-       Font.loadFont(getClass().getResourceAsStream("/fonts/Inter-VariableFont_opsz,wght.ttf"), 14);
-       //Font.loadFont(getClass().getResourceAsStream("/fonts/Inter-Italic-VariableFont_opsz,wght.ttf"), 14);
-       //Font.loadFont(getClass().getResourceAsStream("/fonts/Roboto-VariableFont_wdth,wght.ttf"), 14);
-       //Font.loadFont(getClass().getResourceAsStream("/fonts/Roboto-Italic-VariableFont_wdth,wght.ttf"), 14);
+        BackgroundMusicManager.init();
 
-        Parent root = loadFXML("main-menu");
+        scene = new Scene(loadFXML("profileScreen"), 1280, 720);
 
-        scene = new Scene(root, 1280, 720);
+        scene.getStylesheets().addAll(
+                getClass().getResource("/styles/customStyles.css").toExternalForm(),
+                App.class.getResource("/styles/game_board.css").toExternalForm(),
+                App.class.getResource("/css/profilescreen.css").toExternalForm(),
+                App.class.getResource("/css/style.css").toExternalForm());
 
-        scene.getStylesheets().add(
-                getClass().getResource("/styles/customStyles.css").toExternalForm()
-        );
-
-        
         stage.setScene(scene);
         stage.show();
     }
@@ -46,4 +42,3 @@ public class App extends Application {
         launch();
     }
 }
-

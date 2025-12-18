@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1280.0" styleClass="root" stylesheets="@../../../css/profilescreen.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.ProfileScreenController">
+   <top>
+      <HBox prefHeight="96.0" prefWidth="1240.0" styleClass="nav-header" BorderPane.alignment="CENTER">
+         <children>
+            <VBox prefHeight="180.0" prefWidth="270.0">
+               <children>
+                  <Label text="Player Profile">
+                     <font>
+                        <Font name="System Bold" size="38.0" />
+                     </font>
+                  </Label>
+                  <Label prefHeight="15.0" prefWidth="300.0" style="-fx-text-fill: #7e899c;" text="Manage your identity and track your progress" />
+               </children>
+            </VBox>
+            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+            <Region prefHeight="150.0" prefWidth="449.0" HBox.hgrow="ALWAYS" />
+            <Button mnemonicParsing="false" styleClass="nav-button" text="Lobby" />
+            <Button mnemonicParsing="false" styleClass="nav-button" text="Leaderboard" />
+            <Button mnemonicParsing="false" styleClass="nav-button-active" text="Profile" />
+            <Button mnemonicParsing="false" styleClass="nav-button" text="🔔" />
+            <Circle fill="DODGERBLUE" radius="20.0" stroke="BLACK" strokeType="INSIDE" styleClass="avatar-circle" />
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox prefHeight="400.0" prefWidth="272.0" spacing="70.0" styleClass="card">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="368.0" prefWidth="233.0" spacing="10.0">
+                     <children>
+                        <Circle fill="DODGERBLUE" radius="50.0" stroke="BLACK" strokeType="INSIDE" styleClass="avatar-circle" />
+                        <Circle fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" styleClass="online-dot" />
+                        <Label styleClass="title-medium" text="TicTacMaster" />
+                        <Label fx:id="usernameLabel" styleClass="text-muted" text="\@tictac_master_99" />
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                           <children>
+                              <Label style="-fx-background-color: #e0e7ff; -fx-text-fill: #3B82F6;" styleClass="badge-primary" text="Pro Player" />
+                              <Label style="-fx-background-color: #f1f5f9; -fx-text-fill: #606c7e;" styleClass="badge-secondary" text="Level 42" />
+                           </children>
+                        </HBox>
+                        <Button fx:id="editProfileButton" mnemonicParsing="false" styleClass="primary-button" text="Edit Profile" />
+                        <Button fx:id="changeBadgeButton" mnemonicParsing="false" styleClass="secondary-button" text="Change Badge" />
+                        <Label styleClass="text-muted" text="(Member since Jan 2023)" />
+                     </children>
+                     <VBox.margin>
+                        <Insets top="4.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox alignment="BOTTOM_LEFT" prefHeight="136.0" prefWidth="226.0" styleClass="card">
+                     <children>
+                        <Label styleClass="title-small" text="About" />
+                        <TextArea fx:id="bioTextArea" prefHeight="200.0" prefWidth="200.0" promptText="bio text" styleClass="text-area" text="Strategic thinker who loves a goodchallenge. Always up for a match! Tic-Tac-Toe enthusiast since childhood.Let's play! 🎮" />
+                        <Button fx:id="editBioButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #3B82F6;" text="Edit Bio" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="50.0" />
+                     </VBox.margin>
+                  </VBox>
+               </children>
+               <HBox.margin>
+                  <Insets bottom="50.0" left="30.0" right="20.0" top="30.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox prefHeight="714.0" prefWidth="716.0">
+               <children>
+                  <HBox prefHeight="129.0" prefWidth="716.0">
+                     <children>
+                        <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="shareProfileButton" mnemonicParsing="false" styleClass="secondary-button" text="Share Profile">
+                           <HBox.margin>
+                              <Insets bottom="20.0" right="4.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="settingsButton" mnemonicParsing="false" styleClass="secondary-button" text="Settings">
+                           <HBox.margin>
+                              <Insets bottom="20.0" right="4.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="120.0" prefWidth="100.0" styleClass="stat-card">
+                           <children>
+                              <ImageView fitHeight="164.0" fitWidth="295.0" pickOnBounds="true" preserveRatio="true" styleClass="stat-card">
+                                 <image>
+                                    <Image url="@../../../../../../../../../التنزيلات%20من%20جوجل/total_games.png" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                              <Label fx:id="totalGamesLabel" styleClass="text-muted" text="TOTAL GAMES" />
+                              <Label styleClass="title-large" text="142" />
+                              <Label styleClass="text-success" text="+12 this week" />
+                           </children>
+                           <HBox.margin>
+                              <Insets right="30.0" top="20.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox prefHeight="150.0" prefWidth="194.0" styleClass="stat-card">
+                           <children>
+                              <ImageView fitHeight="120.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../../../../../التنزيلات%20من%20جوجل/percentage.png" />
+                                 </image>
+                              </ImageView>
+                              <Label fx:id="winRateLabel" styleClass="text-muted" text="WIN RATE" />
+                              <Label styleClass="title-large" text="62%" />
+                              <Label styleClass="text-success" text="+6%" />
+                              <ProgressBar prefWidth="200.0" progress="0.59" />
+                           </children>
+                           <HBox.margin>
+                              <Insets right="30.0" top="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox prefHeight="120.0" prefWidth="190.0" styleClass="stat-card">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../../../../../التنزيلات%20من%20جوجل/cup.png" />
+                                 </image>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </ImageView>
+                              <Label styleClass="text-muted" text="RECORD" />
+                              <Label fx:id="winsLabel" styleClass="title-large" text="88 W" />
+                              <Label fx:id="lossesLabel" prefHeight="34.0" prefWidth="91.0" styleClass="title-large" text="54 L" />
+                              <Label text="Keep it up!" />
+                           </children>
+                           <HBox.margin>
+                              <Insets top="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </HBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" styleClass="card">
+                     <children>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Label styleClass="title-small" text="Recent Matches" />
+                              <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <Button fx:id="viewAllButton" mnemonicParsing="false" style="-fx-text-fill: #3B82F6; -fx-background-color: transparent;" text="View All" />
+                           </children>
+                           <VBox.margin>
+                              <Insets top="4.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <ImageView fitHeight="91.0" fitWidth="97.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../../../../../التنزيلات%20من%20جوجل/cartoon_image.png" />
+                                 </image>
+                              </ImageView>
+                              <VBox prefHeight="91.0" prefWidth="562.0">
+                                 <children>
+                                    <Label alignment="CENTER" text="Victory vs PlayerOne">
+                                       <VBox.margin>
+                                          <Insets bottom="20.0" left="30.0" right="20.0" top="30.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                              <Label alignment="CENTER" styleClass="text-success" text="+25 XP">
+                                 <HBox.margin>
+                                    <Insets top="30.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <ImageView fitHeight="104.0" fitWidth="91.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../../../../../التنزيلات%20من%20جوجل/cartoon_image.png" />
+                                 </image>
+                              </ImageView>
+                              <VBox prefHeight="91.0" prefWidth="567.0">
+                                 <children>
+                                    <Label text="Defeat vs TacticalGenius">
+                                       <VBox.margin>
+                                          <Insets left="30.0" top="30.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                              <Label styleClass="text-danger" text="-10 XP">
+                                 <HBox.margin>
+                                    <Insets top="30.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="92.0" prefWidth="693.0">
+                           <children>
+                              <ImageView fitHeight="105.0" fitWidth="92.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../../../../../التنزيلات%20من%20جوجل/cartoon_image.png" />
+                                 </image>
+                              </ImageView>
+                              <VBox prefHeight="92.0" prefWidth="565.0">
+                                 <children>
+                                    <Label text="Draw vs Newbie99">
+                                       <VBox.margin>
+                                          <Insets left="30.0" top="30.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                              <Label text="+5 XP">
+                                 <HBox.margin>
+                                    <Insets top="30.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </center>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</BorderPane>
