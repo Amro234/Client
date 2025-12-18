@@ -4,17 +4,23 @@
  */
 package com.mycompany.client;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -25,13 +31,23 @@ public class GameLobbyController implements Initializable {
 
     @FXML
     private Button logOutBtn;
+    @FXML
+    private Button settingsBtn;
+    @FXML
+    private Button quickPlayBtn;
+    @FXML
+    private ComboBox<String> statusComboBox;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+         statusComboBox.getItems().addAll(
+        "Online",
+        "Away",
+        "Offline"
+    );
     }    
     
      
@@ -68,4 +84,18 @@ private void showGoodbyeMessage() {
   
     Platform.exit();
 }
+
+    @FXML
+    private void onSettingsPressed(ActionEvent event) throws IOException {
+       
+    Parent secondScreenParent = FXMLLoader.load(getClass().getResource("/com/mycompany/client/settings.fxml"));
+    Scene secondScene = new Scene(secondScreenParent);
+    Stage currentStage = (Stage) settingsBtn.getScene().getWindow();
+    currentStage.setScene(secondScene);
+    currentStage.show();
+    }
+
+    @FXML
+    private void onQuickPlayPressed(ActionEvent event) {
+    }
 }
