@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import java.io.IOException;
+import javafx.stage.Modality;
 
 public class MainMenuController {
 
@@ -78,17 +79,18 @@ public class MainMenuController {
     @FXML
     private void onSettingsClicked(MouseEvent event) {
         try {
-            System.out.println("Settings clicked - navigating to Settings screen");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("settings.fxml"));
-            Parent settingsRoot = loader.load();
-            
-            Stage stage = (Stage) settingsLabel.getScene().getWindow();
-            Scene scene = new Scene(settingsRoot);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Error loading settings.fxml: " + e.getMessage());
-            e.printStackTrace();
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("settings.fxml"));
+            Parent root = loader.load();
+
+            Stage settingsStage = new Stage();
+            settingsStage.setTitle("Settings");
+            settingsStage.initOwner(settingsLabel.getScene().getWindow()); 
+            settingsStage.initModality(Modality.WINDOW_MODAL);
+            settingsStage.setScene(new Scene(root));
+            settingsStage.show();
+        } catch (IOException ex) {
+            System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
         }
     }
 

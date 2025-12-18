@@ -574,11 +574,18 @@ public class GameBoardController {
     
     @FXML
     private void handleBackButton() throws IOException {
-        try{
+        try {
             stopTimer();
-            App.setRoot("main-menu");
-        }catch (IOException ex) {
-            System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
+            Parent mainMenuRoot = loader.load();
+
+            Stage stage = (Stage) menuButton.getScene().getWindow();
+            Scene scene = new Scene(mainMenuRoot);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading main--menu.fxml: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     
@@ -592,9 +599,9 @@ public class GameBoardController {
             Stage settingsStage = new Stage();
             settingsStage.setTitle("Settings");
             settingsStage.initOwner(settingsButton.getScene().getWindow()); 
-            settingsStage.initModality(Modality.WINDOW_MODAL);              
+            settingsStage.initModality(Modality.WINDOW_MODAL);
             settingsStage.setScene(new Scene(root));
-            settingsStage.show();                                          
+            settingsStage.show();
         } catch (IOException ex) {
             System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
 
@@ -604,11 +611,18 @@ public class GameBoardController {
     @FXML
     private void handleMenuButton() {
   
-        try{
+        try {
             stopTimer();
-            App.setRoot("main-menu");
-        }catch (IOException ex) {
-            System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
+            Parent mainMenuRoot = loader.load();
+
+            Stage stage = (Stage) menuButton.getScene().getWindow();
+            Scene scene = new Scene(mainMenuRoot);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading main--menu.fxml: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     
