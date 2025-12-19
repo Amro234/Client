@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
 /**
@@ -26,6 +27,8 @@ public class SignController implements Initializable {
     private Label navigateLogin;
     @FXML
     private Button signUpButton;
+    @FXML
+    private HBox navigateToLoign;
 
     /**
      * Initializes the controller class.
@@ -50,6 +53,14 @@ public class SignController implements Initializable {
     @FXML
     private void SignUpButton(ActionEvent event) {
                 try {
+            App.setRoot("login");
+        } catch (IOException ex) {
+            System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
+
+    @FXML
+    private void NavigateToLogin(MouseEvent event) {        try {
             App.setRoot("login");
         } catch (IOException ex) {
             System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
