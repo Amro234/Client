@@ -7,6 +7,7 @@ module com.mycompany.client {
     requires javafx.media;
 
     opens com.mycompany.client to javafx.fxml;
+    opens com.mycompany.client.gameboard.controller to javafx.fxml;
 
     exports com.mycompany.client;
 

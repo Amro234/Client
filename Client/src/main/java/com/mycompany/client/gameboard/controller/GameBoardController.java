@@ -1,4 +1,7 @@
-package com.mycompany.client;
+package com.mycompany.client.gameboard.controller;
+
+import com.mycompany.client.Difficulty;
+import com.mycompany.client.gameboard.model.GameMode;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -219,7 +222,7 @@ public class GameBoardController {
     public void handleBackButton() {
         try {
             stopTimer();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/main-menu.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) backButton.getScene().getWindow();
             stage.setScene(new Scene(root));
