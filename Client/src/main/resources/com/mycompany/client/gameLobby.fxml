@@ -109,16 +109,16 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="15.0">
                <children>
-                  <TextField minHeight="36.0" prefWidth="450.0" promptText="✍  Search players by name..." styleClass="text-field" />
+                  <TextField fx:id="searchField" minHeight="36.0" prefWidth="450.0" promptText="✍  Search players by name..." styleClass="text-field" />
                   <ComboBox fx:id="statusComboBox" minHeight="36.0" prefWidth="150.0" promptText="All Statuses" />
                </children>
             </HBox>
-            <TableView prefHeight="400.0" prefWidth="200.0">
+            <TableView fx:id="playerTable" maxWidth="720.0" prefHeight="322.0" prefWidth="600.0" styleClass="root">
               <columns>
-                <TableColumn prefWidth="300.0" text="Player" />
-                <TableColumn prefWidth="100.0" text="Rank" />
-                  <TableColumn prefWidth="150.0" text="Status" />
-                  <TableColumn prefWidth="150.0" text="Action" />
+                <TableColumn fx:id="playerColumn" prefWidth="230.0" text="Player" />
+                <TableColumn fx:id="rankColumn" prefWidth="130.0" text="Rank" />
+                  <TableColumn fx:id="statusColumn" prefWidth="160.0" text="Status" />
+                  <TableColumn fx:id="actionColumn" prefWidth="190.0" text="Action" />
               </columns>
             </TableView>
          </children>
