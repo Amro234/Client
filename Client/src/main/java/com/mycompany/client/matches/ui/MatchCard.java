@@ -11,7 +11,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 /**
  * A custom HBox component that displays a match card in the match history.
@@ -37,14 +40,20 @@ public class MatchCard extends HBox {
                 createResultIcon(),
                 createMatchInfo(),
                 createSpacer(),
-                createScoreSection(),
                 createWatchReplayButton());
     }
 
-    private ImageView createResultIcon() {
+    private StackPane createResultIcon() {
+        StackPane iconContainer = new StackPane();
+
+        // Create circle background
+        Circle background = new Circle(20);
+        background.setFill(Color.valueOf(matchData.getResult().getBackgroundColor()));
+
+        // Create icon image
         ImageView resultIcon = new ImageView();
-        resultIcon.setFitWidth(40);
-        resultIcon.setFitHeight(40);
+        resultIcon.setFitWidth(20);
+        resultIcon.setFitHeight(20);
         resultIcon.setPreserveRatio(true);
 
         try {
@@ -54,7 +63,10 @@ public class MatchCard extends HBox {
             System.err.println("Could not load icon: " + matchData.getResult().getIconPath());
         }
 
-        return resultIcon;
+        iconContainer.getChildren().addAll(background, resultIcon);
+        iconContainer.setAlignment(Pos.CENTER);
+
+        return iconContainer;
     }
 
     private VBox createMatchInfo() {
@@ -89,20 +101,6 @@ public class MatchCard extends HBox {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         return spacer;
-    }
-
-    private VBox createScoreSection() {
-        VBox scoreSection = new VBox(2);
-        scoreSection.setAlignment(Pos.CENTER);
-
-        Label scoreLabel = new Label("SCORE");
-        scoreLabel.getStyleClass().add("score-header");
-
-        Label scoreValue = new Label(matchData.getScore() + " pts");
-        scoreValue.getStyleClass().add("score-value");
-
-        scoreSection.getChildren().addAll(scoreLabel, scoreValue);
-        return scoreSection;
     }
 
     private Button createWatchReplayButton() {

@@ -213,8 +213,8 @@ MATCH HISTORY STYLES
   -fx-font-size: 13;
   -fx-font-weight: bold;
   -fx-padding: 8 16;
-  -fx-background-radius: 20;
-  -fx-border-radius: 20;
+  -fx-background-radius: 200;
+  -fx-border-radius: 200;
   -fx-cursor: hand;
 }
 
@@ -234,9 +234,9 @@ MATCH HISTORY STYLES
 /* Search Box */
 .search-box {
   -fx-background-color: white;
-  -fx-background-radius: 8;
+  -fx-background-radius: 200;
   -fx-border-color: #e0e5eb;
-  -fx-border-radius: 8;
+  -fx-border-radius: 200;
   -fx-border-width: 1;
   -fx-padding: 8 12;
 }
@@ -282,8 +282,8 @@ MATCH HISTORY STYLES
 /* Match Card */
 .match-card {
   -fx-background-color: white;
-  -fx-background-radius: 12;
-  -fx-border-radius: 12;
+  -fx-background-radius: 200;
+  -fx-border-radius: 200;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
 }
 
@@ -303,7 +303,7 @@ MATCH HISTORY STYLES
   -fx-font-size: 10;
   -fx-font-weight: bold;
   -fx-padding: 3 8;
-  -fx-background-radius: 4;
+  -fx-background-radius: 200;
 }
 
 .badge-victory {
@@ -347,9 +347,9 @@ MATCH HISTORY STYLES
   -fx-font-size: 13;
   -fx-font-weight: bold;
   -fx-padding: 10 20;
-  -fx-background-radius: 8;
+  -fx-background-radius: 200;
   -fx-border-color: #d0dae5;
-  -fx-border-radius: 8;
+  -fx-border-radius: 200;
   -fx-border-width: 1;
   -fx-cursor: hand;
   -fx-graphic-text-gap: 8;

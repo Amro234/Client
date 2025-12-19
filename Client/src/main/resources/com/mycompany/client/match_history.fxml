@@ -64,8 +64,9 @@
         </HBox>
         
         <!-- Match List -->
-        <ScrollPane fitToWidth="true" styleClass="match-list-scroll" VBox.vgrow="ALWAYS" 
-                    AnchorPane.bottomAnchor="40">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" 
+                    styleClass="match-list-scroll" VBox.vgrow="ALWAYS" 
+                    prefHeight="400" maxHeight="Infinity">
             <VBox fx:id="matchListContainer" spacing="12" styleClass="match-list-container">
                 <!-- Match cards will be added dynamically -->
             </VBox>
