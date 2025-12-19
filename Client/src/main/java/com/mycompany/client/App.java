@@ -5,7 +5,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -15,7 +14,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        // BackgroundMusicManager.init();
+
+        BackgroundMusicManager.init();
 
         scene = new Scene(loadFXML("match_history"), 1280, 720);
 
