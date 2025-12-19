@@ -113,10 +113,9 @@
                   <ComboBox fx:id="statusComboBox" minHeight="36.0" prefWidth="150.0" promptText="All Statuses" />
                </children>
             </HBox>
-            <TableView fx:id="playerTable" maxWidth="720.0" prefHeight="322.0" prefWidth="600.0" styleClass="root">
+            <TableView fx:id="playerTable" maxWidth="550.0" prefHeight="322.0" prefWidth="500.0" styleClass="root">
               <columns>
                 <TableColumn fx:id="playerColumn" prefWidth="230.0" text="Player" />
-                <TableColumn fx:id="rankColumn" prefWidth="130.0" text="Rank" />
                   <TableColumn fx:id="statusColumn" prefWidth="160.0" text="Status" />
                   <TableColumn fx:id="actionColumn" prefWidth="190.0" text="Action" />
               </columns>
