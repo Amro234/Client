@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane maxHeight="900.0" maxWidth="1280.0" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1280.0" style="-fx-background-color: FEF2F2;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.LoginController">
+<StackPane maxHeight="900.0" maxWidth="1280.0" minHeight="0.0" minWidth="0.0" onMouseClicked="#CreateAccount" prefHeight="900.0" prefWidth="1280.0" style="-fx-background-color: FEF2F2;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.LoginController">
    <children>
       <VBox alignment="CENTER" focusTraversable="true" maxHeight="616.0" maxWidth="600.0" minHeight="616.0" minWidth="600.0" prefHeight="616.0" prefWidth="440.0" style="-fx-background-color: #ffff; -fx-font-weight: bold; -fx-text-fill: #0D141B; -fx-background-radius: 30;" StackPane.alignment="CENTER">
          <children>
@@ -26,7 +26,7 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username" translateX="-191.0" translateY="-50.0" />
             <StackPane maxHeight="97.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="-35.0">
                <children>
-                  <TextField prefHeight="72.0" prefWidth="454.0" promptText="Choose a unique username" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
+                  <TextField prefHeight="72.0" prefWidth="454.0" promptText="enter your user name" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
                      <font>
                         <Font name="System Bold Italic" size="14.0" />
                      </font>
@@ -59,7 +59,7 @@
             <HBox maxHeight="20.0" maxWidth="200.0" prefHeight="20.0" prefWidth="100.0" translateY="200.0">
                <children>
                   <Label prefWidth="89.0" text="New Player? " textFill="#64748b" />
-                  <Label fx:id="createAccount" onDragDetected="#CreateAccount" prefHeight="50.0" prefWidth="141.0" text="Create an account" textFill="#2b8cee" />
+                  <Label fx:id="createAccount" onMouseClicked="#CreateAccount" prefHeight="50.0" prefWidth="141.0" text="Create an account" textFill="#2b8cee" />
                </children>
             </HBox>
          </children>
@@ -72,7 +72,7 @@
       </VBox>
       <StackPane maxHeight="49.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="90.0">
          <children>
-            <TextField prefHeight="49.0" prefWidth="454.0" promptText="name@example.com" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
+            <TextField prefHeight="49.0" prefWidth="454.0" promptText="enter your password" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
                <font>
                   <Font name="System Bold Italic" size="14.0" />
                </font></TextField>
@@ -81,7 +81,7 @@
                   <Insets left="350.0" />
                </StackPane.margin>
                <image>
-                  <Image url="@../../../assets/images/email.png" />
+                  <Image url="@../../../assets/images/password.png" />
                </image>
             </ImageView>
          </children>
