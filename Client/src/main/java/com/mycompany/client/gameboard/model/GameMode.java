@@ -1,4 +1,4 @@
-package com.mycompany.client;
+package com.mycompany.client.gameboard.model;
 
 
 public enum GameMode {

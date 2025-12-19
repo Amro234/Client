@@ -128,8 +128,12 @@ public class MainMenuController {
     private void onTwoPlayersClicked(ActionEvent event) {
         try {
             System.out.println("Two Players clicked - navigating to Game Board");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("game_board.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/game_board.fxml"));
             Parent gameBoardRoot = loader.load();
+
+            // Initialize Game Session
+            com.mycompany.client.gameboard.controller.GameBoardController controller = loader.getController();
+            controller.startNewGame(com.mycompany.client.gameboard.model.GameMode.TWO_PLAYERS, null);
 
             Stage stage = (Stage) twoPlayersButton.getScene().getWindow();
             Scene scene = new Scene(gameBoardRoot);
