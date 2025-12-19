@@ -14,6 +14,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+
         BackgroundMusicManager.init();
 
         scene = new Scene(loadFXML("match_history"), 1280, 720);
