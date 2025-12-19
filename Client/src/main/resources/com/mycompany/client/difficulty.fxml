@@ -34,7 +34,7 @@
                   <HBox layoutX="341.0" layoutY="254.0" prefHeight="161.0" prefWidth="675.0" spacing="20.0">
                      <children>
                         <!-- Easy Card -->
-                        <VBox fx:id="easyCard" alignment="TOP_CENTER" prefHeight="130.0" prefWidth="180.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-border-width: 1; -fx-padding: 20; -fx-cursor: hand;" onMouseEntered="#onCardHover" onMouseExited="#onCardExit" onMouseClicked="#onCardClick">
+                        <VBox fx:id="easyCard" alignment="TOP_CENTER" onMouseClicked="#onCardClick" onMouseEntered="#onCardHover" onMouseExited="#onCardExit" prefHeight="130.0" prefWidth="180.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-border-width: 1; -fx-padding: 20; -fx-cursor: hand;">
                            <children>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -55,7 +55,7 @@
                         </VBox>
                         
                         <!-- Medium Card -->
-                        <VBox fx:id="mediumCard" alignment="TOP_CENTER" prefHeight="130.0" prefWidth="180.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-border-width: 1; -fx-padding: 20; -fx-cursor: hand;" onMouseEntered="#onCardHover" onMouseExited="#onCardExit" onMouseClicked="#onCardClick">
+                        <VBox fx:id="mediumCard" alignment="TOP_CENTER" onMouseClicked="#onCardClick" onMouseEntered="#onCardHover" onMouseExited="#onCardExit" prefHeight="130.0" prefWidth="180.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-border-width: 1; -fx-padding: 20; -fx-cursor: hand;">
                            <children>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -89,7 +89,7 @@
                         </VBox>
                         
                         <!-- Hard Card -->
-                        <VBox fx:id="hardCard" alignment="TOP_CENTER" prefHeight="130.0" prefWidth="180.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-border-width: 1; -fx-padding: 20; -fx-cursor: hand;" onMouseEntered="#onCardHover" onMouseExited="#onCardExit" onMouseClicked="#onCardClick">
+                        <VBox fx:id="hardCard" alignment="TOP_CENTER" onMouseClicked="#onCardClick" onMouseEntered="#onCardHover" onMouseExited="#onCardExit" prefHeight="130.0" prefWidth="180.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-border-width: 1; -fx-padding: 20; -fx-cursor: hand;">
                            <children>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -115,7 +115,7 @@
                   <HBox alignment="CENTER_RIGHT" layoutX="341.0" layoutY="438.0" prefHeight="40.0" prefWidth="580.0" spacing="10.0">
                      <children>
                         <!-- Back to Menu Link -->
-                        <Label fx:id="backToMenuLabel" style="-fx-cursor: hand;" text="← Back to Menu" textFill="#6b7280" onMouseClicked="#onBackToMenu">
+                        <Label fx:id="backToMenuLabel" onMouseClicked="#onBackToMenu" style="-fx-cursor: hand;" text="← Back to Menu" textFill="#6b7280">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -125,7 +125,7 @@
                         </Label>
                         
                         <!-- Start Game Button -->
-                        <Button alignment="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;" text="Start Game">
+                        <Button fx:id="startGameButton" alignment="CENTER" mnemonicParsing="false" onAction="#handleStartGame" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;" text="Start Game">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>

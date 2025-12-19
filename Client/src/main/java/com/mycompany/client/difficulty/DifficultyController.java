@@ -3,15 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
 package com.mycompany.client.difficulty;
-
 import java.io.IOException;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.ResourceBundimport avafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -26,76 +27,83 @@ public class DifficultyController implements Initializable {
     @FXML
     private VBox easyCard;
 
+
     @FXML
     private VBox mediumCard;
+
 
     @FXML
     private VBox hardCard;
 
+
     private VBox selectedCard = null;
     private String selectedDifficulty = null;
-
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // No default selection
-    }
+       
+        }
 
     /**
      * Handle mouse hover on cards
      */
     @FXML
-    private void onCardHover(MouseEvent event) {
-        VBox card = (VBox) event.getSource();
+    private void onCardHover(MouseE
 
+    
+
+    
         // Only apply hover effect if not selected
         if (card != selectedCard) {
-            card.setStyle(card.getStyle() + "-fx-border-color: #3b82f6; -fx-border-width: 2;");
-        }
-    }
+     
 
-    /**
-     * Handle mouse exit from cards
-     */
-    @FXML
+        }
+                                                                                               **
+                                                                                               * 
+                                                                                               * 
+         */    @FXL
+
     private void onCardExit(MouseEvent event) {
         VBox card = (VBox) event.getSource();
+
 
         // Remove hover effect if not selected
         if (card != selectedCard) {
             card.setStyle("-fx-background-color: white; -fx-background-radius: 8; "
                     + "-fx-border-color: #e5e7eb; -fx-border-radius: 8; "
-                    + "-fx-border-width: 1; -fx-padding: 20; -fx-cursor: hand;");
-        }
-    }
+     
 
-    /**
-     * Handle card click selection
-     */
-    @FXML
+        }
+                                                                                               **
+                                                                                               * 
+                                                                                               * 
+         */    @FXL
+
     private void onCardClick(MouseEvent event) {
         VBox clickedCard = (VBox) event.getSource();
+
 
         // Deselect previous card
         if (selectedCard != null) {
             setCardSelected(selectedCard, false);
         }
 
+
         // Select new card
         selectedCard = clickedCard;
         setCardSelected(clickedCard, true);
 
-        // Determine which difficulty was selected
-        if (clickedCard == easyCard) {
-            selectedDifficulty = "Easy";
-        } else if (clickedCard == mediumCard) {
-            selectedDifficulty = "Medium";
-        } else if (clickedCard == hardCard) {
-            selectedDifficulty = "Hard";
-        }
 
+       
+           selectedDifficulty = Difficulty.EASY;lickedCard == mediumCard) {Difficulty = Difficulty.MEDIUM;
+
+    } 
+
+    
+
+    
         System.out.println("Selected difficulty: " + selectedDifficulty);
     }
 
@@ -118,9 +126,10 @@ public class DifficultyController implements Initializable {
      * Navigate back to main menu
      */
     @FXML
-    private void onBackToMenu(MouseEvent event) {
-        try {
-            // Load the main menu FXML
+    p
+
+               // Load the main menu FXML
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/main-menu.fxml"));
             Parent root = loader.load();
 
@@ -131,6 +140,7 @@ public class DifficultyController implements Initializable {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
+
 
         } catch (IOException e) {
             System.err.println("Error loading main menu: " + e.getMessage());
@@ -145,3 +155,14 @@ public class DifficultyController implements Initializable {
         return selectedDifficulty;
     }
 }
+
+
+    
+
+    
+
+    
+
+
+
+    
