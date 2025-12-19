@@ -1,5 +1,6 @@
 package com.mycompany.client;
 
+import java.io.File;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -21,8 +22,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 
 public class GameBoardController {
+private static final String VIDEO_PATH = "Client/src/main/resources/videos/win.mp4";
 
     private GameMode gameMode = GameMode.TWO_PLAYERS;
     private Difficulty difficulty;
@@ -91,6 +96,11 @@ public class GameBoardController {
     @FXML
     private Label player2NameLabel;
 
+    private static final String WIN_VIDEO_PATH = "src/main/resources/videos/game_winner.mp4";
+private static final String DRAW_VIDEO_PATH = "src/main/resources/videos/game_draw.mp4";
+
+
+    
     @FXML
     public void initialize() {
         cells = new StackPane[][] {
@@ -187,8 +197,14 @@ public class GameBoardController {
             updateScores();
             updateUI();
             stopTimer();
-            showPlayAgainDialog((isPlayer1Turn ? "Player 1" : "Player 2") + " Wins!");
-
+            
+            
+           
+             String winnerName = isPlayer1Turn ? "Player 1" : "Player 2";
+    showVideoDialog(false, () -> showPlayAgainDialog(winnerName + " Wins!"));
+            
+            
+          
             if (gameMode == GameMode.ONLINE)
                 handleOnlineMove(row + "," + col);
         } else if (isBoardFull()) {
@@ -197,8 +213,8 @@ public class GameBoardController {
             updateScores();
             updateUI();
             stopTimer();
-            showPlayAgainDialog("Draw!");
-
+          
+         showVideoDialog(true, () -> showPlayAgainDialog("It's a Draw!"));
             if (gameMode == GameMode.ONLINE)
                 handleOnlineMove(row + "," + col);
         } else {
@@ -213,6 +229,90 @@ public class GameBoardController {
                 handleAITurn();
             }
         }
+    }
+
+
+    private void showVideoDialog(boolean isDraw, Runnable onVideoComplete) {
+        Platform.runLater(() -> {
+            try {
+                System.out.println("=== Starting Video Dialog ===");
+                
+                
+                String videoPath = isDraw ? DRAW_VIDEO_PATH : WIN_VIDEO_PATH;
+                File videoFile = new File(videoPath);
+                
+                if (!videoFile.exists()) {
+                    System.err.println("Video not found: " + videoPath);
+                    onVideoComplete.run();
+                    return;
+                }
+                
+                System.out.println("Video found at: " + videoPath);
+                System.out.println("Using video path: " + videoPath);
+                
+                Stage videoStage = new Stage();
+                videoStage.initModality(Modality.APPLICATION_MODAL);
+                videoStage.setTitle(isDraw ? "Draw! 🤝" : "Winner! 🎉");
+                
+                Media media = new Media(videoFile.toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                MediaView mediaView = new MediaView(mediaPlayer);
+                
+                mediaView.setFitWidth(600);
+                mediaView.setFitHeight(400);
+                mediaView.setPreserveRatio(true);
+                
+                VBox videoBox = new VBox(10);
+                String backgroundColor = isDraw ? "#34495E" : "#2C3E50";
+                videoBox.setStyle("-fx-alignment: center; -fx-padding: 20; -fx-background-color: " + backgroundColor + ";");
+                
+                Button skipButton = new Button("Skip ⏭");
+                skipButton.setStyle("-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand;");
+                skipButton.setOnAction(e -> {
+                    System.out.println("Skip button pressed");
+                    mediaPlayer.stop();
+                    mediaPlayer.dispose();
+                    videoStage.close();
+                    onVideoComplete.run();
+                });
+                
+                videoBox.getChildren().addAll(mediaView, skipButton);
+                
+                Scene videoScene = new Scene(videoBox);
+                videoStage.setScene(videoScene);
+                
+                mediaPlayer.setOnEndOfMedia(() -> {
+                    System.out.println("Video ended");
+                    mediaPlayer.stop();
+                    mediaPlayer.dispose();
+                    videoStage.close();
+                    onVideoComplete.run();
+                });
+                
+                mediaPlayer.setOnError(() -> {
+                    System.err.println("Media player error: " + mediaPlayer.getError());
+                    mediaPlayer.dispose();
+                    videoStage.close();
+                    onVideoComplete.run();
+                });
+                
+                videoStage.setOnCloseRequest(e -> {
+                    System.out.println("Video window closed");
+                    mediaPlayer.stop();
+                    mediaPlayer.dispose();
+                    onVideoComplete.run();
+                });
+                
+                System.out.println("Playing video...");
+                mediaPlayer.play();
+                videoStage.show();
+                
+            } catch (Exception e) {
+                System.err.println("Exception in showVideoDialog: " + e.getMessage());
+                e.printStackTrace();
+                onVideoComplete.run();
+            }
+        });
     }
 
     @FXML
@@ -330,28 +430,37 @@ public class GameBoardController {
         startTimer();
     }
 
-    private void showPlayAgainDialog(String message) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Game Over");
-            alert.setHeaderText(message);
+
+
+
+private void showPlayAgainDialog(String message) {
+    Platform.runLater(() -> {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Game Over");
+        
+        
+        if (message.contains("Draw")) {
+            alert.setHeaderText("🤝 " + message + " 🤝");
+            alert.setContentText("No winner this time! Want a rematch?");
+        } else {
+            alert.setHeaderText("🎉 " + message + " 🎉");
             alert.setContentText("Do you want to play again?");
+        }
 
-            ButtonType playAgainButton = new ButtonType("Play Again");
-            ButtonType cancelButton = new ButtonType("Cancel");
+        ButtonType playAgainButton = new ButtonType("Play Again");
+        ButtonType cancelButton = new ButtonType("Exit to Menu");
 
-            alert.getButtonTypes().setAll(playAgainButton, cancelButton);
+        alert.getButtonTypes().setAll(playAgainButton, cancelButton);
 
-            alert.showAndWait().ifPresent(response -> {
-                if (response == playAgainButton) {
-                    resetGame();
-                } else {
-                    handleBackButton();
-                }
-            });
+        alert.showAndWait().ifPresent(response -> {
+            if (response == playAgainButton) {
+                resetGame();
+            } else {
+                handleBackButton();
+            }
         });
-    }
-
+    });
+}
     private void initializeTimer() {
         timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             timeRemaining--;
