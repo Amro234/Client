@@ -34,13 +34,12 @@ public class SinglePlayerController implements Initializable {
 
     private VBox selectedCard = null;
     private Difficulty selectedDifficulty = null;
-   
+
     @FXML
     private Label backToMenuLabel;
     @FXML
     private Button startGameButton;
 
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // No default selection
@@ -56,7 +55,6 @@ public class SinglePlayerController implements Initializable {
         }
     }
 
-   
     @FXML
     private void onCardExit(MouseEvent event) {
         VBox card = (VBox) event.getSource();
@@ -69,7 +67,6 @@ public class SinglePlayerController implements Initializable {
         }
     }
 
-    
     @FXML
     private void onCardClick(MouseEvent event) {
         VBox clickedCard = (VBox) event.getSource();
@@ -95,7 +92,6 @@ public class SinglePlayerController implements Initializable {
         System.out.println("Selected difficulty: " + selectedDifficulty);
     }
 
-    
     private void setCardSelected(VBox card, boolean selected) {
         if (selected) {
             card.setStyle("-fx-background-color: white; -fx-background-radius: 8; " +
@@ -107,7 +103,7 @@ public class SinglePlayerController implements Initializable {
                     "-fx-border-width: 1; -fx-padding: 20; -fx-cursor: hand;");
         }
     }
-    
+
     @FXML
     private void onBackToMenu(MouseEvent event) {
         try {
@@ -142,7 +138,7 @@ public class SinglePlayerController implements Initializable {
             Parent root = loader.load();
 
             GameBoardController controller = loader.getController();
-             // controller.startNewGame(GameMode.SINGLE_PLAYER, selectedDifficulty);
+            controller.startNewGame(GameMode.SINGLE_PLAYER, selectedDifficulty);
 
             Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
