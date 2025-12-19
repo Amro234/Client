@@ -17,7 +17,9 @@ public class App extends Application {
 
         BackgroundMusicManager.init();
 
+
         scene = new Scene(loadFXML("gameLobby"), 1280, 720);
+
 
         scene.getStylesheets().addAll(
                 getClass().getResource("/styles/customStyles.css").toExternalForm(),
