@@ -18,7 +18,7 @@ public class App extends Application {
         BackgroundMusicManager.init();
 
 
-        scene = new Scene(loadFXML("sign"), 1280, 720);
+        scene = new Scene(loadFXML("game_board"), 1280, 720);
 
 
         scene.getStylesheets().addAll(
