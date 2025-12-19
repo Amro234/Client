@@ -1,4 +1,4 @@
-package com.mycompany.client;
+package com.mycompany.client.mainmenu;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +18,8 @@ import javafx.stage.Modality;
 import javafx.scene.image.Image;
 import com.mycompany.client.settings.SettingsManager;
 import com.mycompany.client.backgroundAudio.BackgroundMusicManager;
+import com.mycompany.client.App;
+import com.mycompany.client.LoginController;
 
 public class MainMenuController {
 
@@ -93,7 +95,8 @@ public class MainMenuController {
     private void onSinglePlayerClicked(ActionEvent event) {
         try {
             System.out.println("Single Player clicked - navigating to difficulty selection");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("single-player.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mycompany/client/difficulty.fxml"));
             Parent singlePlayerRoot = loader.load();
 
             Stage stage = (Stage) singlePlayerButton.getScene().getWindow();
@@ -128,7 +131,7 @@ public class MainMenuController {
     private void onTwoPlayersClicked(ActionEvent event) {
         try {
             System.out.println("Two Players clicked - navigating to Game Board");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("game_board.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/game_board.fxml"));
             Parent gameBoardRoot = loader.load();
 
             Stage stage = (Stage) twoPlayersButton.getScene().getWindow();
