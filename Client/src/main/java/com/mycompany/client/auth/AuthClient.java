@@ -17,7 +17,6 @@ public class AuthClient {
     private static final String REQUEST_REGISTER = "REGISTER";
     private static final String REQUEST_LOGIN = "LOGIN";
     private static final String REQUEST_LOGOUT = "LOGOUT";
-    private static final String REQUEST_VALIDATE = "VALIDATE";
 
     public static AuthResponse register(String username, String email, String password) throws AuthException {
         try {
@@ -37,10 +36,9 @@ public class AuthClient {
                         userData.getString("username"),
                         userData.getString("email"),
                         userData.optInt("score", 0));
-                String token = response.getString("token");
 
                 System.out.println("Registration successful for user: " + username);
-                return new AuthResponse(user, token);
+                return new AuthResponse(user);
             } else {
                 String errorMessage = response.optString("message", "Registration failed");
                 throw new AuthException(errorMessage);
@@ -74,10 +72,9 @@ public class AuthClient {
                         userData.getString("username"),
                         userData.getString("email"),
                         userData.optInt("score", 0));
-                String token = response.getString("token");
 
                 System.out.println("Login successful for user: " + username);
-                return new AuthResponse(user, token);
+                return new AuthResponse(user);
             } else {
                 String errorMessage = response.optString("message", "Invalid credentials");
                 throw new AuthException(errorMessage);
@@ -98,7 +95,6 @@ public class AuthClient {
         try {
             JSONObject request = new JSONObject();
             request.put("type", REQUEST_LOGOUT);
-            request.put("token", token);
 
             String responseStr = sendRequest(request.toString());
             JSONObject response = new JSONObject(responseStr);
@@ -121,35 +117,7 @@ public class AuthClient {
         }
     }
 
-    public static User validateToken(String token) {
-        try {
-            JSONObject request = new JSONObject();
-            request.put("type", REQUEST_VALIDATE);
-            request.put("token", token);
-
-            String responseStr = sendRequest(request.toString());
-            JSONObject response = new JSONObject(responseStr);
-
-            if (response.getBoolean("valid")) {
-                JSONObject userData = response.getJSONObject("user");
-                User user = new User(
-                        userData.getInt("id"),
-                        userData.getString("username"),
-                        userData.getString("email"),
-                        userData.optInt("score", 0));
-
-                System.out.println("Token validated for user: " + user.getUsername());
-                return user;
-            } else {
-                System.out.println("Token validation failed");
-                return null;
-            }
-
-        } catch (Exception e) {
-            System.err.println("Error validating token: " + e.getMessage());
-            return null;
-        }
-    }
+    
 
     private static String sendRequest(String requestJson) throws IOException {
         Socket socket = null;
@@ -189,20 +157,16 @@ public class AuthClient {
 
     public static class AuthResponse {
         private final User user;
-        private final String token;
 
-        public AuthResponse(User user, String token) {
+        public AuthResponse(User user) {
             this.user = user;
-            this.token = token;
         }
 
         public User getUser() {
             return user;
         }
 
-        public String getToken() {
-            return token;
-        }
+       
     }
 
     public static class AuthException extends Exception {

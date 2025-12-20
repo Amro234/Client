@@ -2,8 +2,6 @@ package com.mycompany.client.auth.controller;
 
 import com.mycompany.client.App;
 import com.mycompany.client.auth.AuthClient;
-import com.mycompany.client.auth.TokenManager;
-import com.mycompany.client.auth.UserSession;
 import com.mycompany.client.auth.model.User;
 import java.io.IOException;
 import java.net.URL;
@@ -28,39 +26,14 @@ public class SplashController implements Initializable {
             try {
                 Thread.sleep(1000);
 
-                if (TokenManager.hasToken()) {
-                    updateStatus("Checking saved session...");
-                    String token = TokenManager.getToken();
+              
 
-                    if (token != null) {
-                        updateStatus("Validating token...");
-
-                        User user = AuthClient.validateToken(token);
-
-                        if (user != null) {
-                            UserSession.getInstance().login(user, token);
-                            updateStatus("Welcome back, " + user.getUsername() + "!");
-
-                            Thread.sleep(500);
-
-                            Platform.runLater(() -> navigateToScreen("main-menu"));
-                            return;
-                        } else {
-                            System.out.println("Token validation failed, deleting token");
-                            TokenManager.deleteToken();
-                            updateStatus("Session expired");
-                            Thread.sleep(500);
-                        }
-                    }
-                }
-
-                
                 Thread.sleep(500);
-                Platform.runLater(() -> navigateToScreen("main-menu"));
-
+                    Platform.runLater(() -> navigateToScreen("main-menu"));
+               
             } catch (InterruptedException e) {
                 System.err.println("Splash screen interrupted: " + e.getMessage());
-                Platform.runLater(() -> navigateToScreen("login"));
+                Platform.runLater(() -> navigateToScreen("main-menu"));
             }
         }).start();
     }
@@ -70,7 +43,7 @@ public class SplashController implements Initializable {
             if (statusLabel != null) {
                 statusLabel.setText(message);
             }
-            System.out.println("Splash: " + message);
+            System.out.println("Splash...");
         });
     }
 

@@ -33,7 +33,7 @@
                     </ImageView>
                     <!-- User Info / Actions -->
                     <HBox alignment="CENTER" spacing="10.0">
-                        <Label fx:id="usernameLabel" styleClass="menu-label" text="👤 Guest" />
+                        <Label fx:id="usernameLabel" onMouseClicked="#onGuestClicked" styleClass="menu-label" text="👤 Guest" />
                         <Label fx:id="logoutLabel" onMouseClicked="#onLogoutClicked" styleClass="menu-label" text="🚪 Logout" visible="false" managed="false" />
                     </HBox>
                 </HBox>
