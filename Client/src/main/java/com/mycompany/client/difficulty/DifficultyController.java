@@ -125,16 +125,11 @@ public class DifficultyController implements Initializable {
     private void onBackToMenu(MouseEvent event) {
         try {
             // Load the main menu FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/main-menu.fxml"));
             Parent root = loader.load();
 
-            // Get the current stage
-            Stage stage = (Stage) easyCard.getScene().getWindow();
-
-            // Set the new scene
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            // Set root of current scene to preserve window size and stylesheets
+            easyCard.getScene().setRoot(root);
 
         } catch (IOException e) {
             System.err.println("Error loading main menu: " + e.getMessage());
