@@ -36,7 +36,10 @@ public class MainMenuController {
     private Label settingsLabel;
 
     @FXML
-    private Label guestLabel;
+    private Label usernameLabel;
+
+    @FXML
+    private Label logoutLabel;
 
     @FXML
     private javafx.scene.image.ImageView soundIcon;
@@ -62,11 +65,11 @@ public class MainMenuController {
         if (playOnlineButton != null) {
             playOnlineButton.setCursor(Cursor.HAND);
         }
-        if (settingsLabel != null) {
-            settingsLabel.setCursor(Cursor.HAND);
+        if (usernameLabel != null) {
+            usernameLabel.setCursor(Cursor.HAND);
         }
-        if (guestLabel != null) {
-            guestLabel.setCursor(Cursor.HAND);
+        if (logoutLabel != null) {
+            logoutLabel.setCursor(Cursor.HAND);
         }
         if (soundIcon != null) {
             soundIcon.setCursor(Cursor.HAND);
@@ -74,6 +77,9 @@ public class MainMenuController {
         if (recordingsLabel != null) {
             recordingsLabel.setCursor(Cursor.HAND);
         }
+
+        // Display current user information
+        updateUserDisplay();
 
         // Set initial sound icon based on current master volume state
         if (soundIcon != null) {
@@ -86,7 +92,62 @@ public class MainMenuController {
         }
 
         System.out.println("Main Menu loaded!");
-        System.out.println("Cursors set programmatically");
+    }
+
+    private void updateUserDisplay() {
+        if (usernameLabel != null) {
+            if (com.mycompany.client.auth.UserSession.getInstance().isLoggedIn()) {
+                usernameLabel.setText("👤 " + com.mycompany.client.auth.UserSession.getInstance().getCurrentUsername());
+                if (logoutLabel != null) {
+                    logoutLabel.setVisible(true);
+                    logoutLabel.setManaged(true);
+                }
+                // When logged in, clicking the username does nothing (or could go to profile)
+                usernameLabel.setOnMouseClicked(null);
+            } else {
+                usernameLabel.setText("👤 Guest");
+                if (logoutLabel != null) {
+                    logoutLabel.setVisible(false);
+                    logoutLabel.setManaged(false);
+                }
+                // When guest, clicking goes to login
+                usernameLabel.setOnMouseClicked(this::onGuestClicked);
+            }
+        }
+    }
+
+    @FXML
+    private void onLogoutClicked(MouseEvent event) {
+        System.out.println("Logout clicked");
+
+        // Show confirmation or just logout
+        new Thread(() -> {
+            try {
+                String token = com.mycompany.client.auth.UserSession.getInstance().getToken();
+                if (token != null) {
+                    com.mycompany.client.auth.AuthClient.logout(token);
+                }
+            } catch (Exception e) {
+                System.err.println("Error during server logout: " + e.getMessage());
+            } finally {
+                // Always logout locally even if server fails
+                javafx.application.Platform.runLater(() -> {
+                    com.mycompany.client.auth.UserSession.getInstance().logout();
+                    updateUserDisplay();
+
+                    // Navigate to login after logout
+                    try {
+                        FXMLLoader loader = new FXMLLoader(App.class.getResource("login.fxml"));
+                        Parent root = loader.load();
+                        Stage stage = (Stage) usernameLabel.getScene().getWindow();
+                        Scene scene = new Scene(root);
+                        stage.setScene(scene);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }).start();
     }
 
     @FXML
@@ -152,7 +213,7 @@ public class MainMenuController {
         try {
             FXMLLoader loader = new FXMLLoader(App.class.getResource("login.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) guestLabel.getScene().getWindow();
+            Stage stage = (Stage) usernameLabel.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();

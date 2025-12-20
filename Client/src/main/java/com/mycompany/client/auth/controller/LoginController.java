@@ -2,9 +2,12 @@
 package com.mycompany.client.auth.controller;
 
 import com.mycompany.client.App;
+import com.mycompany.client.auth.AuthClient.AuthResponse;
+import com.mycompany.client.auth.UserSession;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,10 +41,10 @@ public class LoginController implements Initializable {
     private TextField passwordFieldVisible;
     @FXML
     private ImageView passwordToggleIcon;
+    @FXML
+    private Label errorLabel;
 
-    /**
-     * Initializes the controller class.
-     */
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
@@ -49,7 +52,74 @@ public class LoginController implements Initializable {
 
     @FXML
     private void onLogin(ActionEvent event) {
-        // Validation or logic will go here
+        String username = usernameField.getText().trim();
+        String password = getPasswordValue();
+
+        if (username.isEmpty()) {
+            showDialog("Validation Error", "Username is required", "Please enter your username.");
+            return;
+        }
+
+        if (password.isEmpty()) {
+            showDialog("Validation Error", "Password is required", "Please enter your password.");
+            return;
+        }
+
+        loginButtonItem.setDisable(true);
+        loginButtonItem.setText("Logging in...");
+
+        new Thread(() -> {
+            try {
+                AuthResponse response = com.mycompany.client.auth.AuthClient
+                        .login(username, password);
+
+                Platform.runLater(() -> {
+                UserSession.getInstance().login(response.getUser(), response.getToken());
+
+                    navigateToMainMenu();
+                });
+
+            } catch (com.mycompany.client.auth.AuthClient.AuthException e) {
+                Platform.runLater(() -> {
+                    showDialog("Login Failed", "Authentication Error", e.getMessage());
+                    loginButtonItem.setDisable(false);
+                    loginButtonItem.setText("Enter Lobby");
+                    passwordField.clear();
+                    passwordFieldVisible.clear();
+                });
+            }
+        }).start();
+    }
+
+    private String getPasswordValue() {
+        if (passwordField.isVisible()) {
+            return passwordField.getText();
+        } else {
+            return passwordFieldVisible.getText();
+        }
+    }
+
+    private void showDialog(String title, String header, String content) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+      private void navigateToMainMenu() {
+        try {
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("main-menu.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) loginButtonItem.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            System.err.println("Error loading main menu: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
     @FXML
@@ -69,7 +139,6 @@ public class LoginController implements Initializable {
     @FXML
     private void onTogglePasswordVisibility(MouseEvent event) {
         if (passwordField.isVisible()) {
-            // Switch to visible password
             passwordFieldVisible.setText(passwordField.getText());
             passwordField.setVisible(false);
             passwordField.setManaged(false);
