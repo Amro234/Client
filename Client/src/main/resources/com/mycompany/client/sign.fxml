@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane maxHeight="720.0" maxWidth="1280.0" minHeight="0.0" minWidth="0.0" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: FEF2F2;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.SignController">
+<StackPane maxHeight="720.0" maxWidth="1280.0" minHeight="0.0" minWidth="0.0" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: FEF2F2;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.auth.controller.SignController">
    <children>
       <VBox alignment="CENTER" focusTraversable="true" maxHeight="800.0" maxWidth="600.0" minHeight="520.0" minWidth="600.0" prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #ffff; -fx-font-weight: bold; -fx-text-fill: #0D141B; -fx-background-radius: 30;" StackPane.alignment="CENTER">
          <children>
@@ -26,7 +26,7 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username" translateX="-191.0" translateY="-60.0" />
             <StackPane maxHeight="97.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="-50.0">
                <children>
-                  <TextField prefHeight="72.0" prefWidth="454.0" promptText="Choose a unique username" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
+                  <TextField fx:id="usernameField" prefHeight="72.0" prefWidth="454.0" promptText="Choose a unique username" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
                      <font>
                         <Font name="System Bold Italic" size="14.0" />
                      </font>
@@ -43,7 +43,7 @@
             </StackPane>
             <StackPane maxHeight="49.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="-5.0">
                <children>
-                  <TextField prefHeight="49.0" prefWidth="454.0" promptText="name@example.com" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
+                  <TextField fx:id="emailField" prefHeight="49.0" prefWidth="454.0" promptText="name@example.com" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
                      <font>
                         <Font name="System Bold Italic" size="14.0" />
                      </font>
@@ -61,12 +61,17 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email Address" translateX="-181.0" translateY="-80.0" />
             <StackPane maxHeight="49.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="30.0">
                <children>
-                  <TextField prefHeight="114.0" prefWidth="454.0" promptText="Create a password" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
+                  <javafx.scene.control.PasswordField fx:id="passwordField" prefHeight="114.0" prefWidth="454.0" promptText="Create a password" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
+                     <font>
+                        <Font name="System Bold Italic" size="14.0" />
+                     </font>
+                  </javafx.scene.control.PasswordField>
+                  <TextField fx:id="passwordFieldVisible" prefHeight="114.0" prefWidth="454.0" promptText="Create a password" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;" visible="false" managed="false">
                      <font>
                         <Font name="System Bold Italic" size="14.0" />
                      </font>
                   </TextField>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" translateX="25.0">
+                  <ImageView fx:id="passwordToggleIcon" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" translateX="25.0" onMouseClicked="#onTogglePasswordVisibility" style="-fx-cursor: hand;">
                      <StackPane.margin>
                         <Insets left="350.0" />
                      </StackPane.margin>
@@ -79,12 +84,17 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: Bold;" text="Confirm Password" translateX="-165.0" translateY="60.0" />
             <StackPane maxHeight="49.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="75.0">
                <children>
-                  <TextField prefHeight="114.0" prefWidth="454.0" promptText="Create a password" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
+                  <javafx.scene.control.PasswordField fx:id="confirmPasswordField" prefHeight="114.0" prefWidth="454.0" promptText="Create a password" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
+                     <font>
+                        <Font name="System Bold Italic" size="14.0" />
+                     </font>
+                  </javafx.scene.control.PasswordField>
+                  <TextField fx:id="confirmPasswordFieldVisible" prefHeight="114.0" prefWidth="454.0" promptText="Create a password" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;" visible="false" managed="false">
                      <font>
                         <Font name="System Bold Italic" size="14.0" />
                      </font>
                   </TextField>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" translateX="25.0">
+                  <ImageView fx:id="confirmPasswordToggleIcon" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" translateX="25.0" onMouseClicked="#onToggleConfirmPasswordVisibility" style="-fx-cursor: hand;">
                      <StackPane.margin>
                         <Insets left="350.0" />
                      </StackPane.margin>
@@ -96,7 +106,7 @@
             </StackPane>
             <StackPane maxHeight="48.0" maxWidth="454.0" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 30;" translateY="105.0">
                <children>
-                  <Button maxHeight="46.0" maxWidth="454.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 25; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;" text="Sign Up &amp; Play" translateX="-10.0">
+                  <Button fx:id="signupButtonItem" maxHeight="46.0" maxWidth="454.0" onAction="#onCreateAccount"  mnemonicParsing="false" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 25; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;" text="Sign Up &amp; Play" translateX="-10.0">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" translateX="145.0">
                            <image>
@@ -110,7 +120,7 @@
             <HBox maxHeight="20.0" maxWidth="170.0" prefHeight="20.0" prefWidth="170.0" translateY="120.0">
                <children>
                   <Label text="Already a player?" textFill="#64748b" />
-                  <Label fx:id="navigateLogin" onMouseClicked="#NavigateLogin" prefHeight="18.0" prefWidth="59.0" text=" Log In" textFill="#2b8cee" />
+                  <Label fx:id="navigateLoginItem" onMouseClicked="#onNavigateToLogin" prefHeight="18.0" prefWidth="59.0" text=" Log In" textFill="#2b8cee" />
                </children>
             </HBox>
          </children>
