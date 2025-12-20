@@ -17,13 +17,10 @@ public class App extends Application {
 
         BackgroundMusicManager.init();
 
-
         scene = new Scene(loadFXML("game_board"), 1280, 720);
-
 
         scene.getStylesheets().addAll(
                 getClass().getResource("/styles/customStyles.css").toExternalForm(),
-
                 App.class.getResource("/css/profilescreen.css").toExternalForm(),
                 App.class.getResource("/css/style.css").toExternalForm(),
                 App.class.getResource("/css/table.css").toExternalForm());
