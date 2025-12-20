@@ -5,9 +5,13 @@
 package com.mycompany.client.auth.controller;
 
 import com.mycompany.client.App;
+import com.mycompany.client.auth.AuthClient.AuthResponse;
+import com.mycompany.client.auth.UserSession;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -75,7 +79,121 @@ public class SignController implements Initializable {
 
     @FXML
     private void onCreateAccount(ActionEvent event) {
-        // Validation or logic will go here
+        // Get input values
+        String username = usernameField.getText().trim();
+        String email = emailField.getText().trim();
+        String password = getPasswordValue();
+        String confirmPassword = getConfirmPasswordValue();
+
+        // Validate username
+        if (username.isEmpty()) {
+            showDialog("Validation Error", "Username is required", "Please enter a username.");
+            return;
+        }
+
+        // Validate email
+        if (email.isEmpty()) {
+            showDialog("Validation Error", "Email is required", "Please enter your email address.");
+            return;
+        }
+
+        // Validate email format
+        if (!isValidEmail(email)) {
+            showDialog("Validation Error", "Invalid email format", "Please enter a valid email address.");
+            return;
+        }
+
+        // Validate password
+        if (password.isEmpty()) {
+            showDialog("Validation Error", "Password is required", "Please enter a password.");
+            return;
+        }
+
+        // Validate confirm password
+        if (confirmPassword.isEmpty()) {
+            showDialog("Validation Error", "Confirm password is required", "Please confirm your password.");
+            return;
+        }
+
+        // Check if passwords match
+        if (!password.equals(confirmPassword)) {
+            showDialog("Validation Error", "Passwords do not match", "Please make sure both passwords are the same.");
+            return;
+        }
+
+        // Disable button to prevent double-click
+        signupButtonItem.setDisable(true);
+        signupButtonItem.setText("Creating Account...");
+
+        // Perform registration in background thread
+        new Thread(() -> {
+            try {
+                // Call server to register
+                AuthResponse response = com.mycompany.client.auth.AuthClient
+                        .register(username, email, password);
+
+                // Registration successful - update UI on JavaFX thread
+                Platform.runLater(() -> {
+                    // Store session (auto-login)
+                    UserSession.getInstance().login(response.getUser(), response.getToken());
+
+                    // Navigate to main menu
+                    navigateToMainMenu();
+                });
+
+            } catch (com.mycompany.client.auth.AuthClient.AuthException e) {
+                // Registration failed - show error on JavaFX thread
+                Platform.runLater(() -> {
+                    showDialog("Registration Failed", "Error", e.getMessage());
+                    signupButtonItem.setDisable(false);
+                    signupButtonItem.setText("Sign Up & Play");
+                });
+            }
+        }).start();
+    }
+
+    private String getPasswordValue() {
+        if (passwordField.isVisible()) {
+            return passwordField.getText();
+        } else {
+            return passwordFieldVisible.getText();
+        }
+    }
+
+    private String getConfirmPasswordValue() {
+        if (confirmPasswordField.isVisible()) {
+            return confirmPasswordField.getText();
+        } else {
+            return confirmPasswordFieldVisible.getText();
+        }
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return Pattern.matches(emailRegex, email);
+    }
+
+    private void showDialog(String title, String header, String content) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void navigateToMainMenu() {
+        try {
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("main-menu.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) signupButtonItem.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            System.err.println("Error loading main menu: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
     @FXML
