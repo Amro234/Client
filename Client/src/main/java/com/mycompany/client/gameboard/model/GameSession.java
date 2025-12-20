@@ -1,5 +1,9 @@
 package com.mycompany.client.gameboard.model;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ThreadLocalRandom;
+
 public abstract class GameSession {
     protected Board board;
     protected boolean isPlayer1Turn;
@@ -11,6 +15,8 @@ public abstract class GameSession {
     protected int p1Wins = 0;
     protected int p2Wins = 0;
     protected int draws = 0;
+    Timer timer = new Timer();
+
 
     public interface SessionListener {
         void onBoardUpdate(int row, int col, char symbol);
@@ -64,14 +70,15 @@ public abstract class GameSession {
                 isPlayer1Turn = !isPlayer1Turn;
                 if (listener != null)
                     listener.onTurnChange(isPlayer1Turn);
-                onTurnChanged(); // Hook for subclasses (AI)
+                onTurnChanged(row,col); // Hook for subclasses (AI)
             }
         }
     }
 
-    protected void onTurnChanged() {
-        // Optional hook
+    protected void onTurnChanged(int row,int col) {
+ 
     }
+             
 
     protected void notifyScoreUpdate() {
         if (listener != null) {

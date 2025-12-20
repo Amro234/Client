@@ -5,17 +5,21 @@
 
 package com.mycompany.client.difficulty;
 
+import com.mycompany.client.Difficulty;
 import com.mycompany.client.gameboard.controller.GameBoardController;
 import com.mycompany.client.gameboard.model.GameMode;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -26,8 +30,7 @@ import javafx.stage.Stage;
  * @author DELL
  */
 public class DifficultyController implements Initializable {
-
-    @FXML
+  @FXML
     private VBox easyCard;
 
     @FXML
@@ -37,19 +40,18 @@ public class DifficultyController implements Initializable {
     private VBox hardCard;
 
     private VBox selectedCard = null;
-    private String selectedDifficulty = null;
+    private Difficulty selectedDifficulty = null;
 
-    /**
-     * Initializes the controller class.
-     */
+    @FXML
+    private Label backToMenuLabel;
+    @FXML
+    private Button startGameButton;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // No default selection
     }
 
-    /**
-     * Handle mouse hover on cards
-     */
     @FXML
     private void onCardHover(MouseEvent event) {
         VBox card = (VBox) event.getSource();
@@ -60,9 +62,6 @@ public class DifficultyController implements Initializable {
         }
     }
 
-    /**
-     * Handle mouse exit from cards
-     */
     @FXML
     private void onCardExit(MouseEvent event) {
         VBox card = (VBox) event.getSource();
@@ -75,9 +74,6 @@ public class DifficultyController implements Initializable {
         }
     }
 
-    /**
-     * Handle card click selection
-     */
     @FXML
     private void onCardClick(MouseEvent event) {
         VBox clickedCard = (VBox) event.getSource();
@@ -93,19 +89,16 @@ public class DifficultyController implements Initializable {
 
         // Determine which difficulty was selected
         if (clickedCard == easyCard) {
-            selectedDifficulty = "Easy";
+            selectedDifficulty = Difficulty.EASY;
         } else if (clickedCard == mediumCard) {
-            selectedDifficulty = "Medium";
+            selectedDifficulty = Difficulty.MEDIUM;
         } else if (clickedCard == hardCard) {
-            selectedDifficulty = "Hard";
+            selectedDifficulty = Difficulty.HARD;
         }
 
         System.out.println("Selected difficulty: " + selectedDifficulty);
     }
 
-    /**
-     * Set card selected state
-     */
     private void setCardSelected(VBox card, boolean selected) {
         if (selected) {
             card.setStyle("-fx-background-color: white; -fx-background-radius: 8; " +
@@ -118,18 +111,17 @@ public class DifficultyController implements Initializable {
         }
     }
 
-    /**
-     * Navigate back to main menu
-     */
     @FXML
     private void onBackToMenu(MouseEvent event) {
         try {
-            // Load the main menu FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/main-menu.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
             Parent root = loader.load();
 
-            // Set root of current scene to preserve window size and stylesheets
-            easyCard.getScene().setRoot(root);
+            Stage stage = (Stage) easyCard.getScene().getWindow();
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
 
         } catch (IOException e) {
             System.err.println("Error loading main menu: " + e.getMessage());
@@ -137,40 +129,30 @@ public class DifficultyController implements Initializable {
         }
     }
 
-    /**
-     * Handle start game button click
-     */
-    @FXML
-    private void handleStartGame(javafx.event.ActionEvent event) {
-        if (selectedDifficulty != null) {
-            System.out.println("Starting game with difficulty: " + selectedDifficulty);
-            try {
-                // Load the game board FXML
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../game_board.fxml"));
-                Parent root = loader.load();
-
-                // Get the current stage
-                Stage stage = (Stage) easyCard.getScene().getWindow();
-
-                // Set the new scene
-                Scene scene = new Scene(root);
-                scene.getStylesheets().add(getClass().getResource("/styles/game_board.css").toExternalForm());
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                System.err.println("Error loading game board: " + e.getMessage());
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("Please select a difficulty first!");
-            // Optionally show an alert here
-        }
-    }
-
-    /**
-     * Get the selected difficulty
-     */
-    public String getSelectedDifficulty() {
+    public Difficulty getSelectedDifficulty() {
         return selectedDifficulty;
     }
+
+    @FXML
+    private void handleStartGame(ActionEvent event) {
+        if (selectedDifficulty == null) {
+            System.out.println("Please select a difficulty level");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/game_board.fxml"));
+            Parent root = loader.load();
+
+            GameBoardController controller = loader.getController();
+            controller.startNewGame(GameMode.SINGLE_PLAYER, selectedDifficulty);
+
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+  
 }

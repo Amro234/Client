@@ -11,7 +11,7 @@ public class Board {
 
     // Copy constructor for AI
     public Board(Board other) {
-        this.board = new char[3][3];
+        this.board = new char[3][3]; 
         for (int i = 0; i < 3; i++) {
             System.arraycopy(other.board[i], 0, this.board[i], 0, 3);
         }

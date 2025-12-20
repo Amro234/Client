@@ -37,6 +37,7 @@ import match_recording.GameRecorder;
 import match_recording.GameRecording;
 import match_recording.RecordingManager;
 import com.mycompany.client.GameResultVideoManager.GameResultVideoManager;
+import com.mycompany.client.gameboard.model.SinglePlayerSession;
 
 public class GameBoardController implements GameSession.SessionListener {
 
@@ -124,7 +125,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
     public void startNewGame(GameMode mode, Difficulty difficulty) {
         if (mode == GameMode.SINGLE_PLAYER) {
-            
+            currentSession = new SinglePlayerSession(this, "Player 1", "Computer",difficulty);
             
         } else if (mode == GameMode.TWO_PLAYERS) {
             currentSession = new TwoPlayerSession(this, "Player 1", "Player 2");
