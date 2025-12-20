@@ -3,7 +3,6 @@ package com.mycompany.client.auth.controller;
 
 import com.mycompany.client.App;
 import com.mycompany.client.auth.AuthClient.AuthResponse;
-import com.mycompany.client.auth.UserSession;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -74,7 +73,6 @@ public class LoginController implements Initializable {
                         .login(username, password);
 
                 Platform.runLater(() -> {
-                UserSession.getInstance().login(response.getUser(), response.getToken());
 
                     navigateToMainMenu();
                 });

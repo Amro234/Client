@@ -6,7 +6,6 @@ package com.mycompany.client.auth.controller;
 
 import com.mycompany.client.App;
 import com.mycompany.client.auth.AuthClient.AuthResponse;
-import com.mycompany.client.auth.UserSession;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -134,11 +133,8 @@ public class SignController implements Initializable {
 
                 // Registration successful - update UI on JavaFX thread
                 Platform.runLater(() -> {
-                    // Store session (auto-login)
-                    UserSession.getInstance().login(response.getUser(), response.getToken());
-
-                    // Navigate to main menu
                     navigateToMainMenu();
+
                 });
 
             } catch (com.mycompany.client.auth.AuthClient.AuthException e) {
