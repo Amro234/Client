@@ -23,10 +23,18 @@ import javafx.util.Duration;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.event.ActionEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
+import match_recording.GameRecorder;
+import match_recording.GameRecording;
+import match_recording.RecordingManager;
 
 public class GameBoardController implements GameSession.SessionListener {
 
@@ -52,9 +60,7 @@ public class GameBoardController implements GameSession.SessionListener {
     private Label drawsLabel;
     @FXML
     private Label timerLabel;
-    @FXML
     private VBox player1Panel;
-    @FXML
     private VBox player2Panel;
     @FXML
     private Label player1WinsLabel;
@@ -78,18 +84,41 @@ public class GameBoardController implements GameSession.SessionListener {
     private static final int DRAW_VIDEOS_COUNT = 1;
     private static final int LOSE_VIDEOS_COUNT = 6;
 
+    // Replay mode
+    private boolean isReplayMode = false;
+    private GameRecording replayRecording;
+    private Timeline replayTimeline;
+    private double replaySpeed = 1.0;
+
     // videos paths
-    //private static final String WIN_VIDEO_PATH = "src/main/resources/videos/win/game_winner.mp4";
-    //private static final String DRAW_VIDEO_PATH = "src/main/resources/videos/win/game_draw.mp4";
     private static final String WIN_VIDEO_TEMPLATE ="src/main/resources/videos/win/game_winner_%d.mp4";
     private static final String DRAW_VIDEO_TEMPLATE = "src/main/resources/videos/draw/game_draw_%d.mp4";
-     private static final String LOSE_VIDEO_TEMPLATE = "src/main/resources/videos/lose/game_loser_%d.mp4";
+    private static final String LOSE_VIDEO_TEMPLATE = "src/main/resources/videos/lose/game_loser_%d.mp4";
+    @FXML
+    private Label matchLabel;
+    @FXML
+    private Button settingsButton;
+    @FXML
+    private Button menuButton;
+    @FXML
+    private Button recordGame;
+    @FXML
+    private Circle player1Avatar;
+    @FXML
+    private GridPane boardGrid;
+    @FXML
+    private Circle player2Avatar;
+    
+        // Recording
+    private GameRecorder gameRecorder = new GameRecorder();
+    private RecordingManager recordingManager = new RecordingManager();
+    private boolean isRecordingEnabled = false;
+
 
     private int getRandomIndex(int max) {
     return 1 + (int) (Math.random() * max);
 }
 
-    @FXML
     public void initialize() {
         cells = new StackPane[][] {
                 { cell00, cell01, cell02 },
@@ -123,6 +152,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
         updatePlayerNames();
         resetBoardUI();
+        resetRecording();
         startTimer();
         updateTurnUI(true); // Always start with P1
     }
@@ -153,11 +183,30 @@ public class GameBoardController implements GameSession.SessionListener {
                 labels[row][col].getStyleClass().add("cell-label-o");
             }
         }
+        
+    if (isRecordingEnabled) {
+        gameRecorder.recordMove(row, col);
+    }
     }
 
     @Override
     public void onGameEnd(Board.WinInfo winInfo) {
         stopTimer();
+      if (isRecordingEnabled) {
+        String status = (winInfo == null) ? "DRAW" : "WIN";
+
+        gameRecorder.stopRecording(status);
+        recordingManager.saveRecording(
+                gameRecorder.getRecording(),
+                currentSession.getPlayer1Name()
+        );
+
+        isRecordingEnabled = false;
+    }
+
+  
+    
+    
         if (winInfo != null) {
             highlightWin(winInfo);
             String winnerName = (winInfo.winner == 'X') ? currentSession.getPlayer1Name()
@@ -169,6 +218,10 @@ public class GameBoardController implements GameSession.SessionListener {
            
         }
     }
+private void resetRecording() {
+    isRecordingEnabled = false;
+    gameRecorder = new GameRecorder();
+}
 
     @Override
     public void onTurnChange(boolean isPlayer1Turn) {
@@ -433,6 +486,148 @@ public class GameBoardController implements GameSession.SessionListener {
             onVideoComplete.run();
         }
     });
+}
+
+   @FXML
+private void onRecording(ActionEvent event) {
+
+   
+    if (currentSession == null) {
+        System.out.println("No active game to record");
+        return;
+    }
+
+    
+    if (isRecordingEnabled) {
+        System.out.println("Recording already started");
+        return;
+    }
+
+    isRecordingEnabled = true;
+
+    gameRecorder.startRecording(
+            GameMode.TWO_PLAYERS,
+            currentSession.getPlayer1Name(),
+            currentSession.getPlayer2Name(),
+            'X' 
+    );
+
+    System.out.println("Recording started successfully");
+}
+
+
+private void onRecording() {
+
+    if (isRecordingEnabled) {
+        
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Recording");
+        alert.setHeaderText(null);
+        alert.setContentText("Recording is already running!");
+        alert.show();
+        return;
+    }
+
+    isRecordingEnabled = true;
+
+    gameRecorder.startRecording(
+            GameMode.TWO_PLAYERS,
+            currentSession.getPlayer1Name(),
+            currentSession.getPlayer2Name(),
+            'X' 
+    );
+
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setTitle("Recording Started");
+    alert.setHeaderText(null);
+    alert.setContentText("Game recording has started 🎥");
+    alert.show();
+}
+private void disableBoardInteraction() {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            cells[i][j].setOnMouseClicked(e -> {});
+        }
+    }
+}
+private void playReplay() {
+
+    replayTimeline = new Timeline();
+
+    
+    replayTimeline.setCycleCount(1);
+
+    boolean[] isXTurn = { replayRecording.getFirstPlayer() == 'X' };
+
+    List<String> sortedKeys = new ArrayList<>(replayRecording.getSteps().keySet());
+
+    sortedKeys.sort((a, b) -> {
+        int aNum = Integer.parseInt(a.replace("step", ""));
+        int bNum = Integer.parseInt(b.replace("step", ""));
+        return Integer.compare(aNum, bNum);
+    });
+
+    int index = 0;
+
+    for (String key : sortedKeys) {
+
+        String move = replayRecording.getSteps().get(key);
+        String[] parts = move.split(",");
+
+        int row = Integer.parseInt(parts[0]);
+        int col = Integer.parseInt(parts[1]);
+
+        KeyFrame frame = new KeyFrame(
+                Duration.seconds(index / replaySpeed),
+                e -> {
+                    char symbol = isXTurn[0] ? 'X' : 'O';
+                    onBoardUpdate(row, col, symbol);
+                    isXTurn[0] = !isXTurn[0];
+                }
+        );
+
+        replayTimeline.getKeyFrames().add(frame);
+        index++;
+    }
+
+    
+    replayTimeline.setOnFinished(e -> {
+        System.out.println("Replay finished");
+    });
+
+    replayTimeline.play();
+}
+
+
+
+public void startReplay(GameRecording recording) {
+    this.isReplayMode = true;
+    this.replayRecording = recording;
+
+    resetBoardUI();
+    disableBoardInteraction();
+    playReplay();
+}
+
+    @FXML
+private void onReplayPlay() {
+    if (replayTimeline != null) {
+        replayTimeline.play();
+    }
+}
+
+@FXML
+private void onReplayPause() {
+    if (replayTimeline != null) {
+        replayTimeline.pause();
+    }
+}
+
+@FXML
+private void onReplaySpeed() {
+    replaySpeed *= 2;
+    replayTimeline.stop();
+    playReplay();
 }
 
 

@@ -5,7 +5,8 @@ module com.mycompany.client {
     requires javafx.base;
     requires javafx.graphics;
     requires javafx.media;
-
+    requires org.json;
+ 
     opens com.mycompany.client to javafx.fxml;
     opens com.mycompany.client.gameboard.controller to javafx.fxml;
 
