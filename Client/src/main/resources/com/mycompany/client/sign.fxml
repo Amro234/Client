@@ -16,15 +16,15 @@
    <children>
       <VBox alignment="CENTER" focusTraversable="true" maxHeight="800.0" maxWidth="600.0" minHeight="520.0" minWidth="600.0" prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #ffff; -fx-font-weight: bold; -fx-text-fill: #0D141B; -fx-background-radius: 30;" StackPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" translateY="-160.0" VBox.vgrow="ALWAYS">
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" translateY="-120.0" VBox.vgrow="ALWAYS">
                <image>
                   <Image url="@../../../assets/images/Overlay.png" />
                </image>
             </ImageView>
-            <Text fill="#0d141b" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 30;" text="Join the Match" translateY="-145.0" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #64748B; -fx-font-size: 13;" text="Enter your details to start playing Tic-Tac-Toe online." translateY="-125.0" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username" translateX="-191.0" translateY="-95.0" />
-            <StackPane maxHeight="97.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="-85.0">
+            <Text fill="#0d141b" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 30;" text="Join the Match" translateY="-105.0" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #64748B; -fx-font-size: 13;" text="Enter your details to start playing Tic-Tac-Toe online." translateY="-90.0" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username" translateX="-191.0" translateY="-60.0" />
+            <StackPane maxHeight="97.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="-50.0">
                <children>
                   <TextField prefHeight="72.0" prefWidth="454.0" promptText="Choose a unique username" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
                      <font>
@@ -41,8 +41,25 @@
                   </ImageView>
                </children>
             </StackPane>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email Address" translateX="-181.0" translateY="-60.0" />
-            <StackPane maxHeight="49.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="55.0">
+            <StackPane maxHeight="49.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="-5.0">
+               <children>
+                  <TextField prefHeight="49.0" prefWidth="454.0" promptText="name@example.com" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
+                     <font>
+                        <Font name="System Bold Italic" size="14.0" />
+                     </font>
+                  </TextField>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" translateX="25.0">
+                     <StackPane.margin>
+                        <Insets left="350.0" />
+                     </StackPane.margin>
+                     <image>
+                        <Image url="@../../../assets/images/email.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </StackPane>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email Address" translateX="-181.0" translateY="-80.0" />
+            <StackPane maxHeight="49.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="30.0">
                <children>
                   <TextField prefHeight="114.0" prefWidth="454.0" promptText="Create a password" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
                      <font>
@@ -59,10 +76,27 @@
                   </ImageView>
                </children>
             </StackPane>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: Bold;" text="Confirm Password" translateX="-165.0" translateY="80.0" />
-            <StackPane maxHeight="48.0" maxWidth="454.0" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 30;" translateY="175.0">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: Bold;" text="Confirm Password" translateX="-165.0" translateY="60.0" />
+            <StackPane maxHeight="49.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="75.0">
                <children>
-                  <Button fx:id="signUpButton" maxHeight="46.0" maxWidth="454.0" mnemonicParsing="false" onAction="#SignUpButton" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 25; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;" text="Sign Up &amp; Play" translateX="-10.0">
+                  <TextField prefHeight="114.0" prefWidth="454.0" promptText="Create a password" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
+                     <font>
+                        <Font name="System Bold Italic" size="14.0" />
+                     </font>
+                  </TextField>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" translateX="25.0">
+                     <StackPane.margin>
+                        <Insets left="350.0" />
+                     </StackPane.margin>
+                     <image>
+                        <Image url="@../../../assets/images/confirm%20password.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </StackPane>
+            <StackPane maxHeight="48.0" maxWidth="454.0" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 30;" translateY="105.0">
+               <children>
+                  <Button maxHeight="46.0" maxWidth="454.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="454.0" style="-fx-background-color: #2B8CEE; -fx-background-radius: 25; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;" text="Sign Up &amp; Play" translateX="-10.0">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" translateX="145.0">
                            <image>
@@ -73,10 +107,10 @@
                   </Button>
                </children>
             </StackPane>
-            <HBox maxHeight="20.0" maxWidth="170.0" prefHeight="20.0" prefWidth="170.0" translateY="200.0">
+            <HBox maxHeight="20.0" maxWidth="170.0" prefHeight="20.0" prefWidth="170.0" translateY="120.0">
                <children>
                   <Label text="Already a player?" textFill="#64748b" />
-                  <Label fx:id="navigateLogin" onDragDetected="#NavigateLogin" prefHeight="18.0" prefWidth="59.0" text=" Log In" textFill="#2b8cee" />
+                  <Label fx:id="navigateLogin" onMouseClicked="#NavigateLogin" prefHeight="18.0" prefWidth="59.0" text=" Log In" textFill="#2b8cee" />
                </children>
             </HBox>
          </children>
@@ -87,39 +121,6 @@
             <Insets bottom="30.0" top="30.0" />
          </padding>
       </VBox>
-      <StackPane maxHeight="49.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="5.0">
-         <children>
-            <TextField prefHeight="49.0" prefWidth="454.0" promptText="name@example.com" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
-               <font>
-                  <Font name="System Bold Italic" size="14.0" />
-               </font></TextField>
-            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" translateX="25.0">
-               <StackPane.margin>
-                  <Insets left="350.0" />
-               </StackPane.margin>
-               <image>
-                  <Image url="@../../../assets/images/email.png" />
-               </image>
-            </ImageView>
-         </children>
-      </StackPane>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: Bold;" text="Password" translateX="-191.0" translateY="60.0" />
-      <StackPane maxHeight="49.0" maxWidth="454.0" prefHeight="49.0" prefWidth="454.0" style="-fx-border-radius: 25;" translateY="210.0">
-         <children>
-            <TextField prefHeight="114.0" prefWidth="454.0" promptText="Create a password" style="-fx-border-radius: 25; -fx-background-radius: 25; -fx-border-color: #E2E8F0;">
-               <font>
-                  <Font name="System Bold Italic" size="14.0" />
-               </font>
-            </TextField>
-            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" translateX="25.0">
-               <StackPane.margin>
-                  <Insets left="350.0" />
-               </StackPane.margin>
-               <image>
-                  <Image url="@../../../assets/images/confirm%20password.png" />
-               </image>
-            </ImageView>
-         </children>
-      </StackPane>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: Bold;" text="Password" translateX="-191.0" translateY="40.0" />
    </children>
 </StackPane>

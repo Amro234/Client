@@ -44,10 +44,8 @@ public class MainMenuController {
     @FXML
     private Label recordingsLabel;
 
-    @FXML
     private Text titleText;
 
-    @FXML
     public void initialize() {
         if (titleText != null) {
             Font font = Font.font("Inter", FontWeight.BOLD, 32);
@@ -134,6 +132,10 @@ public class MainMenuController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/game_board.fxml"));
             Parent gameBoardRoot = loader.load();
 
+            // Initialize Game Session
+            com.mycompany.client.gameboard.controller.GameBoardController controller = loader.getController();
+            controller.startNewGame(com.mycompany.client.gameboard.model.GameMode.TWO_PLAYERS, null);
+
             Stage stage = (Stage) twoPlayersButton.getScene().getWindow();
             Scene scene = new Scene(gameBoardRoot);
             scene.getStylesheets().add(App.class.getResource("/styles/game_board.css").toExternalForm());
@@ -183,6 +185,26 @@ public class MainMenuController {
 
         // Save the settings
         SettingsManager.saveSettings();
+    }
+
+    @FXML
+    private void onRecordingsClicked(MouseEvent event) {
+        try {
+            System.out.println("Recordings clicked - opening recordings list");
+
+            FXMLLoader loader = new FXMLLoader(
+                    App.class.getResource("recordings.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) recordingsLabel.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("Error loading recordings.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 }
