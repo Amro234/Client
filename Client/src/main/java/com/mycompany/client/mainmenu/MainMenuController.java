@@ -1,4 +1,4 @@
-package com.mycompany.client;
+package com.mycompany.client.mainmenu;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +18,8 @@ import javafx.stage.Modality;
 import javafx.scene.image.Image;
 import com.mycompany.client.settings.SettingsManager;
 import com.mycompany.client.backgroundAudio.BackgroundMusicManager;
+import com.mycompany.client.App;
+import com.mycompany.client.LoginController;
 
 public class MainMenuController {
 
@@ -91,7 +93,8 @@ public class MainMenuController {
     private void onSinglePlayerClicked(ActionEvent event) {
         try {
             System.out.println("Single Player clicked - navigating to difficulty selection");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("single-player.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mycompany/client/difficulty.fxml"));
             Parent singlePlayerRoot = loader.load();
 
             Stage stage = (Stage) singlePlayerButton.getScene().getWindow();
@@ -185,25 +188,23 @@ public class MainMenuController {
     }
 
     @FXML
-private void onRecordingsClicked(MouseEvent event) {
-    try {
-        System.out.println("Recordings clicked - opening recordings list");
+    private void onRecordingsClicked(MouseEvent event) {
+        try {
+            System.out.println("Recordings clicked - opening recordings list");
 
-        FXMLLoader loader = new FXMLLoader(
-                App.class.getResource("recordings.fxml")
-        );
-        Parent root = loader.load();
+            FXMLLoader loader = new FXMLLoader(
+                    App.class.getResource("recordings.fxml"));
+            Parent root = loader.load();
 
-        Stage stage = (Stage) recordingsLabel.getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+            Stage stage = (Stage) recordingsLabel.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
 
-    } catch (IOException e) {
-        System.err.println("Error loading recordings.fxml: " + e.getMessage());
-        e.printStackTrace();
+        } catch (IOException e) {
+            System.err.println("Error loading recordings.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
-}
-
 
 }
