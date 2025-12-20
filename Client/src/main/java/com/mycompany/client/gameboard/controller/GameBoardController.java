@@ -178,10 +178,27 @@ public class GameBoardController implements GameSession.SessionListener {
     @Override
     public void onGameEnd(Board.WinInfo winInfo) {
         stopTimer();
-      if (isRecordingEnabled) {
-        String status = (winInfo == null) ? "DRAW" : "WIN";
+      stopTimer();
+
+    if (isRecordingEnabled) {
+
+        String status;
+
+        if (winInfo == null) {
+            status = "DRAW";
+        } else {
+            char winnerSymbol = winInfo.winner;
+
+            // Player 1 دايمًا X عندك
+            if (winnerSymbol == 'X') {
+                status = "WIN";
+            } else {
+                status = "LOSE";
+            }
+        }
 
         gameRecorder.stopRecording(status);
+
         recordingManager.saveRecording(
                 gameRecorder.getRecording(),
                 currentSession.getPlayer1Name()

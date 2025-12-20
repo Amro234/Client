@@ -3,6 +3,8 @@ package com.mycompany.client.matches.data;
 /**
  * Enum representing the possible results of a match.
  */
+
+
 public enum MatchResult {
     VICTORY("VICTORY", "/assets/images/vic_cup.png", "badge-victory", "#F1F5F9"),
     DEFEAT("DEFEAT", "/assets/images/loss_x.png", "badge-defeat", "#FEF2F2"),
@@ -20,19 +22,9 @@ public enum MatchResult {
         this.backgroundColor = backgroundColor;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public String getIconPath() {
-        return iconPath;
-    }
-
-    public String getBadgeStyleClass() {
-        return badgeStyleClass;
-    }
-
-    public String getBackgroundColor() {
-        return backgroundColor;
-    }
+    public String getDisplayName() { return displayName; }
+    public String getIconPath() { return iconPath; }
+    public String getBadgeStyleClass() { return badgeStyleClass; }
+    public String getBackgroundColor() { return backgroundColor; }
 }
+

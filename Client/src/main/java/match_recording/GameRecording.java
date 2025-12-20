@@ -63,6 +63,10 @@ public char getFirstPlayer() {
         }
         return r;
     }
+    public String getStatus() {
+    return status;
+}
+
 }
 
 

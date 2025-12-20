@@ -193,7 +193,7 @@ public class MainMenuController {
             System.out.println("Recordings clicked - opening recordings list");
 
             FXMLLoader loader = new FXMLLoader(
-                    App.class.getResource("recordings.fxml"));
+                    App.class.getResource("match_history.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) recordingsLabel.getScene().getWindow();
