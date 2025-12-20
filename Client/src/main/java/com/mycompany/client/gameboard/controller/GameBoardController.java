@@ -4,6 +4,7 @@ import com.mycompany.client.Difficulty;
 import com.mycompany.client.gameboard.model.GameMode;
 import com.mycompany.client.gameboard.model.Board;
 import com.mycompany.client.gameboard.model.GameSession;
+import com.mycompany.client.gameboard.model.ReplayGameSession;
 import com.mycompany.client.gameboard.model.TwoPlayerSession;
 import java.io.File;
 import javafx.animation.KeyFrame;
@@ -35,6 +36,7 @@ import javafx.stage.Modality;
 import match_recording.GameRecorder;
 import match_recording.GameRecording;
 import match_recording.RecordingManager;
+import com.mycompany.client.GameResultVideoManager.GameResultVideoManager;
 
 public class GameBoardController implements GameSession.SessionListener {
 
@@ -79,21 +81,7 @@ public class GameBoardController implements GameSession.SessionListener {
     private int timeRemaining = 20;
     private static final int TURN_TIME = 20;
     
-    // # of videos
-    private static final int WIN_VIDEOS_COUNT = 3;
-    private static final int DRAW_VIDEOS_COUNT = 1;
-    private static final int LOSE_VIDEOS_COUNT = 6;
-
-    // Replay mode
-    private boolean isReplayMode = false;
-    private GameRecording replayRecording;
-    private Timeline replayTimeline;
-    private double replaySpeed = 1.0;
-
-    // videos paths
-    private static final String WIN_VIDEO_TEMPLATE ="src/main/resources/videos/win/game_winner_%d.mp4";
-    private static final String DRAW_VIDEO_TEMPLATE = "src/main/resources/videos/draw/game_draw_%d.mp4";
-    private static final String LOSE_VIDEO_TEMPLATE = "src/main/resources/videos/lose/game_loser_%d.mp4";
+   
     @FXML
     private Label matchLabel;
     @FXML
@@ -115,9 +103,7 @@ public class GameBoardController implements GameSession.SessionListener {
     private boolean isRecordingEnabled = false;
 
 
-    private int getRandomIndex(int max) {
-    return 1 + (int) (Math.random() * max);
-}
+ 
 
     public void initialize() {
         cells = new StackPane[][] {
@@ -204,19 +190,23 @@ public class GameBoardController implements GameSession.SessionListener {
         isRecordingEnabled = false;
     }
 
-  
+  if (winInfo != null) {
+    highlightWin(winInfo);
+    String winnerName = (winInfo.winner == 'X')
+            ? currentSession.getPlayer1Name()
+            : currentSession.getPlayer2Name();
+
+    GameResultVideoManager.showWinVideo(
+            () -> showPlayAgainDialog(winnerName + " Wins!")
+    );
+
+} else {
     
-    
-        if (winInfo != null) {
-            highlightWin(winInfo);
-            String winnerName = (winInfo.winner == 'X') ? currentSession.getPlayer1Name()
-                    : currentSession.getPlayer2Name();
-             showVideoDialog(false, () -> showPlayAgainDialog(winnerName + " Wins!"));
-          
-        } else {
-            showVideoDialog(true, () -> showPlayAgainDialog("It's a Draw!"));
-           
-        }
+    GameResultVideoManager.showDrawVideo(
+            () -> showPlayAgainDialog("It's a Draw!")
+    );
+}
+
     }
 private void resetRecording() {
     isRecordingEnabled = false;
@@ -427,66 +417,7 @@ private void resetRecording() {
             });
     });
 }
-    private void showVideoDialog(boolean isDraw, Runnable onVideoComplete) {
-    Platform.runLater(() -> {
-        try {
-            int randomIndex = isDraw
-                    ? getRandomIndex(DRAW_VIDEOS_COUNT)
-                    : getRandomIndex(WIN_VIDEOS_COUNT);
-
-            String videoPath = isDraw
-                    ? String.format(DRAW_VIDEO_TEMPLATE, randomIndex)
-                    : String.format(WIN_VIDEO_TEMPLATE, randomIndex);
-
-            File videoFile = new File(videoPath);
-
-            if (!videoFile.exists()) {
-                System.err.println("Video not found: " + videoPath);
-                onVideoComplete.run();
-                return;
-            }
-
-            Stage videoStage = new Stage();
-            videoStage.initModality(Modality.APPLICATION_MODAL);
-            videoStage.setTitle(isDraw ? "Draw! 🤝" : "Winner! 🎉");
-
-            Media media = new Media(videoFile.toURI().toString());
-            MediaPlayer mediaPlayer = new MediaPlayer(media);
-            MediaView mediaView = new MediaView(mediaPlayer);
-
-            mediaView.setFitWidth(600);
-            mediaView.setFitHeight(400);
-            mediaView.setPreserveRatio(true);
-
-            VBox videoBox = new VBox(10);
-            videoBox.setStyle("-fx-alignment: center; -fx-padding: 20;");
-
-            Button skipButton = new Button("Skip ⏭");
-            skipButton.setOnAction(e -> {
-                mediaPlayer.stop();
-                mediaPlayer.dispose();
-                videoStage.close();
-                onVideoComplete.run();
-            });
-
-            videoBox.getChildren().addAll(mediaView, skipButton);
-            videoStage.setScene(new Scene(videoBox));
-
-            mediaPlayer.setOnEndOfMedia(() -> {
-                mediaPlayer.dispose();
-                videoStage.close();
-                onVideoComplete.run();
-            });
-
-            mediaPlayer.play();
-            videoStage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            onVideoComplete.run();
-        }
-    });
-}
+   
 
    @FXML
 private void onRecording(ActionEvent event) {
@@ -516,33 +447,7 @@ private void onRecording(ActionEvent event) {
 }
 
 
-private void onRecording() {
 
-    if (isRecordingEnabled) {
-        
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Recording");
-        alert.setHeaderText(null);
-        alert.setContentText("Recording is already running!");
-        alert.show();
-        return;
-    }
-
-    isRecordingEnabled = true;
-
-    gameRecorder.startRecording(
-            GameMode.TWO_PLAYERS,
-            currentSession.getPlayer1Name(),
-            currentSession.getPlayer2Name(),
-            'X' 
-    );
-
-    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle("Recording Started");
-    alert.setHeaderText(null);
-    alert.setContentText("Game recording has started 🎥");
-    alert.show();
-}
 private void disableBoardInteraction() {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
@@ -550,84 +455,45 @@ private void disableBoardInteraction() {
         }
     }
 }
-private void playReplay() {
-
-    replayTimeline = new Timeline();
-
-    
-    replayTimeline.setCycleCount(1);
-
-    boolean[] isXTurn = { replayRecording.getFirstPlayer() == 'X' };
-
-    List<String> sortedKeys = new ArrayList<>(replayRecording.getSteps().keySet());
-
-    sortedKeys.sort((a, b) -> {
-        int aNum = Integer.parseInt(a.replace("step", ""));
-        int bNum = Integer.parseInt(b.replace("step", ""));
-        return Integer.compare(aNum, bNum);
-    });
-
-    int index = 0;
-
-    for (String key : sortedKeys) {
-
-        String move = replayRecording.getSteps().get(key);
-        String[] parts = move.split(",");
-
-        int row = Integer.parseInt(parts[0]);
-        int col = Integer.parseInt(parts[1]);
-
-        KeyFrame frame = new KeyFrame(
-                Duration.seconds(index / replaySpeed),
-                e -> {
-                    char symbol = isXTurn[0] ? 'X' : 'O';
-                    onBoardUpdate(row, col, symbol);
-                    isXTurn[0] = !isXTurn[0];
-                }
-        );
-
-        replayTimeline.getKeyFrames().add(frame);
-        index++;
-    }
-
-    
-    replayTimeline.setOnFinished(e -> {
-        System.out.println("Replay finished");
-    });
-
-    replayTimeline.play();
-}
-
-
 
 public void startReplay(GameRecording recording) {
-    this.isReplayMode = true;
-    this.replayRecording = recording;
 
     resetBoardUI();
     disableBoardInteraction();
-    playReplay();
-}
 
-    @FXML
-private void onReplayPlay() {
-    if (replayTimeline != null) {
-        replayTimeline.play();
-    }
+    currentSession = new ReplayGameSession(
+            this,
+            recording.playerName,
+            recording.opponentPlayerName,
+            recording
+    );
+((ReplayGameSession) currentSession).play();
+  
 }
 
 @FXML
+private void onReplayPlay() {
+    if (currentSession instanceof ReplayGameSession) {
+        ((ReplayGameSession) currentSession).play();
+    }
+}
+
+
+
+@FXML
 private void onReplayPause() {
-    if (replayTimeline != null) {
-        replayTimeline.pause();
+    if (currentSession instanceof ReplayGameSession) {
+        ((ReplayGameSession) currentSession).pause();
     }
 }
 
 @FXML
 private void onReplaySpeed() {
-    replaySpeed *= 2;
-    replayTimeline.stop();
-    playReplay();
+    if (currentSession instanceof ReplayGameSession) {
+        ((ReplayGameSession) currentSession).setPlaybackSpeed(2.0);
+        ((ReplayGameSession) currentSession).stop();
+        ((ReplayGameSession) currentSession).play();
+    }
 }
 
 
