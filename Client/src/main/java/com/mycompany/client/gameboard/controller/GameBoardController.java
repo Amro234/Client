@@ -73,9 +73,21 @@ public class GameBoardController implements GameSession.SessionListener {
     private int timeRemaining = 20;
     private static final int TURN_TIME = 20;
     
+    // # of videos
+    private static final int WIN_VIDEOS_COUNT = 3;
+    private static final int DRAW_VIDEOS_COUNT = 1;
+    private static final int LOSE_VIDEOS_COUNT = 6;
+
     // videos paths
-    private static final String WIN_VIDEO_PATH = "src/main/resources/videos/game_winner.mp4";
-    private static final String DRAW_VIDEO_PATH = "src/main/resources/videos/game_draw.mp4";
+    //private static final String WIN_VIDEO_PATH = "src/main/resources/videos/win/game_winner.mp4";
+    //private static final String DRAW_VIDEO_PATH = "src/main/resources/videos/win/game_draw.mp4";
+    private static final String WIN_VIDEO_TEMPLATE ="src/main/resources/videos/win/game_winner_%d.mp4";
+    private static final String DRAW_VIDEO_TEMPLATE = "src/main/resources/videos/draw/game_draw_%d.mp4";
+     private static final String LOSE_VIDEO_TEMPLATE = "src/main/resources/videos/lose/game_loser_%d.mp4";
+
+    private int getRandomIndex(int max) {
+    return 1 + (int) (Math.random() * max);
+}
 
     @FXML
     public void initialize() {
@@ -363,86 +375,65 @@ public class GameBoardController implements GameSession.SessionListener {
     });
 }
     private void showVideoDialog(boolean isDraw, Runnable onVideoComplete) {
-        Platform.runLater(() -> {
-            try {
-                System.out.println("=== Starting Video Dialog ===");
-                
-                
-                String videoPath = isDraw ? DRAW_VIDEO_PATH : WIN_VIDEO_PATH;
-                File videoFile = new File(videoPath);
-                
-                if (!videoFile.exists()) {
-                    System.err.println("Video not found: " + videoPath);
-                    onVideoComplete.run();
-                    return;
-                }
-                
-                System.out.println("Video found at: " + videoPath);
-                System.out.println("Using video path: " + videoPath);
-                
-                Stage videoStage = new Stage();
-                videoStage.initModality(Modality.APPLICATION_MODAL);
-                videoStage.setTitle(isDraw ? "Draw! 🤝" : "Winner! 🎉");
-                
-                Media media = new Media(videoFile.toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(media);
-                MediaView mediaView = new MediaView(mediaPlayer);
-                
-                mediaView.setFitWidth(600);
-                mediaView.setFitHeight(400);
-                mediaView.setPreserveRatio(true);
-                
-                VBox videoBox = new VBox(10);
-                String backgroundColor = isDraw ? "#34495E" : "#2C3E50";
-                videoBox.setStyle("-fx-alignment: center; -fx-padding: 20; -fx-background-color: " + backgroundColor + ";");
-                
-                Button skipButton = new Button("Skip ⏭");
-                skipButton.setStyle("-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand;");
-                skipButton.setOnAction(e -> {
-                    System.out.println("Skip button pressed");
-                    mediaPlayer.stop();
-                    mediaPlayer.dispose();
-                    videoStage.close();
-                    onVideoComplete.run();
-                });
-                
-                videoBox.getChildren().addAll(mediaView, skipButton);
-                
-                Scene videoScene = new Scene(videoBox);
-                videoStage.setScene(videoScene);
-                
-                mediaPlayer.setOnEndOfMedia(() -> {
-                    System.out.println("Video ended");
-                    mediaPlayer.stop();
-                    mediaPlayer.dispose();
-                    videoStage.close();
-                    onVideoComplete.run();
-                });
-                
-                mediaPlayer.setOnError(() -> {
-                    System.err.println("Media player error: " + mediaPlayer.getError());
-                    mediaPlayer.dispose();
-                    videoStage.close();
-                    onVideoComplete.run();
-                });
-                
-                videoStage.setOnCloseRequest(e -> {
-                    System.out.println("Video window closed");
-                    mediaPlayer.stop();
-                    mediaPlayer.dispose();
-                    onVideoComplete.run();
-                });
-                
-                System.out.println("Playing video...");
-                mediaPlayer.play();
-                videoStage.show();
-                
-            } catch (Exception e) {
-                System.err.println("Exception in showVideoDialog: " + e.getMessage());
-                e.printStackTrace();
+    Platform.runLater(() -> {
+        try {
+            int randomIndex = isDraw
+                    ? getRandomIndex(DRAW_VIDEOS_COUNT)
+                    : getRandomIndex(WIN_VIDEOS_COUNT);
+
+            String videoPath = isDraw
+                    ? String.format(DRAW_VIDEO_TEMPLATE, randomIndex)
+                    : String.format(WIN_VIDEO_TEMPLATE, randomIndex);
+
+            File videoFile = new File(videoPath);
+
+            if (!videoFile.exists()) {
+                System.err.println("Video not found: " + videoPath);
                 onVideoComplete.run();
+                return;
             }
-        });
-    }
+
+            Stage videoStage = new Stage();
+            videoStage.initModality(Modality.APPLICATION_MODAL);
+            videoStage.setTitle(isDraw ? "Draw! 🤝" : "Winner! 🎉");
+
+            Media media = new Media(videoFile.toURI().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+            MediaView mediaView = new MediaView(mediaPlayer);
+
+            mediaView.setFitWidth(600);
+            mediaView.setFitHeight(400);
+            mediaView.setPreserveRatio(true);
+
+            VBox videoBox = new VBox(10);
+            videoBox.setStyle("-fx-alignment: center; -fx-padding: 20;");
+
+            Button skipButton = new Button("Skip ⏭");
+            skipButton.setOnAction(e -> {
+                mediaPlayer.stop();
+                mediaPlayer.dispose();
+                videoStage.close();
+                onVideoComplete.run();
+            });
+
+            videoBox.getChildren().addAll(mediaView, skipButton);
+            videoStage.setScene(new Scene(videoBox));
+
+            mediaPlayer.setOnEndOfMedia(() -> {
+                mediaPlayer.dispose();
+                videoStage.close();
+                onVideoComplete.run();
+            });
+
+            mediaPlayer.play();
+            videoStage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            onVideoComplete.run();
+        }
+    });
+}
+
 
 }
