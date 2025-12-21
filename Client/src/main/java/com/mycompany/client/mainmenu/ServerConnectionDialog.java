@@ -56,19 +56,28 @@ public class ServerConnectionDialog {
                     // Close dialog first (important: modal dialogs block the main window)
                     dialog.close();
 
-                    // Navigate to login view using NavigationService
-                    try {
-                        System.out.println("Loading login.fxml...");
-                        Parent root = NavigationService.loadFXML("login");
-                        System.out.println("login.fxml loaded successfully: " + root);
+                    // Establish persistent connection
+                    if (ServerConnection.connect()) {
+                        // Navigate to login view using NavigationService
+                        try {
+                            System.out.println("Loading login.fxml...");
+                            Parent root = NavigationService.loadFXML("login");
+                            System.out.println("login.fxml loaded successfully: " + root);
 
-                        System.out.println("Calling NavigationService.navigateTo...");
-                        NavigationService.navigateTo(root);
-                        System.out.println("Navigation call completed");
+                            System.out.println("Calling NavigationService.navigateTo...");
+                            NavigationService.navigateTo(root);
+                            System.out.println("Navigation call completed");
 
-                    } catch (IOException ex) {
-                        System.err.println("Error loading login.fxml: " + ex.getMessage());
-                        ex.printStackTrace();
+                        } catch (IOException ex) {
+                            System.err.println("Error loading login.fxml: " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("Connection Failed");
+                        alert.setHeaderText("Unable to establish connection");
+                        alert.setContentText("Could not establish persistent connection to server.");
+                        alert.showAndWait();
                     }
                 } else {
                     // Show error dialog

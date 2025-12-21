@@ -104,10 +104,10 @@ public class LoginController implements Initializable {
 
     private void navigateToMainMenu() {
         try {
-            Parent root = NavigationService.loadFXML("main-menu");
+            Parent root = NavigationService.loadFXML("gameLobby");
             NavigationService.replaceWith(root);
         } catch (IOException ex) {
-            System.err.println("Error loading main menu: " + ex.getMessage());
+            System.err.println("Error loading game lobby: " + ex.getMessage());
             ex.printStackTrace();
         }
     }

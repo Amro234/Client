@@ -1,5 +1,6 @@
 package com.mycompany.client;
 
+import com.mycompany.client.core.server.ServerConnection;
 import gameLobby.PlayerStatus;
 import java.io.IOException;
 import java.net.URL;
@@ -37,7 +38,6 @@ public class GameLobbyController implements Initializable {
     @FXML
     private Button quickPlayBtn;
 
-   
     @FXML
     private ComboBox<PlayerStatus> statusComboBox;
 
@@ -58,7 +58,10 @@ public class GameLobbyController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        //  ComboBox 
+        // Start server message listener
+        ServerConnection.startMessageListener();
+
+        // ComboBox
         statusComboBox.getItems().add(null); // ALL
         statusComboBox.getItems().addAll(PlayerStatus.values());
         statusComboBox.setValue(null);
@@ -72,7 +75,7 @@ public class GameLobbyController implements Initializable {
         });
         statusComboBox.setButtonCell(statusComboBox.getCellFactory().call(null));
 
-        //  Columns 
+        // Columns
         playerColumn.setCellValueFactory(new PropertyValueFactory<>("playerName"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
@@ -81,11 +84,11 @@ public class GameLobbyController implements Initializable {
         filteredPlayers = new FilteredList<>(playerData, p -> true);
         playerTable.setItems(filteredPlayers);
 
-        //  Filters 
+        // Filters
         searchField.textProperty().addListener((obs, o, n) -> applyFilters());
         statusComboBox.valueProperty().addListener((obs, o, n) -> applyFilters());
 
-        //  Player Column 
+        // Player Column
         playerColumn.setCellFactory(column -> new TableCell<>() {
 
             private final ImageView imageView = new ImageView();
@@ -106,17 +109,16 @@ public class GameLobbyController implements Initializable {
                 } else {
                     Player p = getTableView().getItems().get(getIndex());
                     imageView.setImage(
-                            new Image(getClass().getResourceAsStream("/assets/images/" + p.getAvatar()))
-                    );
+                            new Image(getClass().getResourceAsStream("/assets/images/" + p.getAvatar())));
                     label.setText(item);
                     setGraphic(box);
                     setAlignment(Pos.CENTER_LEFT);
-        setPadding(new Insets(0, 0, 0, -10));
+                    setPadding(new Insets(0, 0, 0, -10));
                 }
             }
         });
 
-        //  Status Column 
+        // Status Column
         statusColumn.setCellFactory(column -> new TableCell<>() {
 
             private final Circle dot = new Circle(5);
@@ -141,42 +143,40 @@ public class GameLobbyController implements Initializable {
             }
         });
 
-        //  Action Column 
-       actionColumn.setCellFactory(column -> new TableCell<>() {
+        // Action Column
+        actionColumn.setCellFactory(column -> new TableCell<>() {
 
-    private final Button btn = new Button();
-    private final Region spacer = new Region();
-    private final HBox box = new HBox(10, spacer, btn);
+            private final Button btn = new Button();
+            private final Region spacer = new Region();
+            private final HBox box = new HBox(10, spacer, btn);
 
-    {
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        box.setAlignment(Pos.CENTER);
-    }
+            {
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+                box.setAlignment(Pos.CENTER);
+            }
 
-    @Override
-    protected void updateItem(Void item, boolean empty) {
-        super.updateItem(item, empty);
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
 
-        if (empty) {
-            setGraphic(null);
-        } else {
-            Player p = getTableView().getItems().get(getIndex());
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    Player p = getTableView().getItems().get(getIndex());
 
-            btn.setText(
-                p.getStatus() == PlayerStatus.READY ? "Challenge"
-                : p.getStatus() == PlayerStatus.IN_GAME ? "Spectate"
-                : "Invite"
-            );
+                    btn.setText(
+                            p.getStatus() == PlayerStatus.READY ? "Challenge"
+                                    : p.getStatus() == PlayerStatus.IN_GAME ? "Spectate"
+                                            : "Invite");
 
-            btn.getStyleClass().add("action-button");
+                    btn.getStyleClass().add("action-button");
 
-            setGraphic(box);
-        }
-    }
-});
+                    setGraphic(box);
+                }
+            }
+        });
 
-
-        //  Row Height 
+        // Row Height
         playerTable.setRowFactory(tv -> {
             TableRow<Player> row = new TableRow<>();
             row.setPrefHeight(70);
@@ -184,32 +184,30 @@ public class GameLobbyController implements Initializable {
         });
     }
 
-    //  Filtering Logic 
+    // Filtering Logic
     private void applyFilters() {
         String searchText = searchField.getText();
         PlayerStatus selectedStatus = statusComboBox.getValue();
 
         filteredPlayers.setPredicate(player -> {
 
-            boolean matchesSearch =
-                    searchText == null || searchText.isBlank()
+            boolean matchesSearch = searchText == null || searchText.isBlank()
                     || player.getPlayerName().toLowerCase().contains(searchText.toLowerCase());
 
-            boolean matchesStatus =
-                    selectedStatus == null || player.getStatus() == selectedStatus;
+            boolean matchesStatus = selectedStatus == null || player.getStatus() == selectedStatus;
 
             return matchesSearch && matchesStatus;
         });
     }
 
-    //  Data 
+    // Data
     private void loadPlayersData() {
         playerData.add(new Player("PlayerOne", PlayerStatus.READY, "avatar1.png"));
         playerData.add(new Player("PlayerTwo", PlayerStatus.IN_GAME, "avatar2.png"));
         playerData.add(new Player("PlayerThree", PlayerStatus.AWAY, "avatar3.png"));
     }
 
-    //  Buttons 
+    // Buttons
     @FXML
     private void onLogOutPressed(ActionEvent event) {
         Platform.exit();
