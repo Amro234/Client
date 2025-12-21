@@ -8,8 +8,6 @@ package com.mycompany.client.gameboard.model;
  *
  * @author Mohamed_Ali
  */
-
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
@@ -24,9 +22,9 @@ public class ReplayGameSession extends ReplaySession {
     private GameRecording recording;
 
     public ReplayGameSession(SessionListener listener,
-                             String p1Name,
-                             String p2Name,
-                             GameRecording recording) {
+            String p1Name,
+            String p2Name,
+            GameRecording recording) {
         super(listener, p1Name, p2Name);
         this.recording = recording;
         loadMovesFromRecording();
@@ -38,8 +36,8 @@ public class ReplayGameSession extends ReplaySession {
         boolean isX = recording.firstPlayer == 'X';
 
         List<String> keys = new ArrayList<>(recording.steps.keySet());
-        keys.sort((a, b) ->
-                Integer.compare(
+        keys.sort((a, b)
+                -> Integer.compare(
                         Integer.parseInt(a.replace("step", "")),
                         Integer.parseInt(b.replace("step", ""))
                 )
@@ -62,49 +60,100 @@ public class ReplayGameSession extends ReplaySession {
 
     @Override
     public void play() {
-        if (isPlaying) return;
+
+        if (isPlaying) {
+            return;
+        }
 
         timeline = new Timeline();
         timeline.setCycleCount(1);
 
-        for (int i = 0; i < recordedMoves.size(); i++) {
+        for (int i = currentMoveIndex; i < recordedMoves.size(); i++) {
             final int index = i;
+
             KeyFrame frame = new KeyFrame(
-                    Duration.seconds(i / playbackSpeed),
+                    Duration.seconds((i - currentMoveIndex) * 1.0 / playbackSpeed),
                     e -> {
                         Move m = recordedMoves.get(index);
                         listener.onBoardUpdate(m.row, m.col, m.symbol);
                         currentMoveIndex = index + 1;
                     }
             );
+
             timeline.getKeyFrames().add(frame);
         }
 
-        timeline.setOnFinished(e -> isPlaying = false);
+        timeline.setOnFinished(e -> {
+            isPlaying = false;
+            listener.onReplayFinished();
+        });
 
         isPlaying = true;
         timeline.play();
     }
 
-    @Override public void pause() { if (timeline != null) timeline.pause(); }
-    @Override public void resume() { if (timeline != null) timeline.play(); }
-    @Override public void stop() { if (timeline != null) timeline.stop(); }
+    @Override
+    public void pause() {
+        if (timeline != null) {
+            timeline.pause();
+        }
+    }
 
-    @Override public void stepForward() {}
-    @Override public void stepBackward() {}
+    @Override
+    public void resume() {
+        if (timeline != null) {
+            timeline.play();
+            isPlaying = true;
+        }
+    }
+
+    public void stop() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+        isPlaying = false;
+        currentMoveIndex = 0;
+    }
+
+    public void reset() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+        currentMoveIndex = 0;
+        isPlaying = false;
+    }
+
+    @Override
+    public void stepForward() {
+    }
+
+    @Override
+    public void stepBackward() {
+    }
 
     @Override
     public void setPlaybackSpeed(double speed) {
         this.playbackSpeed = speed;
     }
 
-    @Override public int getTotalMoves() { return recordedMoves.size(); }
-    @Override public int getCurrentMoveIndex() { return currentMoveIndex; }
-    @Override public boolean isPlaying() { return isPlaying; }
+    @Override
+    public int getTotalMoves() {
+        return recordedMoves.size();
+    }
+
+    @Override
+    public int getCurrentMoveIndex() {
+        return currentMoveIndex;
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return isPlaying;
+    }
 
     @Override
     public void handleCellClick(int row, int col) {
-        // ❌ ممنوع لعب في Replay
+
     }
 
     @Override
@@ -122,4 +171,3 @@ public class ReplayGameSession extends ReplaySession {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
-

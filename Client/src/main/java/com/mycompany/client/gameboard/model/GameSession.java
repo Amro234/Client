@@ -20,6 +20,9 @@ public abstract class GameSession {
         void onTurnChange(boolean isPlayer1Turn);
 
         void onScoreUpdate(int p1, int p2, int draws);
+        void onReplayFinished();
+        void onReplayReset();
+
     }
 
     public GameSession(SessionListener listener, String p1Name, String p2Name) {
