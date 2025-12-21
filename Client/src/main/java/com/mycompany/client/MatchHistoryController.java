@@ -12,16 +12,19 @@ import com.mycompany.client.matches.ui.MatchCard;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
@@ -50,11 +53,13 @@ public class MatchHistoryController implements Initializable {
     private final String username = "Player 1";
     private final String recordingsPath =
             System.getProperty("user.home") + "/.tic_tac_toe/recordings";
+    @FXML
+    private Button backToMenuBtn;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        // ✅ تحميل الداتا مرة واحدة صح
+        
         allMatches = loadMatchesFromRecordings();
 
         setupFilterButtons();
@@ -89,10 +94,10 @@ public class MatchHistoryController implements Initializable {
                     new MatchData(
                         rec.opponentPlayerName,
                         result,
-                        rec.date,                  // تاريخ حقيقي
-                        rec.time,                  // وقت حقيقي
+                        rec.date,                  
+                        rec.time,                  
                         rec.getSteps().size(),
-                        file.getName()             // اسم ملف الريكورد
+                        file.getName()             
                     )
                 );
 
@@ -173,12 +178,32 @@ private void openReplay(MatchData match) {
     for (MatchData match : matches) {
         MatchCard card = new MatchCard(match);
 
-        // 🔥 هنا السحر
+
         card.setOnReplayRequested(this::openReplay);
 
         matchListContainer.getChildren().add(card);
     }
 }
+
+    @FXML
+private void onBackToMenuBtnClicked(ActionEvent event) {
+    try {
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/mycompany/client/main-menu.fxml")
+        );
+        Parent root = loader.load();
+
+        Stage stage = (Stage) ((Button) event.getSource())
+                .getScene().getWindow();
+
+        stage.setScene(new Scene(root));
+        stage.show();
+
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
 
 }
 
