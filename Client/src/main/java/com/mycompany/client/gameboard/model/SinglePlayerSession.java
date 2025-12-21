@@ -3,6 +3,7 @@ package com.mycompany.client.gameboard.model;
 import com.mycompany.client.Difficulty;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
+import javafx.application.Platform;
 
 public class SinglePlayerSession extends GameSession {
 
@@ -28,16 +29,18 @@ public class SinglePlayerSession extends GameSession {
             @Override
             public void run() {
                 processMoveForAI(computerSymbol);
-            }
+            }   
         }, 1000);
     }
 
-    private void processMoveForAI(char symbol) {
-        if (difficulty == Difficulty.EASY) easyGame(symbol);
-        else if(difficulty==Difficulty.MEDIUM)medGame(symbol);
-        else 
-            hardGame(symbol);
-        Board.WinInfo win = board.checkWin();
+  private void processMoveForAI(char symbol) {
+    if (difficulty == Difficulty.EASY) easyGame(symbol);
+    else if(difficulty == Difficulty.MEDIUM) medGame(symbol);
+    else hardGame(symbol);
+
+    Board.WinInfo win = board.checkWin();
+
+    Platform.runLater(() -> {
         if (win != null) {
             if (win.winner == 'X') p1Wins++;
             else p2Wins++;
@@ -50,7 +53,9 @@ public class SinglePlayerSession extends GameSession {
         }
         isPlayer1Turn = !isPlayer1Turn;
         if (listener != null) listener.onTurnChange(isPlayer1Turn);
-    }
+    });
+}
+
 
     void easyGame(char symbol) {
         int randomRow, randomCol;
