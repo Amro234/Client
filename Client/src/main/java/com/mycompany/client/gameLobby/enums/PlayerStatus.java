@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mycompany.client.gameLobby;
+package com.mycompany.client.gameLobby.enums;
 
 /**
  *
@@ -12,8 +12,7 @@ package com.mycompany.client.gameLobby;
 public enum PlayerStatus {
 
     READY("READY", "#10B981"),
-    IN_GAME("IN GAME", "#F59E0B"),
-    AWAY("AWAY", "#94A3B8");
+    IN_GAME("IN GAME", "#F59E0B");
 
     private final String displayName;
     private final String color;

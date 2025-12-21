@@ -5,9 +5,6 @@
 
 package com.mycompany.client.difficulty;
 
-import com.mycompany.client.gameboard.controller.GameBoardController;
-import com.mycompany.client.gameboard.model.GameMode;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;

@@ -1,8 +1,7 @@
 package com.mycompany.client.gameLobby.controller;
 
 import com.mycompany.client.Player;
-import com.mycompany.client.core.server.ServerConnection;
-import com.mycompany.client.gameLobby.PlayerStatus;
+import com.mycompany.client.gameLobby.enums.PlayerStatus;
 
 import java.io.IOException;
 import java.net.URL;
@@ -206,7 +205,7 @@ public class GameLobbyController implements Initializable {
     private void loadPlayersData() {
         playerData.add(new Player("PlayerOne", PlayerStatus.READY, "avatar1.png"));
         playerData.add(new Player("PlayerTwo", PlayerStatus.IN_GAME, "avatar2.png"));
-        playerData.add(new Player("PlayerThree", PlayerStatus.AWAY, "avatar3.png"));
+        playerData.add(new Player("PlayerThree", PlayerStatus.READY, "avatar3.png"));
     }
 
     // Buttons

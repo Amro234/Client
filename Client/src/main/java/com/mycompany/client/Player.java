@@ -4,9 +4,7 @@
  */
 package com.mycompany.client;
 
-import com.mycompany.client.gameLobby.PlayerStatus;
-
-import javafx.beans.property.*;
+import com.mycompany.client.gameLobby.enums.PlayerStatus;
 
 public class Player {
 
