@@ -1,8 +1,8 @@
-package gameLobby.networking;
+package com.mycompany.client.gameLobby.networking;
 
-import gameLobby.networking.model.notification.ChallengeAcceptedNotification;
-import gameLobby.networking.model.notification.ChallengeDeclinedNotification;
-import gameLobby.networking.model.notification.ChallengeReceivedNotification;
+import com.mycompany.client.gameLobby.networking.model.notification.ChallengeAcceptedNotification;
+import com.mycompany.client.gameLobby.networking.model.notification.ChallengeDeclinedNotification;
+import com.mycompany.client.gameLobby.networking.model.notification.ChallengeReceivedNotification;
 
 /**
  * Interface for handling game lobby notifications from the server

@@ -1,10 +1,11 @@
-package gameLobby.networking;
+package com.mycompany.client.gameLobby.networking;
 
 import com.mycompany.client.core.server.ServerConnection;
 import com.mycompany.client.core.server.ServerConnection.ServerMessageListener;
-import gameLobby.networking.model.notification.ChallengeAcceptedNotification;
-import gameLobby.networking.model.notification.ChallengeDeclinedNotification;
-import gameLobby.networking.model.notification.ChallengeReceivedNotification;
+import com.mycompany.client.gameLobby.networking.model.notification.ChallengeAcceptedNotification;
+import com.mycompany.client.gameLobby.networking.model.notification.ChallengeDeclinedNotification;
+import com.mycompany.client.gameLobby.networking.model.notification.ChallengeReceivedNotification;
+
 import javafx.application.Platform;
 import org.json.JSONObject;
 

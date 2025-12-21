@@ -1,13 +1,13 @@
-package gameLobby.networking;
+package com.mycompany.client.gameLobby.networking;
 
 import com.mycompany.client.core.server.ServerConnection;
-import gameLobby.networking.exception.GameLobbyException;
-import gameLobby.networking.model.challenge.AcceptChallengeResponse;
-import gameLobby.networking.model.challenge.Challenge;
-import gameLobby.networking.model.challenge.ChallengeResponse;
-import gameLobby.networking.model.user.AvailablePlayersResponse;
-import gameLobby.networking.model.user.OnlineUser;
-import gameLobby.networking.model.user.OnlineUsersResponse;
+import com.mycompany.client.gameLobby.networking.exception.GameLobbyException;
+import com.mycompany.client.gameLobby.networking.model.challenge.AcceptChallengeResponse;
+import com.mycompany.client.gameLobby.networking.model.challenge.Challenge;
+import com.mycompany.client.gameLobby.networking.model.challenge.ChallengeResponse;
+import com.mycompany.client.gameLobby.networking.model.user.AvailablePlayersResponse;
+import com.mycompany.client.gameLobby.networking.model.user.OnlineUser;
+import com.mycompany.client.gameLobby.networking.model.user.OnlineUsersResponse;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

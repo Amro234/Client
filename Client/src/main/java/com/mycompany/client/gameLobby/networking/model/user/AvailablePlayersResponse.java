@@ -1,4 +1,4 @@
-package gameLobby.networking.model.user;
+package com.mycompany.client.gameLobby.networking.model.user;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package gameLobby.networking.model.notification;
+package com.mycompany.client.gameLobby.networking.model.notification;
 
 import org.json.JSONObject;
 

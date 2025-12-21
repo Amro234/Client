@@ -1,4 +1,4 @@
-package gameLobby.networking.model.challenge;
+package com.mycompany.client.gameLobby.networking.model.challenge;
 
 public class AcceptChallengeResponse {
     private final boolean success;

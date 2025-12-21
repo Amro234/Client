@@ -1,7 +1,9 @@
-package com.mycompany.client;
+package com.mycompany.client.gameLobby.controller;
 
+import com.mycompany.client.Player;
 import com.mycompany.client.core.server.ServerConnection;
-import gameLobby.PlayerStatus;
+import com.mycompany.client.gameLobby.PlayerStatus;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -59,7 +61,7 @@ public class GameLobbyController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         // Start server message listener
-        ServerConnection.startMessageListener();
+        // ServerConnection.startMessageListener();
 
         // ComboBox
         statusComboBox.getItems().add(null); // ALL

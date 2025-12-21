@@ -2,13 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package gameLobby;
+package com.mycompany.client.gameLobby;
 
 /**
  *
  * @author Mohamed_Ali
  */
-
 
 public enum PlayerStatus {
 
@@ -32,4 +31,3 @@ public enum PlayerStatus {
         return color;
     }
 }
-

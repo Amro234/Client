@@ -4,12 +4,8 @@
  */
 package com.mycompany.client;
 
-/**
- *
- * @author Mohamed_Ali
- */
+import com.mycompany.client.gameLobby.PlayerStatus;
 
-import gameLobby.PlayerStatus;
 import javafx.beans.property.*;
 
 public class Player {

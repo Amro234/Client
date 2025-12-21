@@ -14,6 +14,7 @@ module com.mycompany.client {
     opens com.mycompany.client.gameboard.controller to javafx.fxml;
     opens com.mycompany.client.auth.controller to javafx.fxml;
     opens com.mycompany.client.auth.model to javafx.fxml;
+    opens com.mycompany.client.gameLobby.controller to javafx.fxml;
 
     exports com.mycompany.client;
     exports com.mycompany.client.mainmenu;
@@ -21,5 +22,10 @@ module com.mycompany.client {
     exports com.mycompany.client.settings;
     exports com.mycompany.client.auth.controller;
     exports com.mycompany.client.auth.model;
-
+    exports com.mycompany.client.gameLobby.controller;
+    exports com.mycompany.client.gameLobby;
+    exports com.mycompany.client.gameLobby.networking.model.challenge;
+    exports com.mycompany.client.gameLobby.networking.model.user;
+    exports com.mycompany.client.gameboard.controller;
+    exports com.mycompany.client.core.server;
 }
