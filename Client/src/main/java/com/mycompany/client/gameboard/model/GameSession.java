@@ -70,7 +70,7 @@ public abstract class GameSession {
                 isPlayer1Turn = !isPlayer1Turn;
                 if (listener != null)
                     listener.onTurnChange(isPlayer1Turn);
-                onTurnChanged(row,col); // Hook for subclasses (AI)
+                onTurnChanged(row,col); 
             }
         }
     }
