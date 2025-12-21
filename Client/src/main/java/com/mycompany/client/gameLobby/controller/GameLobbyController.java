@@ -172,7 +172,7 @@ public class GameLobbyController implements Initializable {
                     playerData.add(user);
                 }
             }
-
+            onlineCountLabel.setText( " "+String.valueOf(response.getCount())+ " Online");
             System.out.println(
                     "Loaded " + playerData.size() + " other players (total online: " + response.getCount() + ")");
         } catch (GameLobbyException e) {
