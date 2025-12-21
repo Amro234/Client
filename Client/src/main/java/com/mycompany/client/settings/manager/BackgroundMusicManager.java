@@ -10,7 +10,13 @@ public class BackgroundMusicManager {
 
     private static final List<String> TRACKS = List.of(
             "/assets/audios/Ground Theme.mp3",
-            "/assets/audios/Underwater Theme.mp3");
+            "/assets/audios/Underwater Theme.mp3",
+            "/assets/audios/Slide DA TREME.m4a",
+            "/assets/audios/Spider Dance PHONK.mp3",
+            "/assets/audios/MEGALOVANIA.mp3",
+            "/assets/audios/Spider Dance.mp3",
+            "/assets/audios/cyberpunk-background-music.mp3",
+            "/assets/audios/V.mp3");
 
     private static int currentIndex = 0;
     private static MediaPlayer mediaPlayer;
