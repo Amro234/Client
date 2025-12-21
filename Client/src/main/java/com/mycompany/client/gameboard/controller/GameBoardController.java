@@ -349,7 +349,9 @@ public class GameBoardController implements GameSession.SessionListener {
             updateTimerDisplay();
 
             if (timeRemaining <= 0) {
-                stopTimer();
+                if (currentSession != null) {
+                    currentSession.forceSwitchTurn();
+                }
             }
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
@@ -357,6 +359,12 @@ public class GameBoardController implements GameSession.SessionListener {
 
     private void startTimer() {
         timeRemaining = TURN_TIME;
+        if (timerLabel != null) {
+            timerLabel.getStyleClass().remove("timer-label-warning");
+            if (!timerLabel.getStyleClass().contains("timer-label")) {
+                timerLabel.getStyleClass().add("timer-label");
+            }
+        }
         updateTimerDisplay();
         timer.play();
     }
@@ -378,11 +386,12 @@ public class GameBoardController implements GameSession.SessionListener {
             int seconds = timeRemaining % 60;
             timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
 
+            // Force clean state
+            timerLabel.getStyleClass().removeAll("timer-label", "timer-label-warning");
+
             if (timeRemaining <= 10) {
-                timerLabel.getStyleClass().remove("timer-label");
                 timerLabel.getStyleClass().add("timer-label-warning");
             } else {
-                timerLabel.getStyleClass().remove("timer-label-warning");
                 timerLabel.getStyleClass().add("timer-label");
             }
         }
@@ -391,9 +400,21 @@ public class GameBoardController implements GameSession.SessionListener {
     // --- Navigation ---
     @FXML
     public void handleBackButton() {
+        stopTimer();
+        if (currentSession instanceof ReplayGameSession) {
+            ((ReplayGameSession) currentSession).stop();
+        }
+        NavigationService.goBack();
+    }
+
+    @FXML
+    public void handleSettingsButton() {
         try {
             stopTimer();
-            Parent root = NavigationService.loadFXML("main-menu");
+            if (currentSession instanceof ReplayGameSession) {
+                ((ReplayGameSession) currentSession).stop();
+            }
+            Parent root = NavigationService.loadFXML("settings");
             NavigationService.navigateTo(root);
         } catch (IOException e) {
             e.printStackTrace();
@@ -401,12 +422,17 @@ public class GameBoardController implements GameSession.SessionListener {
     }
 
     @FXML
-    public void handleSettingsButton() {
-    }
-
-    @FXML
     public void handleMenuButton() {
-        handleBackButton();
+        try {
+            stopTimer();
+            if (currentSession instanceof ReplayGameSession) {
+                ((ReplayGameSession) currentSession).stop();
+            }
+            Parent root = NavigationService.loadFXML("main-menu");
+            NavigationService.navigateTo(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showPlayAgainDialog(String message) {
