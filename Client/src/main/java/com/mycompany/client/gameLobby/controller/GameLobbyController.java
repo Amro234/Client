@@ -1,6 +1,8 @@
 package com.mycompany.client.gameLobby.controller;
 
+import com.mycompany.client.auth.model.User;
 import com.mycompany.client.core.server.ServerConnection;
+import com.mycompany.client.core.session.UserSession;
 import com.mycompany.client.gameLobby.enums.PlayerStatus;
 import com.mycompany.client.gameLobby.networking.GameLobbyClient;
 import com.mycompany.client.gameLobby.networking.exception.GameLobbyException;
@@ -58,7 +60,6 @@ public class GameLobbyController implements Initializable {
     @FXML
     private TextField searchField;
 
-    private final ObservableList<OnlineUser> playerData = FXCollections.observableArrayList();
     @FXML
     private Circle profileAvatar;
     @FXML
@@ -81,9 +82,13 @@ public class GameLobbyController implements Initializable {
     private Circle matchesDot;
     @FXML
     private Label matchesCountLabel;
+    private final ObservableList<OnlineUser> playerData = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        // Set current user profile
+        updateUserProfile();
 
         // ComboBox
         statusComboBox.getItems().add(null); // ALL
@@ -230,14 +235,32 @@ public class GameLobbyController implements Initializable {
         });
     }
 
+    // Update profile section with current user data
+    private void updateUserProfile() {
+        User currentUser = UserSession.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            usernameLabel.setText(currentUser.getUsername());
+            scoreLabel.setText(currentUser.getScore() + " pts");
+        }
+    }
+
     // Data
     private void loadPlayersData() {
         try {
+            User currentUser = UserSession.getInstance().getCurrentUser();
+            int currentUserId = currentUser != null ? currentUser.getId() : -1;
 
             OnlineUsersResponse response = GameLobbyClient.getOnlineUsers();
             playerData.clear();
-            playerData.addAll(response.getUsers());
-            System.out.println("Loaded " + response.getCount() + " online users");
+
+            for (OnlineUser user : response.getUsers()) {
+                if (user.getUserId() != currentUserId) {
+                    playerData.add(user);
+                }
+            }
+
+            System.out.println(
+                    "Loaded " + playerData.size() + " other players (total online: " + response.getCount() + ")");
         } catch (GameLobbyException e) {
             System.err.println("Failed to load online users: " + e.getMessage());
             // Show error to user

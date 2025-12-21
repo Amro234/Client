@@ -3,6 +3,7 @@ package com.mycompany.client.auth.controller;
 
 import com.mycompany.client.auth.AuthClient.AuthResponse;
 import com.mycompany.client.core.navigation.NavigationService;
+import com.mycompany.client.core.session.UserSession;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -67,6 +68,9 @@ public class LoginController implements Initializable {
             try {
                 AuthResponse response = com.mycompany.client.auth.AuthClient
                         .login(username, password);
+
+                // Store user in session
+                UserSession.getInstance().setCurrentUser(response.getUser());
 
                 Platform.runLater(() -> {
 

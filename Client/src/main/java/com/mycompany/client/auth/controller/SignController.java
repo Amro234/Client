@@ -6,6 +6,8 @@ package com.mycompany.client.auth.controller;
 
 import com.mycompany.client.auth.AuthClient.AuthResponse;
 import com.mycompany.client.core.navigation.NavigationService;
+import com.mycompany.client.core.session.UserSession;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -123,7 +125,7 @@ public class SignController implements Initializable {
                 // Call server to register
                 AuthResponse response = com.mycompany.client.auth.AuthClient
                         .register(username, email, password);
-
+                UserSession.getInstance().setCurrentUser(response.getUser());
                 // Registration successful - update UI on JavaFX thread
                 Platform.runLater(() -> {
                     navigateToMainMenu();
