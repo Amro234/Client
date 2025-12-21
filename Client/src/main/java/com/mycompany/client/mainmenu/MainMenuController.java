@@ -19,7 +19,7 @@ import javafx.scene.image.Image;
 import com.mycompany.client.settings.SettingsManager;
 import com.mycompany.client.backgroundAudio.BackgroundMusicManager;
 import com.mycompany.client.App;
-import com.mycompany.client.LoginController;
+import com.mycompany.client.auth.controller.LoginController;
 
 public class MainMenuController {
 
@@ -36,7 +36,10 @@ public class MainMenuController {
     private Label settingsLabel;
 
     @FXML
-    private Label guestLabel;
+    private Label usernameLabel;
+
+    @FXML
+    private Label logoutLabel;
 
     @FXML
     private javafx.scene.image.ImageView soundIcon;
@@ -62,11 +65,11 @@ public class MainMenuController {
         if (playOnlineButton != null) {
             playOnlineButton.setCursor(Cursor.HAND);
         }
-        if (settingsLabel != null) {
-            settingsLabel.setCursor(Cursor.HAND);
+        if (usernameLabel != null) {
+            usernameLabel.setCursor(Cursor.HAND);
         }
-        if (guestLabel != null) {
-            guestLabel.setCursor(Cursor.HAND);
+        if (logoutLabel != null) {
+            logoutLabel.setCursor(Cursor.HAND);
         }
         if (soundIcon != null) {
             soundIcon.setCursor(Cursor.HAND);
@@ -74,6 +77,7 @@ public class MainMenuController {
         if (recordingsLabel != null) {
             recordingsLabel.setCursor(Cursor.HAND);
         }
+
 
         // Set initial sound icon based on current master volume state
         if (soundIcon != null) {
@@ -86,7 +90,13 @@ public class MainMenuController {
         }
 
         System.out.println("Main Menu loaded!");
-        System.out.println("Cursors set programmatically");
+    }
+
+   
+
+    @FXML
+    private void onLogoutClicked(MouseEvent event) {
+       
     }
 
     @FXML
@@ -150,15 +160,12 @@ public class MainMenuController {
     @FXML
     private void onGuestClicked(MouseEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(App.class.getResource("sign.fxml"));
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("login.fxml"));
             Parent root = loader.load();
-
-            Stage signInStage = new Stage();
-            signInStage.setTitle("Sign In");
-            signInStage.initOwner(guestLabel.getScene().getWindow());
-            signInStage.initModality(Modality.WINDOW_MODAL);
-            signInStage.setScene(new Scene(root));
-            signInStage.show();
+            Stage stage = (Stage) usernameLabel.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
         } catch (IOException ex) {
             System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }

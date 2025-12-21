@@ -14,10 +14,9 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-
         BackgroundMusicManager.init();
 
-        scene = new Scene(loadFXML("main-menu"), 1280, 720);
+        scene = new Scene(loadFXML("splash"), 1280, 720);
 
         scene.getStylesheets().addAll(
                 getClass().getResource("/styles/customStyles.css").toExternalForm(),

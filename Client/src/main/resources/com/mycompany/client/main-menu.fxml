@@ -31,8 +31,11 @@
                             <Image url="@../../../assets/images/sound.png" />
                         </image>
                     </ImageView>
-                                   <!-- Guest Label -->
-                    <Label fx:id="guestLabel" onMouseClicked="#onGuestClicked" styleClass="menu-label" text="👤 Guest" />
+                    <!-- User Info / Actions -->
+                    <HBox alignment="CENTER" spacing="10.0">
+                        <Label fx:id="usernameLabel" onMouseClicked="#onGuestClicked" styleClass="menu-label" text="👤 Guest" />
+                        <Label fx:id="logoutLabel" onMouseClicked="#onLogoutClicked" styleClass="menu-label" text="🚪 Logout" visible="false" managed="false" />
+                    </HBox>
                 </HBox>
                         <ImageView fitHeight="54.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
                             <image>
