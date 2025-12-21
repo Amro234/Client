@@ -22,9 +22,9 @@ import javafx.stage.Stage;
 
 public class GameResultVideoManager {
 
-    private static final int WIN_VIDEOS_COUNT = 3;
+    private static final int WIN_VIDEOS_COUNT = 4;
     private static final int DRAW_VIDEOS_COUNT = 1;
-    private static final int LOSE_VIDEOS_COUNT = 6;
+    private static final int LOSE_VIDEOS_COUNT = 7;
 
     private static final String WIN_VIDEO_TEMPLATE =
             "src/main/resources/videos/win/game_winner_%d.mp4";

@@ -63,10 +63,11 @@ public class ReplayGameSession extends ReplaySession {
         timeline = new Timeline();
         timeline.setCycleCount(1);
 
-        for (int i = 0; i < recordedMoves.size(); i++) {
+        for (int i = currentMoveIndex; i < recordedMoves.size(); i++) {
             final int index = i;
+
             KeyFrame frame = new KeyFrame(
-                    Duration.seconds(i / playbackSpeed),
+                    Duration.seconds((i - currentMoveIndex) * 1.0 / playbackSpeed),
                     e -> {
                         Move m = recordedMoves.get(index);
                         listener.onBoardUpdate(m.row, m.col, m.symbol);
@@ -75,7 +76,10 @@ public class ReplayGameSession extends ReplaySession {
             timeline.getKeyFrames().add(frame);
         }
 
-        timeline.setOnFinished(e -> isPlaying = false);
+        timeline.setOnFinished(e -> {
+            isPlaying = false;
+            listener.onReplayFinished();
+        });
 
         isPlaying = true;
         timeline.play();
@@ -83,20 +87,33 @@ public class ReplayGameSession extends ReplaySession {
 
     @Override
     public void pause() {
-        if (timeline != null)
+        if (timeline != null) {
             timeline.pause();
+        }
     }
 
     @Override
     public void resume() {
-        if (timeline != null)
+        if (timeline != null) {
             timeline.play();
+            isPlaying = true;
+        }
     }
 
-    @Override
     public void stop() {
-        if (timeline != null)
+        if (timeline != null) {
             timeline.stop();
+        }
+        isPlaying = false;
+        currentMoveIndex = 0;
+    }
+
+    public void reset() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+        currentMoveIndex = 0;
+        isPlaying = false;
     }
 
     @Override
@@ -129,7 +146,7 @@ public class ReplayGameSession extends ReplaySession {
 
     @Override
     public void handleCellClick(int row, int col) {
-        // ❌ ممنوع لعب في Replay
+
     }
 
     @Override
