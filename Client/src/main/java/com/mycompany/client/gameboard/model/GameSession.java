@@ -20,7 +20,9 @@ public abstract class GameSession {
         void onTurnChange(boolean isPlayer1Turn);
 
         void onScoreUpdate(int p1, int p2, int draws);
+
         void onReplayFinished();
+
         void onReplayReset();
 
     }
@@ -38,7 +40,7 @@ public abstract class GameSession {
     public void resetGame() {
         board.reset();
         isPlayer1Turn = true;
-          if (listener != null) {
+        if (listener != null) {
             listener.onTurnChange(true);
         }
     }
@@ -92,5 +94,12 @@ public abstract class GameSession {
 
     public String getPlayer2Name() {
         return player2Name;
+    }
+
+    public void forceSwitchTurn() {
+        isPlayer1Turn = !isPlayer1Turn;
+        if (listener != null)
+            listener.onTurnChange(isPlayer1Turn);
+        onTurnChanged();
     }
 }
