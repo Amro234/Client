@@ -4,8 +4,8 @@
  */
 package com.mycompany.client.auth.controller;
 
-import com.mycompany.client.App;
 import com.mycompany.client.auth.AuthClient.AuthResponse;
+import com.mycompany.client.core.navigation.NavigationService;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,17 +13,14 @@ import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -64,16 +61,12 @@ public class SignController implements Initializable {
     @FXML
     private void onNavigateToLogin(MouseEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(App.class.getResource("login.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) navigateLoginItem.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            Parent root = NavigationService.loadFXML("login");
+            NavigationService.replaceWith(root);
         } catch (IOException ex) {
-            System.getLogger(SignController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
+            System.err.println("Error loading login screen: " + ex.getMessage());
 
+        }
     }
 
     @FXML
@@ -180,12 +173,8 @@ public class SignController implements Initializable {
 
     private void navigateToMainMenu() {
         try {
-            FXMLLoader loader = new FXMLLoader(App.class.getResource("main-menu.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) signupButtonItem.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            Parent root = NavigationService.loadFXML("main-menu");
+            NavigationService.replaceWith(root);
         } catch (IOException ex) {
             System.err.println("Error loading main menu: " + ex.getMessage());
             ex.printStackTrace();
