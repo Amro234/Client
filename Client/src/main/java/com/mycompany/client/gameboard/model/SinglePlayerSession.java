@@ -130,7 +130,6 @@ public class SinglePlayerSession extends GameSession {
     if (listener != null) listener.onBoardUpdate(moveRow, moveCol, symbol);
 }
 
-// الدالة الرئيسية للـ Minimax
 int minimax(char[][] currentBoard, boolean isAI, char aiSymbol) {
     Board.WinInfo win = board.checkWin();
     if (win != null) {
@@ -169,7 +168,6 @@ int minimax(char[][] currentBoard, boolean isAI, char aiSymbol) {
     }
 }
 
-// دالة مساعدة لتحديد إذا اللوحة مليانة
 boolean isBoardFull(char[][] b) {
     for (int i = 0; i < 3; i++)
         for (int j = 0; j < 3; j++)
