@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
-package com.mycompany.client;
+package com.mycompany.client.profile;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -50,14 +50,15 @@ public class ProfileScreenController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
+    }
+
     public void updateStats(int totalGames, double winRate, int wins, int losses) {
         totalGamesLabel.setText(String.valueOf(totalGames));
         winRateLabel.setText(String.format("%.0f%%", winRate));
         winsLabel.setText(String.valueOf(wins));
         lossesLabel.setText(String.valueOf(losses));
     }
-    
+
     public void updateProfile(String username, String bio) {
         usernameLabel.setText(username);
         bioTextArea.setText(bio);
