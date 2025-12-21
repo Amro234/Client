@@ -1,4 +1,4 @@
-package com.mycompany.client.settings;
+package com.mycompany.client.settings.manager;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

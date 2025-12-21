@@ -1,7 +1,8 @@
-package com.mycompany.client;
+package com.mycompany.client.settings.controller;
 
-import com.mycompany.client.backgroundAudio.BackgroundMusicManager;
-import com.mycompany.client.settings.SettingsManager;
+import com.mycompany.client.settings.manager.BackgroundMusicManager;
+import com.mycompany.client.settings.manager.SettingsManager;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.TranslateTransition;

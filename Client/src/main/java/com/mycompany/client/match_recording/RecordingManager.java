@@ -2,7 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package match_recording;
+package com.mycompany.client.match_recording;
+
 import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
@@ -16,13 +17,13 @@ import java.util.List;
  */
 public class RecordingManager {
 
-    private final String recordingsPath =
-            System.getProperty("user.home") + "/.tic_tac_toe/recordings";
+    private final String recordingsPath = System.getProperty("user.home") + "/.tic_tac_toe/recordings";
 
     public void saveRecording(GameRecording recording, String username) {
         try {
             File dir = getRecordingsDirectory(username);
-            if (!dir.exists()) dir.mkdirs();
+            if (!dir.exists())
+                dir.mkdirs();
 
             String fileName = "game_" + System.currentTimeMillis() + ".json";
             File file = new File(dir, fileName);
@@ -46,13 +47,15 @@ public class RecordingManager {
         List<GameRecording> list = new ArrayList<>();
         File dir = getRecordingsDirectory(username);
 
-        if (!dir.exists()) return list;
+        if (!dir.exists())
+            return list;
 
         for (File file : dir.listFiles()) {
             try {
                 String content = Files.readString(file.toPath());
                 list.add(GameRecording.fromJSON(new JSONObject(content)));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         return list;
     }
@@ -61,4 +64,3 @@ public class RecordingManager {
         return new File(recordingsPath + "/" + username);
     }
 }
-

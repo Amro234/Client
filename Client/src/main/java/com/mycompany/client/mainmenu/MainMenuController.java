@@ -14,12 +14,12 @@ import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import java.io.IOException;
-import javafx.stage.Modality;
 import javafx.scene.image.Image;
-import com.mycompany.client.settings.SettingsManager;
-import com.mycompany.client.backgroundAudio.BackgroundMusicManager;
+import com.mycompany.client.settings.manager.BackgroundMusicManager;
+import com.mycompany.client.settings.manager.SettingsManager;
 import com.mycompany.client.App;
 import com.mycompany.client.auth.controller.LoginController;
+import com.mycompany.client.core.navigation.NavigationService;
 
 public class MainMenuController {
 
@@ -78,7 +78,6 @@ public class MainMenuController {
             recordingsLabel.setCursor(Cursor.HAND);
         }
 
-
         // Set initial sound icon based on current master volume state
         if (soundIcon != null) {
             boolean isSoundOn = SettingsManager.isMasterVolumeOn();
@@ -92,25 +91,19 @@ public class MainMenuController {
         System.out.println("Main Menu loaded!");
     }
 
-   
-
     @FXML
     private void onLogoutClicked(MouseEvent event) {
-       
+
     }
 
     @FXML
     private void onSinglePlayerClicked(ActionEvent event) {
         try {
             System.out.println("Single Player clicked - navigating to difficulty selection");
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/mycompany/client/difficulty.fxml"));
-            Parent singlePlayerRoot = loader.load();
 
-            Stage stage = (Stage) singlePlayerButton.getScene().getWindow();
-            Scene scene = new Scene(singlePlayerRoot);
-            stage.setScene(scene);
-            stage.show();
+            Parent root = NavigationService.loadFXML("difficulty");
+            NavigationService.navigateTo(root);
+
         } catch (IOException e) {
             System.err.println("Error loading single-player.fxml: " + e.getMessage());
             e.printStackTrace();
@@ -120,15 +113,9 @@ public class MainMenuController {
     @FXML
     private void onSettingsClicked(MouseEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(App.class.getResource("settings.fxml"));
-            Parent root = loader.load();
 
-            Stage settingsStage = new Stage();
-            settingsStage.setTitle("Settings");
-            settingsStage.initOwner(settingsLabel.getScene().getWindow());
-            settingsStage.initModality(Modality.WINDOW_MODAL);
-            settingsStage.setScene(new Scene(root));
-            settingsStage.show();
+            Parent root = NavigationService.loadFXML("settings");
+            NavigationService.navigateTo(root);
         } catch (IOException ex) {
             System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
 
@@ -139,18 +126,18 @@ public class MainMenuController {
     private void onTwoPlayersClicked(ActionEvent event) {
         try {
             System.out.println("Two Players clicked - navigating to Game Board");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/game_board.fxml"));
+
+            FXMLLoader loader = NavigationService.getFXMLLoader("game_board");
             Parent gameBoardRoot = loader.load();
+
+            // Add CSS stylesheet
+            gameBoardRoot.getStylesheets().add(App.class.getResource("/styles/game_board.css").toExternalForm());
 
             // Initialize Game Session
             com.mycompany.client.gameboard.controller.GameBoardController controller = loader.getController();
             controller.startNewGame(com.mycompany.client.gameboard.model.GameMode.TWO_PLAYERS, null);
 
-            Stage stage = (Stage) twoPlayersButton.getScene().getWindow();
-            Scene scene = new Scene(gameBoardRoot);
-            scene.getStylesheets().add(App.class.getResource("/styles/game_board.css").toExternalForm());
-            stage.setScene(scene);
-            stage.show();
+            NavigationService.navigateTo(gameBoardRoot);
         } catch (IOException e) {
             System.err.println("Error loading game_board.fxml: " + e.getMessage());
             e.printStackTrace();
@@ -159,16 +146,17 @@ public class MainMenuController {
 
     @FXML
     private void onGuestClicked(MouseEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(App.class.getResource("login.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) usernameLabel.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
+        // try {
+        // // FXMLLoader loader = new FXMLLoader(App.class.getResource("login.fxml"));
+        // // Parent root = loader.load();
+        // // Stage stage = (Stage) usernameLabel.getScene().getWindow();
+        // // Scene scene = new Scene(root);
+        // // stage.setScene(scene);
+        // // stage.show();
+        // } catch (IOException ex) {
+        // System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR,
+        // (String) null, ex);
+        // }
     }
 
     @FXML
@@ -199,19 +187,18 @@ public class MainMenuController {
         try {
             System.out.println("Recordings clicked - opening recordings list");
 
-            FXMLLoader loader = new FXMLLoader(
-                    App.class.getResource("match_history.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) recordingsLabel.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            Parent root = NavigationService.loadFXML("match_history");
+            NavigationService.navigateTo(root);
 
         } catch (IOException e) {
             System.err.println("Error loading recordings.fxml: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void onPlayOnlineClicked(ActionEvent event) {
+        ServerConnectionDialog.show(playOnlineButton.getScene().getWindow());
     }
 
 }

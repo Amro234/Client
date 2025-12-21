@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package match_recording;
+package com.mycompany.client.match_recording;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import org.json.JSONObject;
  * @author Mohamed_Ali
  */
 
-    public class GameRecording {
+public class GameRecording {
 
     public String playerName;
     public String opponentPlayerName;
@@ -24,13 +24,14 @@ import org.json.JSONObject;
     public char myCharacter;
     public char firstPlayer;
     public Map<String, String> steps = new LinkedHashMap<>();
-    public Map<String, String> getSteps() {
-    return steps;
-}
-public char getFirstPlayer() {
-    return firstPlayer;
-}
 
+    public Map<String, String> getSteps() {
+        return steps;
+    }
+
+    public char getFirstPlayer() {
+        return firstPlayer;
+    }
 
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
@@ -63,10 +64,9 @@ public char getFirstPlayer() {
         }
         return r;
     }
+
     public String getStatus() {
-    return status;
-}
+        return status;
+    }
 
 }
-
-

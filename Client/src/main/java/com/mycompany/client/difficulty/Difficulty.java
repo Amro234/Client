@@ -1,4 +1,4 @@
-package com.mycompany.client;
+package com.mycompany.client.difficulty;
 
 public enum Difficulty {
     EASY,

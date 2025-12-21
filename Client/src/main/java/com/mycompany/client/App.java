@@ -1,9 +1,8 @@
 package com.mycompany.client;
 
-import com.mycompany.client.backgroundAudio.BackgroundMusicManager;
+import com.mycompany.client.core.navigation.NavigationService;
+import com.mycompany.client.settings.manager.BackgroundMusicManager;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -14,27 +13,26 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        BackgroundMusicManager.init();
+        // BackgroundMusicManager.init();
 
-        scene = new Scene(loadFXML("splash"), 1280, 720);
+        // Load splash screen and create scene
+        Scene scene = new Scene(NavigationService.loadFXML("splash"), 1280, 720);
+
+        // Initialize NavigationService
+        NavigationService.init(scene);
 
         scene.getStylesheets().addAll(
                 getClass().getResource("/styles/customStyles.css").toExternalForm(),
-                App.class.getResource("/css/profilescreen.css").toExternalForm(),
-                App.class.getResource("/css/style.css").toExternalForm(),
-                App.class.getResource("/css/table.css").toExternalForm());
+                App.class.getResource("/styles/profilescreen.css").toExternalForm(),
+                App.class.getResource("/styles/style.css").toExternalForm(),
+                App.class.getResource("/styles/table.css").toExternalForm());
 
         stage.setScene(scene);
         stage.show();
     }
 
     static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
-    }
-
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/mycompany/client/" + fxml + ".fxml"));
-        return fxmlLoader.load();
+        scene.setRoot(NavigationService.loadFXML(fxml));
     }
 
     public static void main(String[] args) {

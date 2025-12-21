@@ -13,7 +13,9 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="720" prefWidth="1280" styleClass="match-history-root" stylesheets="@/styles/customStyles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.MatchHistoryController">
+<AnchorPane id="AnchorPane" prefHeight="720" prefWidth="1280" styleClass="match-history-root" 
+            stylesheets="@../../../styles/customStyles.css"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.match_recording.MatchHistoryController">
     
     <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.leftAnchor="200" AnchorPane.rightAnchor="200" AnchorPane.topAnchor="40">
         
@@ -29,29 +31,29 @@
             <HBox spacing="10" styleClass="filter-bar">
                 <ToggleButton fx:id="allGamesBtn" selected="true" styleClass="filter-btn, filter-btn-active" text="All Games">
                     <graphic>
-                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                            <Image url="@/assets/images/all_games_list.png" />
+                        <ImageView fitWidth="16" fitHeight="16" preserveRatio="true">
+                            <Image url="@../../../assets/images/all_games_list.png"/>
                         </ImageView>
                     </graphic>
                 </ToggleButton>
                 <ToggleButton fx:id="winsBtn" styleClass="filter-btn" text="Wins">
                     <graphic>
-                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                            <Image url="@/assets/images/vic_cup.png" />
+                        <ImageView fitWidth="16" fitHeight="16" preserveRatio="true">
+                            <Image url="@../../../assets/images/vic_cup.png"/>
                         </ImageView>
                     </graphic>
                 </ToggleButton>
                 <ToggleButton fx:id="lossesBtn" styleClass="filter-btn" text="Losses">
                     <graphic>
-                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                            <Image url="@/assets/images/loss_x.png" />
+                        <ImageView fitWidth="16" fitHeight="16" preserveRatio="true">
+                            <Image url="@../../../assets/images/loss_x.png"/>
                         </ImageView>
                     </graphic>
                 </ToggleButton>
                 <ToggleButton fx:id="drawsBtn" styleClass="filter-btn" text="Draws">
                     <graphic>
-                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                            <Image url="@/assets/images/draw_handshake.png" />
+                        <ImageView fitWidth="16" fitHeight="16" preserveRatio="true">
+                            <Image url="@../../../assets/images/draw_handshake.png"/>
                         </ImageView>
                     </graphic>
                 </ToggleButton>
@@ -60,9 +62,9 @@
             <Region HBox.hgrow="ALWAYS" />
             
             <!-- Search Box -->
-            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-box">
-                <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
-                    <Image url="@/assets/images/search.png" />
+            <HBox styleClass="search-box" alignment="CENTER_LEFT" spacing="8">
+                <ImageView fitWidth="16" fitHeight="16" preserveRatio="true">
+                    <Image url="@../../../assets/images/search.png"/>
                 </ImageView>
                 <TextField fx:id="searchField" promptText="Search opponent..." styleClass="search-field" />
             </HBox>

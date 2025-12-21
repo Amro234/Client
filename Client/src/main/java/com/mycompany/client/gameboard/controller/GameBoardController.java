@@ -1,19 +1,19 @@
 package com.mycompany.client.gameboard.controller;
 
-import com.mycompany.client.Difficulty;
 import com.mycompany.client.gameboard.model.GameMode;
 import com.mycompany.client.gameboard.model.Board;
 import com.mycompany.client.gameboard.model.GameSession;
 import com.mycompany.client.gameboard.model.ReplayGameSession;
 import com.mycompany.client.gameboard.model.TwoPlayerSession;
-import java.io.File;
+import com.mycompany.client.match_recording.GameRecorder;
+import com.mycompany.client.match_recording.GameRecording;
+import com.mycompany.client.match_recording.RecordingManager;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -21,23 +21,15 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-import javafx.stage.Stage;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.shape.Circle;
-import javafx.stage.Modality;
-import match_recording.GameRecorder;
-import match_recording.GameRecording;
-import match_recording.RecordingManager;
+
 import com.mycompany.client.GameResultVideoManager.GameResultVideoManager;
 import com.mycompany.client.gameboard.model.BoardMode;
+import com.mycompany.client.core.navigation.NavigationService;
+import com.mycompany.client.difficulty.Difficulty;
 
 public class GameBoardController implements GameSession.SessionListener {
 
@@ -116,16 +108,16 @@ public class GameBoardController implements GameSession.SessionListener {
     private boolean isFastReplay = false;
 
     public void initialize() {
-        cells = new StackPane[][]{
-            {cell00, cell01, cell02},
-            {cell10, cell11, cell12},
-            {cell20, cell21, cell22}
+        cells = new StackPane[][] {
+                { cell00, cell01, cell02 },
+                { cell10, cell11, cell12 },
+                { cell20, cell21, cell22 }
         };
 
-        labels = new Label[][]{
-            {label00, label01, label02},
-            {label10, label11, label12},
-            {label20, label21, label22}
+        labels = new Label[][] {
+                { label00, label01, label02 },
+                { label10, label11, label12 },
+                { label20, label21, label22 }
         };
 
         attachEventHandlers();
@@ -182,6 +174,7 @@ public class GameBoardController implements GameSession.SessionListener {
     @Override
     public void onGameEnd(Board.WinInfo winInfo) {
         stopTimer();
+        stopTimer();
 
         if (isRecordingEnabled) {
 
@@ -192,6 +185,7 @@ public class GameBoardController implements GameSession.SessionListener {
             } else {
                 char winnerSymbol = winInfo.winner;
 
+                // Player 1 دايمًا X عندك
                 if (winnerSymbol == 'X') {
                     status = "WIN";
                 } else {
@@ -203,8 +197,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
             recordingManager.saveRecording(
                     gameRecorder.getRecording(),
-                    currentSession.getPlayer1Name()
-            );
+                    currentSession.getPlayer1Name());
 
             isRecordingEnabled = false;
         }
@@ -216,14 +209,12 @@ public class GameBoardController implements GameSession.SessionListener {
                     : currentSession.getPlayer2Name();
 
             GameResultVideoManager.showWinVideo(
-                    () -> showPlayAgainDialog(winnerName + " Wins!")
-            );
+                    () -> showPlayAgainDialog(winnerName + " Wins!"));
 
         } else {
 
             GameResultVideoManager.showDrawVideo(
-                    () -> showPlayAgainDialog("It's a Draw!")
-            );
+                    () -> showPlayAgainDialog("It's a Draw!"));
         }
 
     }
@@ -402,11 +393,8 @@ public class GameBoardController implements GameSession.SessionListener {
     public void handleBackButton() {
         try {
             stopTimer();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/main-menu.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            Parent root = NavigationService.loadFXML("main-menu");
+            NavigationService.navigateTo(root);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -470,8 +458,7 @@ public class GameBoardController implements GameSession.SessionListener {
                 GameMode.TWO_PLAYERS,
                 currentSession.getPlayer1Name(),
                 currentSession.getPlayer2Name(),
-                'X'
-        );
+                'X');
 
         System.out.println("Recording started successfully");
     }
@@ -503,10 +490,9 @@ public class GameBoardController implements GameSession.SessionListener {
                 this,
                 recording.playerName,
                 recording.opponentPlayerName,
-                recording
-        );
-
+                recording);
         ((ReplayGameSession) currentSession).play();
+
     }
 
     @FXML
@@ -544,7 +530,7 @@ public class GameBoardController implements GameSession.SessionListener {
             replaySpeedBtn.setText("🐢 Normal Speed");
             isFastReplay = true;
         } else {
-            //  Normal
+            // Normal
             replay.setPlaybackSpeed(1.0);
             replaySpeedBtn.setText("⚡ Fast Speed");
             isFastReplay = false;
@@ -582,7 +568,7 @@ public class GameBoardController implements GameSession.SessionListener {
         replaySpeedBtn.setManaged(isReplay);
         replayRestartBtn.setManaged(isReplay);
 
-        //  Record
+        // Record
         recordGame.setVisible(!isReplay);
         recordGame.setManaged(!isReplay);
 
