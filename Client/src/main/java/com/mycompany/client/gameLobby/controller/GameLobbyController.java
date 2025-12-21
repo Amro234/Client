@@ -2,6 +2,7 @@ package com.mycompany.client.gameLobby.controller;
 
 import com.mycompany.client.auth.model.User;
 import com.mycompany.client.core.navigation.NavigationService;
+import com.mycompany.client.core.notification.ToastNotification;
 import com.mycompany.client.core.server.ServerConnection;
 import com.mycompany.client.core.session.UserSession;
 import com.mycompany.client.gameLobby.controller.uicomponents.ActionTableCell;
@@ -9,12 +10,20 @@ import com.mycompany.client.gameLobby.controller.uicomponents.PlayerTableCell;
 import com.mycompany.client.gameLobby.controller.uicomponents.StatusTableCell;
 import com.mycompany.client.gameLobby.enums.PlayerStatus;
 import com.mycompany.client.gameLobby.networking.GameLobbyClient;
+import com.mycompany.client.gameLobby.networking.GameLobbyNotificationHandler;
+import com.mycompany.client.gameLobby.networking.GameLobbyNotificationListener;
 import com.mycompany.client.gameLobby.networking.exception.GameLobbyException;
+import com.mycompany.client.gameLobby.networking.model.notification.ChallengeAcceptedNotification;
+import com.mycompany.client.gameLobby.networking.model.notification.ChallengeDeclinedNotification;
+import com.mycompany.client.gameLobby.networking.model.notification.ChallengeReceivedNotification;
 import com.mycompany.client.gameLobby.networking.model.user.OnlineUser;
 import com.mycompany.client.gameLobby.networking.model.user.OnlineUsersResponse;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,9 +36,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.shape.Circle;
 
-public class GameLobbyController implements Initializable {
+public class GameLobbyController implements Initializable, GameLobbyNotificationListener {
 
     private FilteredList<OnlineUser> filteredPlayers;
+    private GameLobbyNotificationHandler notificationHandler;
+    private ScheduledExecutorService refreshExecutor;
 
     @FXML
     private Button logOutBtn;
@@ -83,9 +94,17 @@ public class GameLobbyController implements Initializable {
         updateUserProfile();
         setupStatusComboBox();
         setupTableColumns();
+        setupNotificationHandler();
         loadPlayersData();
         ServerConnection.startMessageListener();
         setupFilters();
+        setupRowHeight();
+        startAutoRefresh();
+    }
+
+    private void setupNotificationHandler() {
+        notificationHandler = new GameLobbyNotificationHandler();
+        notificationHandler.setNotificationListener(this);
         setupRowHeight();
     }
 
@@ -132,6 +151,31 @@ public class GameLobbyController implements Initializable {
         });
     }
 
+    private void startAutoRefresh() {
+        refreshExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread thread = new Thread(r);
+            thread.setDaemon(true);
+            return thread;
+        });
+
+        refreshExecutor.scheduleAtFixedRate(() -> {
+            loadPlayersData();
+        }, 4, 4, TimeUnit.SECONDS);
+    }
+
+    public void shutdown() {
+        if (refreshExecutor != null && !refreshExecutor.isShutdown()) {
+            refreshExecutor.shutdown();
+            try {
+                if (!refreshExecutor.awaitTermination(1, TimeUnit.SECONDS)) {
+                    refreshExecutor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                refreshExecutor.shutdownNow();
+            }
+        }
+    }
+
     // Filtering Logic
     private void applyFilters() {
         String searchText = searchField.getText();
@@ -165,16 +209,19 @@ public class GameLobbyController implements Initializable {
             int currentUserId = currentUser != null ? currentUser.getId() : -1;
 
             OnlineUsersResponse response = GameLobbyClient.getOnlineUsers();
-            playerData.clear();
 
-            for (OnlineUser user : response.getUsers()) {
-                if (user.getUserId() != currentUserId) {
-                    playerData.add(user);
+            Platform.runLater(() -> {
+                playerData.clear();
+
+                for (OnlineUser user : response.getUsers()) {
+                    if (user.getUserId() != currentUserId) {
+                        playerData.add(user);
+                    }
                 }
-            }
-            onlineCountLabel.setText( " "+String.valueOf(response.getCount())+ " Online");
-            System.out.println(
-                    "Loaded " + playerData.size() + " other players (total online: " + response.getCount() + ")");
+                onlineCountLabel.setText(" " + String.valueOf(response.getCount()) + " Online");
+                System.out.println(
+                        "Loaded " + playerData.size() + " other players (total online: " + response.getCount() + ")");
+            });
         } catch (GameLobbyException e) {
             System.err.println("Failed to load online users: " + e.getMessage());
             // Show error to user
@@ -204,5 +251,26 @@ public class GameLobbyController implements Initializable {
     private void onQuickPlayPressed(ActionEvent event) throws IOException {
         Parent root = NavigationService.loadFXML("difficulty");
         NavigationService.navigateTo(root);
+    }
+
+    // Notifications
+    @Override
+    public void onChallengeReceived(ChallengeReceivedNotification notification) {
+        ChallengeDialog dialog = new ChallengeDialog(
+                notification.getChallengerUsername(),
+                (javafx.stage.Stage) playerTable.getScene().getWindow());
+        dialog.show();
+    }
+
+    @Override
+    public void onChallengeAccepted(ChallengeAcceptedNotification notification) {
+        ToastNotification.success(notification.getAcceptedByUsername() + " accepted your challenge!",
+                playerTable.getScene().getWindow());
+    }
+
+    @Override
+    public void onChallengeDeclined(ChallengeDeclinedNotification notification) {
+        ToastNotification.error(notification.getDeclinedByUsername() + " declined your challenge.",
+                playerTable.getScene().getWindow());
     }
 }
