@@ -2,14 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
-package com.mycompany.client;
+package com.mycompany.client.match_recording;
 
 import com.mycompany.client.gameboard.controller.GameBoardController;
 import com.mycompany.client.matches.data.FilterType;
 import com.mycompany.client.matches.data.MatchData;
 import com.mycompany.client.matches.data.MatchResult;
 import com.mycompany.client.matches.ui.MatchCard;
-
 
 import java.io.File;
 import java.net.URL;
@@ -26,8 +25,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import match_recording.GameRecording;
-import match_recording.RecordingManager;
 
 /**
  * FXML Controller class
@@ -35,21 +32,20 @@ import match_recording.RecordingManager;
  * @author eslam
  */
 
-
-
-
 public class MatchHistoryController implements Initializable {
 
-    @FXML private VBox matchListContainer;
-    @FXML private TextField searchField;
-    @FXML private ToggleButton allGamesBtn, winsBtn, lossesBtn, drawsBtn;
+    @FXML
+    private VBox matchListContainer;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ToggleButton allGamesBtn, winsBtn, lossesBtn, drawsBtn;
 
     private ArrayList<MatchData> allMatches;
     private FilterType currentFilter = FilterType.ALL;
 
     private final String username = "Player 1";
-    private final String recordingsPath =
-            System.getProperty("user.home") + "/.tic_tac_toe/recordings";
+    private final String recordingsPath = System.getProperty("user.home") + "/.tic_tac_toe/recordings";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -73,28 +69,25 @@ public class MatchHistoryController implements Initializable {
         }
 
         File[] files = userDir.listFiles((d, n) -> n.endsWith(".json"));
-        if (files == null) return matches;
+        if (files == null)
+            return matches;
 
         for (File file : files) {
             try {
-                GameRecording rec =
-                        manager.loadRecording(file.getName(), username);
+                GameRecording rec = manager.loadRecording(file.getName(), username);
 
-                MatchResult result =
-                        "WIN".equals(rec.getStatus()) ? MatchResult.VICTORY :
-                        "DRAW".equals(rec.getStatus()) ? MatchResult.DRAW :
-                        MatchResult.DEFEAT;
+                MatchResult result = "WIN".equals(rec.getStatus()) ? MatchResult.VICTORY
+                        : "DRAW".equals(rec.getStatus()) ? MatchResult.DRAW : MatchResult.DEFEAT;
 
                 matches.add(
-                    new MatchData(
-                        rec.opponentPlayerName,
-                        result,
-                        rec.date,                  // تاريخ حقيقي
-                        rec.time,                  // وقت حقيقي
-                        rec.getSteps().size(),
-                        file.getName()             // اسم ملف الريكورد
-                    )
-                );
+                        new MatchData(
+                                rec.opponentPlayerName,
+                                result,
+                                rec.date, // تاريخ حقيقي
+                                rec.time, // وقت حقيقي
+                                rec.getSteps().size(),
+                                file.getName() // اسم ملف الريكورد
+                        ));
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -129,8 +122,7 @@ public class MatchHistoryController implements Initializable {
 
     private void setupSearch() {
         searchField.textProperty().addListener(
-                (obs, oldVal, newVal) -> filterAndDisplayMatches()
-        );
+                (obs, oldVal, newVal) -> filterAndDisplayMatches());
     }
 
     private void filterAndDisplayMatches() {
@@ -144,41 +136,39 @@ public class MatchHistoryController implements Initializable {
 
         displayMatches(filtered);
     }
-private void openReplay(MatchData match) {
-    try {
-        RecordingManager manager = new RecordingManager();
-        GameRecording recording =
-                manager.loadRecording(match.getRecordingFileName(), username);
 
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/mycompany/client/game_board.fxml")
-        );
+    private void openReplay(MatchData match) {
+        try {
+            RecordingManager manager = new RecordingManager();
+            GameRecording recording = manager.loadRecording(match.getRecordingFileName(), username);
 
-        Parent root = loader.load();
-        GameBoardController controller = loader.getController();
-        controller.startReplay(recording);
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mycompany/client/game_board.fxml"));
 
-        Stage stage = (Stage) matchListContainer.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+            Parent root = loader.load();
+            GameBoardController controller = loader.getController();
+            controller.startReplay(recording);
 
-    } catch (Exception e) {
-        e.printStackTrace();
+            Stage stage = (Stage) matchListContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-}
 
     private void displayMatches(List<MatchData> matches) {
-    matchListContainer.getChildren().clear();
+        matchListContainer.getChildren().clear();
 
-    for (MatchData match : matches) {
-        MatchCard card = new MatchCard(match);
+        for (MatchData match : matches) {
+            MatchCard card = new MatchCard(match);
 
-        // 🔥 هنا السحر
-        card.setOnReplayRequested(this::openReplay);
+            // 🔥 هنا السحر
+            card.setOnReplayRequested(this::openReplay);
 
-        matchListContainer.getChildren().add(card);
+            matchListContainer.getChildren().add(card);
+        }
     }
-}
 
 }
-

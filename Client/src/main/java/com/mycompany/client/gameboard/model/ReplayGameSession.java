@@ -9,14 +9,14 @@ package com.mycompany.client.gameboard.model;
  * @author Mohamed_Ali
  */
 
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-import match_recording.GameRecording;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mycompany.client.match_recording.GameRecording;
 
 public class ReplayGameSession extends ReplaySession {
 
@@ -24,9 +24,9 @@ public class ReplayGameSession extends ReplaySession {
     private GameRecording recording;
 
     public ReplayGameSession(SessionListener listener,
-                             String p1Name,
-                             String p2Name,
-                             GameRecording recording) {
+            String p1Name,
+            String p2Name,
+            GameRecording recording) {
         super(listener, p1Name, p2Name);
         this.recording = recording;
         loadMovesFromRecording();
@@ -38,12 +38,9 @@ public class ReplayGameSession extends ReplaySession {
         boolean isX = recording.firstPlayer == 'X';
 
         List<String> keys = new ArrayList<>(recording.steps.keySet());
-        keys.sort((a, b) ->
-                Integer.compare(
-                        Integer.parseInt(a.replace("step", "")),
-                        Integer.parseInt(b.replace("step", ""))
-                )
-        );
+        keys.sort((a, b) -> Integer.compare(
+                Integer.parseInt(a.replace("step", "")),
+                Integer.parseInt(b.replace("step", ""))));
 
         for (String key : keys) {
             String[] parts = recording.steps.get(key).split(",");
@@ -53,16 +50,15 @@ public class ReplayGameSession extends ReplaySession {
                             Integer.parseInt(parts[1]),
                             isX ? 'X' : 'O',
                             0,
-                            isX ? player1Name : player2Name
-                    )
-            );
+                            isX ? player1Name : player2Name));
             isX = !isX;
         }
     }
 
     @Override
     public void play() {
-        if (isPlaying) return;
+        if (isPlaying)
+            return;
 
         timeline = new Timeline();
         timeline.setCycleCount(1);
@@ -75,8 +71,7 @@ public class ReplayGameSession extends ReplaySession {
                         Move m = recordedMoves.get(index);
                         listener.onBoardUpdate(m.row, m.col, m.symbol);
                         currentMoveIndex = index + 1;
-                    }
-            );
+                    });
             timeline.getKeyFrames().add(frame);
         }
 
@@ -86,21 +81,51 @@ public class ReplayGameSession extends ReplaySession {
         timeline.play();
     }
 
-    @Override public void pause() { if (timeline != null) timeline.pause(); }
-    @Override public void resume() { if (timeline != null) timeline.play(); }
-    @Override public void stop() { if (timeline != null) timeline.stop(); }
+    @Override
+    public void pause() {
+        if (timeline != null)
+            timeline.pause();
+    }
 
-    @Override public void stepForward() {}
-    @Override public void stepBackward() {}
+    @Override
+    public void resume() {
+        if (timeline != null)
+            timeline.play();
+    }
+
+    @Override
+    public void stop() {
+        if (timeline != null)
+            timeline.stop();
+    }
+
+    @Override
+    public void stepForward() {
+    }
+
+    @Override
+    public void stepBackward() {
+    }
 
     @Override
     public void setPlaybackSpeed(double speed) {
         this.playbackSpeed = speed;
     }
 
-    @Override public int getTotalMoves() { return recordedMoves.size(); }
-    @Override public int getCurrentMoveIndex() { return currentMoveIndex; }
-    @Override public boolean isPlaying() { return isPlaying; }
+    @Override
+    public int getTotalMoves() {
+        return recordedMoves.size();
+    }
+
+    @Override
+    public int getCurrentMoveIndex() {
+        return currentMoveIndex;
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return isPlaying;
+    }
 
     @Override
     public void handleCellClick(int row, int col) {
@@ -109,17 +134,19 @@ public class ReplayGameSession extends ReplaySession {
 
     @Override
     public void loadRecording(String recordingJson) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public void loadRecordingFromFile(String filePath) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public void jumpToMove(int moveIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
-

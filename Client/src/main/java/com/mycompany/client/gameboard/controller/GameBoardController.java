@@ -1,11 +1,14 @@
 package com.mycompany.client.gameboard.controller;
 
-import com.mycompany.client.Difficulty;
 import com.mycompany.client.gameboard.model.GameMode;
 import com.mycompany.client.gameboard.model.Board;
 import com.mycompany.client.gameboard.model.GameSession;
 import com.mycompany.client.gameboard.model.ReplayGameSession;
 import com.mycompany.client.gameboard.model.TwoPlayerSession;
+import com.mycompany.client.match_recording.GameRecorder;
+import com.mycompany.client.match_recording.GameRecording;
+import com.mycompany.client.match_recording.RecordingManager;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -25,10 +28,9 @@ import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
-import match_recording.GameRecorder;
-import match_recording.GameRecording;
-import match_recording.RecordingManager;
+
 import com.mycompany.client.GameResultVideoManager.GameResultVideoManager;
+import com.mycompany.client.difficulty.Difficulty;
 
 public class GameBoardController implements GameSession.SessionListener {
 
