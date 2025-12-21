@@ -23,9 +23,9 @@ public class App extends Application {
 
         scene.getStylesheets().addAll(
                 getClass().getResource("/styles/customStyles.css").toExternalForm(),
-                App.class.getResource("/css/profilescreen.css").toExternalForm(),
-                App.class.getResource("/css/style.css").toExternalForm(),
-                App.class.getResource("/css/table.css").toExternalForm());
+                App.class.getResource("/styles/profilescreen.css").toExternalForm(),
+                App.class.getResource("/styles/style.css").toExternalForm(),
+                App.class.getResource("/styles/table.css").toExternalForm());
 
         stage.setScene(scene);
         stage.show();

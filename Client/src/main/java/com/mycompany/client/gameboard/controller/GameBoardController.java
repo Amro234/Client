@@ -13,9 +13,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -23,13 +21,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-import javafx.stage.Stage;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 
 import com.mycompany.client.GameResultVideoManager.GameResultVideoManager;
+import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.difficulty.Difficulty;
 
 public class GameBoardController implements GameSession.SessionListener {
@@ -370,11 +368,8 @@ public class GameBoardController implements GameSession.SessionListener {
     public void handleBackButton() {
         try {
             stopTimer();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/main-menu.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            Parent root = NavigationService.loadFXML("main-menu");
+            NavigationService.navigateTo(root);
         } catch (IOException e) {
             e.printStackTrace();
         }

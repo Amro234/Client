@@ -61,4 +61,19 @@ public class NavigationService {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/mycompany/client/" + fxml + ".fxml"));
         return fxmlLoader.load();
     }
+
+    public static Parent loadFXML(String fxml, String... css) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/mycompany/client/" + fxml + ".fxml"));
+        Parent root = fxmlLoader.load();
+        if (css != null && css.length > 0) {
+            for (String sheet : css) {
+                root.getStylesheets().add(App.class.getResource("/styles/" + sheet + ".css").toExternalForm());
+            }
+        }
+        return root;
+    }
+
+    public static FXMLLoader getFXMLLoader(String fxml) {
+        return new FXMLLoader(App.class.getResource("/com/mycompany/client/" + fxml + ".fxml"));
+    }
 }

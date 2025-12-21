@@ -8,14 +8,15 @@ package com.mycompany.client.difficulty;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import com.mycompany.client.core.navigation.NavigationService;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -122,11 +123,10 @@ public class DifficultyController implements Initializable {
     private void onBackToMenu(MouseEvent event) {
         try {
             // Load the main menu FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/main-menu.fxml"));
-            Parent root = loader.load();
 
+            Parent root = NavigationService.loadFXML("main_menu");
             // Set root of current scene to preserve window size and stylesheets
-            easyCard.getScene().setRoot(root);
+            NavigationService.navigateTo(root);
 
         } catch (IOException e) {
             System.err.println("Error loading main menu: " + e.getMessage());
@@ -143,17 +143,12 @@ public class DifficultyController implements Initializable {
             System.out.println("Starting game with difficulty: " + selectedDifficulty);
             try {
                 // Load the game board FXML
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../game_board.fxml"));
+                FXMLLoader loader = NavigationService.getFXMLLoader("game_board");
                 Parent root = loader.load();
 
-                // Get the current stage
-                Stage stage = (Stage) easyCard.getScene().getWindow();
+                root.getStylesheets().add(getClass().getResource("/styles/game_board.css").toExternalForm());
 
-                // Set the new scene
-                Scene scene = new Scene(root);
-                scene.getStylesheets().add(getClass().getResource("/styles/game_board.css").toExternalForm());
-                stage.setScene(scene);
-                stage.show();
+                NavigationService.navigateTo(root);
             } catch (IOException e) {
                 System.err.println("Error loading game board: " + e.getMessage());
                 e.printStackTrace();
