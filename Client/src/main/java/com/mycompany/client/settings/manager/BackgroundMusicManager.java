@@ -1,6 +1,5 @@
-package com.mycompany.client.backgroundAudio;
+package com.mycompany.client.settings.manager;
 
-import com.mycompany.client.settings.SettingsManager;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 

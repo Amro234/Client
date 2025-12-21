@@ -1,7 +1,8 @@
 package com.mycompany.client;
 
-import com.mycompany.client.backgroundAudio.BackgroundMusicManager;
 import com.mycompany.client.core.navigation.NavigationService;
+import com.mycompany.client.settings.manager.BackgroundMusicManager;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

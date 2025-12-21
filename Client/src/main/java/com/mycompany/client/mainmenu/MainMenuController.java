@@ -16,8 +16,9 @@ import javafx.scene.input.MouseEvent;
 import java.io.IOException;
 import javafx.stage.Modality;
 import javafx.scene.image.Image;
-import com.mycompany.client.settings.SettingsManager;
-import com.mycompany.client.backgroundAudio.BackgroundMusicManager;
+
+import com.mycompany.client.settings.manager.BackgroundMusicManager;
+import com.mycompany.client.settings.manager.SettingsManager;
 import com.mycompany.client.App;
 import com.mycompany.client.auth.controller.LoginController;
 
