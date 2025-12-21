@@ -121,17 +121,9 @@ public class DifficultyController implements Initializable {
      */
     @FXML
     private void onBackToMenu(MouseEvent event) {
-        try {
-            // Load the main menu FXML
-
-            Parent root = NavigationService.loadFXML("main_menu");
-            // Set root of current scene to preserve window size and stylesheets
-            NavigationService.navigateTo(root);
-
-        } catch (IOException e) {
-            System.err.println("Error loading main menu: " + e.getMessage());
-            e.printStackTrace();
-        }
+        // Parent root = NavigationService.loadFXML("main_menu");
+        // Set root of current scene to preserve window size and stylesheets
+        NavigationService.goBack();
     }
 
     /**
