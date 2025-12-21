@@ -1,7 +1,11 @@
 package com.mycompany.client.gameLobby.controller;
 
-import com.mycompany.client.Player;
+import com.mycompany.client.core.server.ServerConnection;
 import com.mycompany.client.gameLobby.enums.PlayerStatus;
+import com.mycompany.client.gameLobby.networking.GameLobbyClient;
+import com.mycompany.client.gameLobby.networking.exception.GameLobbyException;
+import com.mycompany.client.gameLobby.networking.model.user.OnlineUser;
+import com.mycompany.client.gameLobby.networking.model.user.OnlineUsersResponse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,7 +34,7 @@ import javafx.stage.Stage;
 
 public class GameLobbyController implements Initializable {
 
-    private FilteredList<Player> filteredPlayers;
+    private FilteredList<OnlineUser> filteredPlayers;
 
     @FXML
     private Button logOutBtn;
@@ -43,24 +47,21 @@ public class GameLobbyController implements Initializable {
     private ComboBox<PlayerStatus> statusComboBox;
 
     @FXML
-    private TableView<Player> playerTable;
+    private TableView<OnlineUser> playerTable;
     @FXML
-    private TableColumn<Player, String> playerColumn;
+    private TableColumn<OnlineUser, String> playerColumn;
     @FXML
-    private TableColumn<Player, PlayerStatus> statusColumn;
+    private TableColumn<OnlineUser, PlayerStatus> statusColumn;
     @FXML
-    private TableColumn<Player, Void> actionColumn;
+    private TableColumn<OnlineUser, Void> actionColumn;
 
     @FXML
     private TextField searchField;
 
-    private final ObservableList<Player> playerData = FXCollections.observableArrayList();
+    private final ObservableList<OnlineUser> playerData = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        // Start server message listener
-        // ServerConnection.startMessageListener();
 
         // ComboBox
         statusComboBox.getItems().add(null); // ALL
@@ -77,10 +78,17 @@ public class GameLobbyController implements Initializable {
         statusComboBox.setButtonCell(statusComboBox.getCellFactory().call(null));
 
         // Columns
-        playerColumn.setCellValueFactory(new PropertyValueFactory<>("playerName"));
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        playerColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+        statusColumn.setCellValueFactory(cellData -> {
+            PlayerStatus status = cellData.getValue().isInGame() ? PlayerStatus.IN_GAME : PlayerStatus.READY;
+            return new javafx.beans.property.SimpleObjectProperty<>(status);
+        });
 
+        // Load data BEFORE starting listener (to avoid race condition)
         loadPlayersData();
+
+        // Start server message listener AFTER loading initial data
+        ServerConnection.startMessageListener();
 
         filteredPlayers = new FilteredList<>(playerData, p -> true);
         playerTable.setItems(filteredPlayers);
@@ -108,9 +116,10 @@ public class GameLobbyController implements Initializable {
                 if (empty || item == null) {
                     setGraphic(null);
                 } else {
-                    Player p = getTableView().getItems().get(getIndex());
+                    OnlineUser user = getTableView().getItems().get(getIndex());
+                    // Use default avatar for now
                     imageView.setImage(
-                            new Image(getClass().getResourceAsStream("/assets/images/" + p.getAvatar())));
+                            new Image(getClass().getResourceAsStream("/assets/images/avatar1.png")));
                     label.setText(item);
                     setGraphic(box);
                     setAlignment(Pos.CENTER_LEFT);
@@ -163,12 +172,10 @@ public class GameLobbyController implements Initializable {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    Player p = getTableView().getItems().get(getIndex());
+                    OnlineUser user = getTableView().getItems().get(getIndex());
 
                     btn.setText(
-                            p.getStatus() == PlayerStatus.READY ? "Challenge"
-                                    : p.getStatus() == PlayerStatus.IN_GAME ? "Spectate"
-                                            : "Invite");
+                            user.isInGame() ? "Spectate" : "Challenge");
 
                     btn.getStyleClass().add("action-button");
 
@@ -179,7 +186,7 @@ public class GameLobbyController implements Initializable {
 
         // Row Height
         playerTable.setRowFactory(tv -> {
-            TableRow<Player> row = new TableRow<>();
+            TableRow<OnlineUser> row = new TableRow<>();
             row.setPrefHeight(70);
             return row;
         });
@@ -190,12 +197,13 @@ public class GameLobbyController implements Initializable {
         String searchText = searchField.getText();
         PlayerStatus selectedStatus = statusComboBox.getValue();
 
-        filteredPlayers.setPredicate(player -> {
+        filteredPlayers.setPredicate(user -> {
 
             boolean matchesSearch = searchText == null || searchText.isBlank()
-                    || player.getPlayerName().toLowerCase().contains(searchText.toLowerCase());
+                    || user.getUsername().toLowerCase().contains(searchText.toLowerCase());
 
-            boolean matchesStatus = selectedStatus == null || player.getStatus() == selectedStatus;
+            PlayerStatus userStatus = user.isInGame() ? PlayerStatus.IN_GAME : PlayerStatus.READY;
+            boolean matchesStatus = selectedStatus == null || userStatus == selectedStatus;
 
             return matchesSearch && matchesStatus;
         });
@@ -203,9 +211,23 @@ public class GameLobbyController implements Initializable {
 
     // Data
     private void loadPlayersData() {
-        playerData.add(new Player("PlayerOne", PlayerStatus.READY, "avatar1.png"));
-        playerData.add(new Player("PlayerTwo", PlayerStatus.IN_GAME, "avatar2.png"));
-        playerData.add(new Player("PlayerThree", PlayerStatus.READY, "avatar3.png"));
+        try {
+
+            OnlineUsersResponse response = GameLobbyClient.getOnlineUsers();
+            playerData.clear();
+            playerData.addAll(response.getUsers());
+            System.out.println("Loaded " + response.getCount() + " online users");
+        } catch (GameLobbyException e) {
+            System.err.println("Failed to load online users: " + e.getMessage());
+            // Show error to user
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Failed to load online players");
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
+            });
+        }
     }
 
     // Buttons

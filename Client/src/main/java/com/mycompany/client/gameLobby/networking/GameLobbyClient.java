@@ -8,10 +8,8 @@ import com.mycompany.client.gameLobby.networking.model.challenge.ChallengeRespon
 import com.mycompany.client.gameLobby.networking.model.user.AvailablePlayersResponse;
 import com.mycompany.client.gameLobby.networking.model.user.OnlineUser;
 import com.mycompany.client.gameLobby.networking.model.user.OnlineUsersResponse;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
