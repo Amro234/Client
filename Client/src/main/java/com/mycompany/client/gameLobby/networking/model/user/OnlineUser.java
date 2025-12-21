@@ -2,14 +2,16 @@ package com.mycompany.client.gameLobby.networking.model.user;
 
 import org.json.JSONObject;
 
+import com.mycompany.client.gameLobby.enums.PlayerStatus;
+
 public class OnlineUser {
     private final int userId;
     private final String username;
     private final String email;
     private final int score;
-    private final boolean isInGame;
+    private final PlayerStatus isInGame;
 
-    public OnlineUser(int userId, String username, String email, int score, boolean isInGame) {
+    public OnlineUser(int userId, String username, String email, int score, PlayerStatus isInGame) {
         this.userId = userId;
         this.username = username;
         this.email = email;
@@ -23,7 +25,7 @@ public class OnlineUser {
                 json.getString("username"),
                 json.getString("email"),
                 json.getInt("score"),
-                json.getBoolean("isInGame"));
+                json.getBoolean("isInGame") ? PlayerStatus.IN_GAME : PlayerStatus.READY);
     }
 
     public int getUserId() {
@@ -43,7 +45,7 @@ public class OnlineUser {
     }
 
     public boolean isInGame() {
-        return isInGame;
+        return isInGame == PlayerStatus.IN_GAME;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class OnlineUser {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", score=" + score +
-                ", isInGame=" + isInGame +
+                ", isInGame=" + isInGame.name() +
                 '}';
     }
 }
