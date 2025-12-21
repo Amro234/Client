@@ -1,14 +1,17 @@
 package com.mycompany.client.gameLobby.controller;
 
 import com.mycompany.client.auth.model.User;
+import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.server.ServerConnection;
 import com.mycompany.client.core.session.UserSession;
+import com.mycompany.client.gameLobby.controller.uicomponents.ActionTableCell;
+import com.mycompany.client.gameLobby.controller.uicomponents.PlayerTableCell;
+import com.mycompany.client.gameLobby.controller.uicomponents.StatusTableCell;
 import com.mycompany.client.gameLobby.enums.PlayerStatus;
 import com.mycompany.client.gameLobby.networking.GameLobbyClient;
 import com.mycompany.client.gameLobby.networking.exception.GameLobbyException;
 import com.mycompany.client.gameLobby.networking.model.user.OnlineUser;
 import com.mycompany.client.gameLobby.networking.model.user.OnlineUsersResponse;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,21 +21,11 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
 
 public class GameLobbyController implements Initializable {
 
@@ -82,16 +75,22 @@ public class GameLobbyController implements Initializable {
     private Circle matchesDot;
     @FXML
     private Label matchesCountLabel;
+
     private final ObservableList<OnlineUser> playerData = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        // Set current user profile
         updateUserProfile();
+        setupStatusComboBox();
+        setupTableColumns();
+        loadPlayersData();
+        ServerConnection.startMessageListener();
+        setupFilters();
+        setupRowHeight();
+    }
 
-        // ComboBox
-        statusComboBox.getItems().add(null); // ALL
+    private void setupStatusComboBox() {
+        statusComboBox.getItems().add(null);
         statusComboBox.getItems().addAll(PlayerStatus.values());
         statusComboBox.setValue(null);
 
@@ -103,114 +102,29 @@ public class GameLobbyController implements Initializable {
             }
         });
         statusComboBox.setButtonCell(statusComboBox.getCellFactory().call(null));
+    }
 
-        // Columns
+    private void setupTableColumns() {
         playerColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         statusColumn.setCellValueFactory(cellData -> {
             PlayerStatus status = cellData.getValue().getStatus();
             return new javafx.beans.property.SimpleObjectProperty<>(status);
         });
 
-        // Load data BEFORE starting listener (to avoid race condition)
-        loadPlayersData();
+        playerColumn.setCellFactory(column -> new PlayerTableCell());
+        statusColumn.setCellFactory(column -> new StatusTableCell());
+        actionColumn.setCellFactory(column -> new ActionTableCell());
+    }
 
-        // Start server message listener AFTER loading initial data
-        ServerConnection.startMessageListener();
-
+    private void setupFilters() {
         filteredPlayers = new FilteredList<>(playerData, p -> true);
         playerTable.setItems(filteredPlayers);
 
-        // Filters
         searchField.textProperty().addListener((obs, o, n) -> applyFilters());
         statusComboBox.valueProperty().addListener((obs, o, n) -> applyFilters());
+    }
 
-        // Player Column
-        playerColumn.setCellFactory(column -> new TableCell<>() {
-
-            private final ImageView imageView = new ImageView();
-            private final Label label = new Label();
-            private final HBox box = new HBox(10, imageView, label);
-
-            {
-                imageView.setFitWidth(32);
-                imageView.setFitHeight(32);
-                box.setAlignment(Pos.CENTER_LEFT);
-            }
-
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    OnlineUser user = getTableView().getItems().get(getIndex());
-                    // Use default avatar for now
-                    imageView.setImage(
-                            new Image(getClass().getResourceAsStream("/assets/images/avatar1.png")));
-                    label.setText(item);
-                    setGraphic(box);
-                    setAlignment(Pos.CENTER_LEFT);
-                    setPadding(new Insets(0, 0, 0, -10));
-                }
-            }
-        });
-
-        // Status Column
-        statusColumn.setCellFactory(column -> new TableCell<>() {
-
-            private final Circle dot = new Circle(5);
-            private final Label label = new Label();
-            private final HBox box = new HBox(8, dot, label);
-
-            {
-                box.setAlignment(Pos.CENTER);
-            }
-
-            @Override
-            protected void updateItem(PlayerStatus status, boolean empty) {
-                super.updateItem(status, empty);
-
-                if (empty || status == null) {
-                    setGraphic(null);
-                } else {
-                    dot.setStyle("-fx-fill: " + status.getColor());
-                    label.setText(status.getDisplayName());
-                    setGraphic(box);
-                }
-            }
-        });
-
-        // Action Column
-        actionColumn.setCellFactory(column -> new TableCell<>() {
-
-            private final Button btn = new Button();
-            private final Region spacer = new Region();
-            private final HBox box = new HBox(10, spacer, btn);
-
-            {
-                HBox.setHgrow(spacer, Priority.ALWAYS);
-                box.setAlignment(Pos.CENTER);
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    OnlineUser user = getTableView().getItems().get(getIndex());
-
-                    btn.setText("Challenge");
-
-                    btn.getStyleClass().add("action-button");
-
-                    setGraphic(box);
-                }
-            }
-        });
-
-        // Row Height
+    private void setupRowHeight() {
         playerTable.setRowFactory(tv -> {
             TableRow<OnlineUser> row = new TableRow<>();
             row.setPrefHeight(70);
@@ -282,15 +196,13 @@ public class GameLobbyController implements Initializable {
 
     @FXML
     private void onSettingsPressed(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/mycompany/client/settings.fxml"));
-        Stage stage = (Stage) settingsBtn.getScene().getWindow();
-        stage.setScene(new Scene(root));
+        Parent root = NavigationService.loadFXML("settings");
+        NavigationService.navigateTo(root);
     }
 
     @FXML
     private void onQuickPlayPressed(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/mycompany/client/game_board.fxml"));
-        Stage stage = (Stage) quickPlayBtn.getScene().getWindow();
-        stage.setScene(new Scene(root));
+        Parent root = NavigationService.loadFXML("difficulty");
+        NavigationService.navigateTo(root);
     }
 }
