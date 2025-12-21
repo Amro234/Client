@@ -59,6 +59,28 @@ public class GameLobbyController implements Initializable {
     private TextField searchField;
 
     private final ObservableList<OnlineUser> playerData = FXCollections.observableArrayList();
+    @FXML
+    private Circle profileAvatar;
+    @FXML
+    private Label usernameLabel;
+    @FXML
+    private Label scoreLabel;
+    @FXML
+    private Button lobbyBtn;
+    @FXML
+    private Button statsBtn;
+    @FXML
+    private Button friendsBtn;
+    @FXML
+    private Label titleLabel;
+    @FXML
+    private Circle onlineDot;
+    @FXML
+    private Label onlineCountLabel;
+    @FXML
+    private Circle matchesDot;
+    @FXML
+    private Label matchesCountLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -80,7 +102,7 @@ public class GameLobbyController implements Initializable {
         // Columns
         playerColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         statusColumn.setCellValueFactory(cellData -> {
-            PlayerStatus status = cellData.getValue().isInGame() ? PlayerStatus.IN_GAME : PlayerStatus.READY;
+            PlayerStatus status = cellData.getValue().getStatus();
             return new javafx.beans.property.SimpleObjectProperty<>(status);
         });
 
@@ -174,8 +196,7 @@ public class GameLobbyController implements Initializable {
                 } else {
                     OnlineUser user = getTableView().getItems().get(getIndex());
 
-                    btn.setText(
-                            user.isInGame() ? "Spectate" : "Challenge");
+                    btn.setText("Challenge");
 
                     btn.getStyleClass().add("action-button");
 
@@ -202,7 +223,7 @@ public class GameLobbyController implements Initializable {
             boolean matchesSearch = searchText == null || searchText.isBlank()
                     || user.getUsername().toLowerCase().contains(searchText.toLowerCase());
 
-            PlayerStatus userStatus = user.isInGame() ? PlayerStatus.IN_GAME : PlayerStatus.READY;
+            PlayerStatus userStatus = user.getStatus();
             boolean matchesStatus = selectedStatus == null || userStatus == selectedStatus;
 
             return matchesSearch && matchesStatus;

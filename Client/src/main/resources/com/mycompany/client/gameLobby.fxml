@@ -23,15 +23,15 @@
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
-                  <Circle fill="DODGERBLUE" radius="26.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fx:id="profileAvatar" fill="DODGERBLUE" radius="26.0" stroke="BLACK" strokeType="INSIDE" />
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="1.0">
                      <children>
-                        <Label text="Mohamed_ALi">
+                        <Label fx:id="usernameLabel" text="Mohamed_ALi">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="1250 pts" textFill="#02142682">
+                        <Label fx:id="scoreLabel" text="1250 pts" textFill="#02142682">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -45,12 +45,12 @@
             </HBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                <children>
-                  <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="👥       Lobby">
+                  <Button fx:id="lobbyBtn" maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="👥       Lobby">
                      <font>
                         <Font size="15.0" />
                      </font></Button>
-                  <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="📊      My Stats" />
-                  <Button maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="👤       Friends" />
+                  <Button fx:id="statsBtn" maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="📊      My Stats" />
+                  <Button fx:id="friendsBtn" maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="👤       Friends" />
                   <Button fx:id="settingsBtn" maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" onAction="#onSettingsPressed" styleClass="menu-button" text="⚙       Settings" />
                </children>
             </VBox>
@@ -73,22 +73,22 @@
                <children>
                   <VBox prefHeight="200.0">
                      <children>
-                        <Label maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="135.0" text="Game Lobby">
+                        <Label fx:id="titleLabel" maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="135.0" text="Game Lobby">
                            <font>
                               <Font name="System Bold" size="21.0" />
                            </font>
                         </Label>
                         <HBox alignment="BASELINE_LEFT" prefHeight="74.0" prefWidth="326.0">
                            <children>
-                              <Circle fill="#059669" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-                              <Label text=" 342 Online " textFill="#4c739a">
+                              <Circle fx:id="onlineDot" fill="#059669" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Label fx:id="onlineCountLabel" text=" 342 Online " textFill="#4c739a">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
                               <Label text="  • " />
-                              <Circle fill="#fb923c" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-                              <Label text=" 50 Matches in Progress" textFill="#4c739a">
+                              <Circle fx:id="matchesDot" fill="#fb923c" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Label fx:id="matchesCountLabel" text=" 50 Matches in Progress" textFill="#4c739a">
                                  <font>
                                     <Font name="System Bold" size="16.0" />
                                  </font>

@@ -9,14 +9,14 @@ public class OnlineUser {
     private final String username;
     private final String email;
     private final int score;
-    private final PlayerStatus isInGame;
+    private final PlayerStatus status;
 
-    public OnlineUser(int userId, String username, String email, int score, PlayerStatus isInGame) {
+    public OnlineUser(int userId, String username, String email, int score, PlayerStatus status) {
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.score = score;
-        this.isInGame = isInGame;
+        this.status = status;
     }
 
     public static OnlineUser fromJson(JSONObject json) {
@@ -44,8 +44,8 @@ public class OnlineUser {
         return score;
     }
 
-    public boolean isInGame() {
-        return isInGame == PlayerStatus.IN_GAME;
+    public PlayerStatus getStatus() {
+        return status;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class OnlineUser {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", score=" + score +
-                ", isInGame=" + isInGame.name() +
+                ", status=" + status.name() +
                 '}';
     }
 }
