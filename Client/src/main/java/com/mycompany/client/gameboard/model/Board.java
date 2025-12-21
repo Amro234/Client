@@ -1,8 +1,8 @@
 package com.mycompany.client.gameboard.model;
 
 public class Board {
-    private char[][] board;
-    private int movesCount;
+    protected char[][] board;
+    protected int movesCount;
 
     public Board() {
         board = new char[3][3];
@@ -71,7 +71,7 @@ public class Board {
         HORIZONTAL, VERTICAL, DIAGONAL_MAIN, DIAGONAL_ANTI, NONE
     }
 
-    public WinInfo checkWin() {
+    public WinInfo checkWin() { 
         for (int i = 0; i < 3; i++) {
             if (board[i][0] != ' ' && board[i][0] == board[i][1] && board[i][1] == board[i][2]) {
                 return new WinInfo(WinType.HORIZONTAL, i, board[i][0]);
