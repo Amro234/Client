@@ -1,7 +1,7 @@
 package com.mycompany.client.auth;
 
 import com.mycompany.client.auth.model.User;
-import com.mycompany.client.core.ServerConnection;
+import com.mycompany.client.core.server.ServerConnection;
 import org.json.JSONObject;
 
 import java.io.IOException;

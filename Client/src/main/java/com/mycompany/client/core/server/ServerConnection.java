@@ -1,4 +1,4 @@
-package com.mycompany.client.core;
+package com.mycompany.client.core.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -7,9 +7,37 @@ import java.net.Socket;
 
 public class ServerConnection {
 
-    private static final String SERVER_HOST = "localhost";
+    private static String SERVER_HOST = "localhost";
     private static final int SERVER_PORT = 5000;
     private static final int SOCKET_TIMEOUT = 5000;
+
+    public static void setServerHost(String host) {
+        SERVER_HOST = host;
+    }
+
+    public static String getServerHost() {
+        return SERVER_HOST;
+    }
+
+    public static boolean testConnection() {
+        Socket socket = null;
+        try {
+            socket = new Socket(SERVER_HOST, SERVER_PORT);
+            socket.setSoTimeout(SOCKET_TIMEOUT);
+            return true;
+        } catch (IOException e) {
+            System.err.println("Connection test failed: " + e.getMessage());
+            return false;
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    System.err.println("Error closing test socket: " + e.getMessage());
+                }
+            }
+        }
+    }
 
     public static String sendRequest(String requestJson) throws IOException {
         Socket socket = null;

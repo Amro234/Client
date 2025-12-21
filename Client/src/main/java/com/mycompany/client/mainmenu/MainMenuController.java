@@ -78,7 +78,6 @@ public class MainMenuController {
             recordingsLabel.setCursor(Cursor.HAND);
         }
 
-
         // Set initial sound icon based on current master volume state
         if (soundIcon != null) {
             boolean isSoundOn = SettingsManager.isMasterVolumeOn();
@@ -92,11 +91,9 @@ public class MainMenuController {
         System.out.println("Main Menu loaded!");
     }
 
-   
-
     @FXML
     private void onLogoutClicked(MouseEvent event) {
-       
+
     }
 
     @FXML
@@ -212,6 +209,11 @@ public class MainMenuController {
             System.err.println("Error loading recordings.fxml: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void onPlayOnlineClicked(ActionEvent event) {
+        ServerConnectionDialog.show(playOnlineButton.getScene().getWindow());
     }
 
 }
