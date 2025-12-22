@@ -9,8 +9,6 @@ import javafx.scene.text.Text;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import java.io.IOException;
@@ -96,23 +94,21 @@ public class MainMenuController {
 
     }
 
-      @FXML
+    @FXML
     private void onSinglePlayerClicked(ActionEvent event) {
         try {
             System.out.println("Single Player clicked - navigating to difficulty selection");
-                        FXMLLoader loader = NavigationService.getFXMLLoader("difficulty");
+            FXMLLoader loader = NavigationService.getFXMLLoader("difficulty");
 
             Parent singlePlayerRoot = loader.load();
 
-            Stage stage = (Stage) singlePlayerButton.getScene().getWindow();
-            Scene scene = new Scene(singlePlayerRoot);
-            stage.setScene(scene);
-            stage.show();
+            NavigationService.navigateTo(singlePlayerRoot);
         } catch (IOException e) {
             System.err.println("Error loading single-player.fxml: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
     @FXML
     private void onSettingsClicked(MouseEvent event) {
         try {
