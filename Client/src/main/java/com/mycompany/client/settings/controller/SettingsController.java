@@ -2,6 +2,9 @@ package com.mycompany.client.settings.controller;
 
 import com.mycompany.client.settings.manager.BackgroundMusicManager;
 import com.mycompany.client.settings.manager.SettingsManager;
+import com.mycompany.client.core.navigation.NavigationService;
+import javafx.scene.Parent;
+import java.io.IOException;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -226,5 +229,15 @@ public class SettingsController implements Initializable {
 
     private void updateSongName() {
         currentSongText.setText(BackgroundMusicManager.getCurrentTrackName());
+    }
+
+    @FXML
+    private void handleBack() {
+        try {
+            Parent root = NavigationService.loadFXML("main-menu");
+            NavigationService.navigateTo(root);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }
