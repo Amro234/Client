@@ -79,17 +79,37 @@ public class MatchHistoryController implements Initializable {
             try {
                 GameRecording rec = manager.loadRecording(file.getName(), username);
 
-                MatchResult result = "WIN".equals(rec.getStatus()) ? MatchResult.VICTORY
-                        : "DRAW".equals(rec.getStatus()) ? MatchResult.DRAW : MatchResult.DEFEAT;
+               MatchResult result;
 
-                matches.add(
-                        new MatchData(
-                                rec.opponentPlayerName,
-                                result,
-                                rec.date,
-                                rec.time,
-                                rec.getSteps().size(),
-                                file.getName()));
+switch (rec.getStatus()) {
+    case "WIN":
+        result = MatchResult.VICTORY;
+        break;
+    case "DRAW":
+        result = MatchResult.DRAW;
+        break;
+    case "LOSE":
+        result = MatchResult.DEFEAT;
+        break;
+    case "CANCELLED":
+        result = MatchResult.CANCELLED;
+        break;
+    default:
+        continue; // safety
+}
+
+
+               matches.add(
+    new MatchData(
+        rec.opponentPlayerName,
+        result,
+        rec.date,
+        rec.time,
+        rec.getSteps().size(),
+        file.getName()
+    )
+);
+
 
             } catch (Exception e) {
                 e.printStackTrace();

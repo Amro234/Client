@@ -8,7 +8,10 @@ package com.mycompany.client.matches.data;
 public enum MatchResult {
     VICTORY("VICTORY", "/assets/images/vic_cup.png", "badge-victory", "#F1F5F9"),
     DEFEAT("DEFEAT", "/assets/images/loss_x.png", "badge-defeat", "#FEF2F2"),
-    DRAW("DRAW", "/assets/images/draw_handshake.png", "badge-draw", "#F1F5F9");
+    DRAW("DRAW", "/assets/images/draw_handshake.png", "badge-draw", "#F1F5F9"),
+    // 
+    CANCELLED("CANCELLED", "/assets/images/draw_handshake.png", "badge-cancelled", "#F8FAFC");;
+    
 
     private final String displayName;
     private final String iconPath;
