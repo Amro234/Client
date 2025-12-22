@@ -30,13 +30,21 @@ import com.mycompany.client.GameResultVideoManager.GameResultVideoManager;
 import com.mycompany.client.gameboard.model.BoardMode;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.difficulty.Difficulty;
+
+import javafx.animation.PauseTransition;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+
 import com.mycompany.client.gameboard.model.SinglePlayerSession;
+
 
 public class GameBoardController implements GameSession.SessionListener {
 
     private BoardMode boardMode = BoardMode.NORMAL;
 
     private GameSession currentSession;
+private boolean recordingStoppedManually = false;
 
     // UI Elements
     @FXML
@@ -96,6 +104,7 @@ public class GameBoardController implements GameSession.SessionListener {
     private GameRecorder gameRecorder = new GameRecorder();
     private RecordingManager recordingManager = new RecordingManager();
     private boolean isRecordingEnabled = false;
+    private Timeline recordingPulse;
     @FXML
     private Label replayStatusLabel;
     @FXML
@@ -107,6 +116,18 @@ public class GameBoardController implements GameSession.SessionListener {
     @FXML
     private Button replaySpeedBtn;
     private boolean isFastReplay = false;
+    @FXML
+    private Circle recordingIndicator;
+    @FXML
+private HBox recordingBox;
+
+
+
+@FXML
+private Label recordingLabel;
+
+
+    
 
     public void initialize() {
         cells = new StackPane[][] {
@@ -123,6 +144,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
         attachEventHandlers();
         initializeTimer();
+         updateRecordButtonUI(false);
     }
 
     public void startNewGame(GameMode mode, Difficulty difficulty) {
@@ -179,46 +201,65 @@ public class GameBoardController implements GameSession.SessionListener {
         stopTimer();
         stopTimer();
 
-        if (isRecordingEnabled) {
+      if (isRecordingEnabled && !recordingStoppedManually) {
 
-            String status;
+    String status;
 
-            if (winInfo == null) {
-                status = "DRAW";
-            } else {
-                char winnerSymbol = winInfo.winner;
+    if (winInfo == null) {
+        status = "DRAW";
+    } else {
+        status = (winInfo.winner == 'X') ? "WIN" : "LOSE";
+    }
 
-                // Player 1 دايمًا X عندك
-                if (winnerSymbol == 'X') {
-                    status = "WIN";
-                } else {
-                    status = "LOSE";
-                }
-            }
+    gameRecorder.stopRecording(status);
 
-            gameRecorder.stopRecording(status);
+    recordingManager.saveRecording(
+            gameRecorder.getRecording(),
+            currentSession.getPlayer1Name());
 
-            recordingManager.saveRecording(
-                    gameRecorder.getRecording(),
-                    currentSession.getPlayer1Name());
+    isRecordingEnabled = false;
+    stopRecordingIndicator();
+    updateRecordButtonUI(false);
+}
 
-            isRecordingEnabled = false;
-        }
 
-        if (winInfo != null) {
-            highlightWin(winInfo);
-            String winnerName = (winInfo.winner == 'X')
-                    ? currentSession.getPlayer1Name()
-                    : currentSession.getPlayer2Name();
+if (winInfo != null) {
 
-            GameResultVideoManager.showWinVideo(
-                    () -> showPlayAgainDialog(winnerName + " Wins!"));
+    highlightWin(winInfo);
+
+    boolean playerWon = winInfo.winner == 'X';
+
+    if (currentSession instanceof SinglePlayerSession) {
+
+        if (playerWon) {
+            GameResultVideoManager.showLoseVideo(
+    () -> showPlayAgainDialog("You Lost 💔")
+);
 
         } else {
+            GameResultVideoManager.showLoseVideo(
+    () -> showPlayAgainDialog("You Lost 💔")
+);
 
-            GameResultVideoManager.showDrawVideo(
-                    () -> showPlayAgainDialog("It's a Draw!"));
         }
+
+    } else {
+        // TWO PLAYERS
+        String winnerName = playerWon
+                ? currentSession.getPlayer1Name()
+                : currentSession.getPlayer2Name();
+
+        GameResultVideoManager.showWinVideo(
+            () -> showPlayAgainDialog(winnerName + " Wins!")
+        );
+    }
+
+} else {
+    GameResultVideoManager.showDrawVideo(
+        () -> showPlayAgainDialog("It's a Draw!")
+    );
+}
+
 
     }
 
@@ -468,20 +509,18 @@ public class GameBoardController implements GameSession.SessionListener {
         });
     }
 
-    @FXML
-    private void onRecording(ActionEvent event) {
+@FXML
+private void onRecording(ActionEvent event) {
 
-        if (currentSession == null) {
-            System.out.println("No active game to record");
-            return;
-        }
+    if (currentSession == null) {
+        return;
+    }
 
-        if (isRecordingEnabled) {
-            System.out.println("Recording already started");
-            return;
-        }
+    // 🔴 START
+    if (!isRecordingEnabled) {
 
         isRecordingEnabled = true;
+        recordingStoppedManually = false;
 
         gameRecorder.startRecording(
                 GameMode.TWO_PLAYERS,
@@ -489,8 +528,37 @@ public class GameBoardController implements GameSession.SessionListener {
                 currentSession.getPlayer2Name(),
                 'X');
 
-        System.out.println("Recording started successfully");
+        startRecordingIndicator();
+        updateRecordButtonUI(true);
+
+        System.out.println("Recording started");
     }
+    // ⛔ STOP
+  else {
+    // ⛔ Stop manually
+    isRecordingEnabled = false;
+    recordingStoppedManually = true;
+
+    gameRecorder.stopRecording("CANCELLED");
+
+    recordingManager.saveRecording(
+            gameRecorder.getRecording(),
+            currentSession.getPlayer1Name());
+
+    stopRecordingIndicator();
+    updateRecordButtonUI(false);
+
+    RecordingManager.showToast(
+        "Recording cancelled – match not saved",
+        recordGame.getScene()
+    );
+}
+
+
+}
+
+
+
 
     private void disableBoardInteraction() {
         for (int i = 0; i < 3; i++) {
@@ -629,5 +697,78 @@ public class GameBoardController implements GameSession.SessionListener {
 
         replay.play();
     }
+private void startRecordingIndicator() {
+
+    recordingBox.setVisible(true);
+    recordingBox.setManaged(true);
+
+    applyRecordingGlow();
+
+    
+    PauseTransition delay = new PauseTransition(Duration.millis(300));
+    delay.setOnFinished(e -> startPulseAnimation());
+    delay.play();
+}
+
+private void stopRecordingIndicator() {
+
+    if (recordingPulse != null) {
+        recordingPulse.stop();
+    }
+
+    recordingBox.setVisible(false);
+    recordingBox.setManaged(false);
+
+    recordingIndicator.setOpacity(1.0);
+    recordingIndicator.setEffect(null);
+}
+
+private void applyRecordingGlow() {
+    DropShadow glow = new DropShadow();
+    glow.setRadius(8);
+    glow.setColor(Color.web("#dc2626")); // Red glow
+    recordingIndicator.setEffect(glow);
+}
+private void startPulseAnimation() {
+
+    recordingPulse = new Timeline(
+        new KeyFrame(Duration.ZERO, e -> {
+            recordingIndicator.setOpacity(1.0);
+            recordingLabel.setOpacity(1.0);
+        }),
+        new KeyFrame(Duration.seconds(0.6), e -> {
+            recordingIndicator.setOpacity(0.4);
+            recordingLabel.setOpacity(0.4);
+        }),
+        new KeyFrame(Duration.seconds(1.2), e -> {
+            recordingIndicator.setOpacity(1.0);
+            recordingLabel.setOpacity(1.0);
+        })
+    );
+
+    recordingPulse.setCycleCount(Timeline.INDEFINITE);
+    recordingPulse.play();
+}
+private void updateRecordButtonUI(boolean recording) {
+
+    if (recording) {
+        recordGame.setText("⏹ Stop Recording");
+        recordGame.setStyle(
+            "-fx-background-color: #7f1d1d;" +
+            "-fx-text-fill: white;" +
+            "-fx-font-weight: bold;" +
+            "-fx-background-radius: 18;"
+        );
+    } else {
+        recordGame.setText("⏺ Record");
+        recordGame.setStyle(
+            "-fx-background-color: #dc2626;" +
+            "-fx-text-fill: white;" +
+            "-fx-font-weight: bold;" +
+            "-fx-background-radius: 18;"
+        );
+    }
+}
+
 
 }

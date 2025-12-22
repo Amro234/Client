@@ -9,6 +9,7 @@ package com.mycompany.client.gameboard.model;
  * @author Mohamed_Ali
  */
 
+import com.mycompany.client.gameboard.model.GameSession.SessionListener;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
@@ -144,10 +145,10 @@ public class ReplayGameSession extends ReplaySession {
         return isPlaying;
     }
 
-    @Override
-    public void handleCellClick(int row, int col) {
-
-    }
+//    @Override
+//    public void handleCellClick(int row, int col) {
+//
+//    }
 
     @Override
     public void loadRecording(String recordingJson) {
@@ -165,5 +166,10 @@ public class ReplayGameSession extends ReplaySession {
     public void jumpToMove(int moveIndex) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from
                                                                        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void handleCellClick(int row, int col) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

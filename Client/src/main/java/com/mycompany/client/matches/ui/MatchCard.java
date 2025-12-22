@@ -1,6 +1,7 @@
 package com.mycompany.client.matches.ui;
 
 import com.mycompany.client.matches.data.MatchData;
+import com.mycompany.client.matches.data.MatchResult;
 import java.util.function.Consumer;
 
 import javafx.geometry.Insets;
@@ -34,7 +35,7 @@ public class MatchCard extends HBox {
         initializeCard();
     }
 
-    // ✅ Controller هيحدد اللي يحصل لما Replay يتضغط
+    
     public void setOnReplayRequested(Consumer<MatchData> handler) {
         this.onReplayRequested = handler;
     }
@@ -104,16 +105,25 @@ public class MatchCard extends HBox {
         return spacer;
     }
 
-    private Button createWatchReplayButton() {
-        Button btn = new Button("Watch Replay");
-        btn.getStyleClass().add("watch-replay-btn");
+   private Button createWatchReplayButton() {
 
-        btn.setOnAction(e -> {
-            if (onReplayRequested != null) {
-                onReplayRequested.accept(matchData);
-            }
-        });
+    Button btn = new Button("Watch Replay");
+    btn.getStyleClass().add("watch-replay-btn");
 
+    if (matchData.getResult() == MatchResult.CANCELLED) {
+        btn.setDisable(true);
+        btn.setText("Cancelled");
+        btn.setOpacity(0.6);
         return btn;
     }
+
+    btn.setOnAction(e -> {
+        if (onReplayRequested != null) {
+            onReplayRequested.accept(matchData);
+        }
+    });
+
+    return btn;
+}
+
 }
