@@ -29,7 +29,7 @@ public class GameResultVideoManager {
         return 1 + (int) (Math.random() * max);
     }
 
-    /* ================== PUBLIC API ================== */
+    
 
     public static void showWinVideo(Runnable onFinish) {
         playVideo(
@@ -55,7 +55,7 @@ public class GameResultVideoManager {
         );
     }
 
-    /* ================== CORE ================== */
+
 
     private static void playVideo(String path, String title, Runnable onFinish) {
 
@@ -90,7 +90,7 @@ public class GameResultVideoManager {
 
                 stage.setScene(new Scene(root));
 
-                // ⭐ النقطة الحاسمة
+              
                 stage.setOnHidden(e -> safeFinish(onFinish));
 
                 player.setOnEndOfMedia(stage::close);
@@ -105,7 +105,7 @@ public class GameResultVideoManager {
         });
     }
 
-    /* ================== MAGIC FIX ================== */
+   
 
     private static void safeFinish(Runnable onFinish) {
         PauseTransition pause = new PauseTransition(Duration.millis(80));
