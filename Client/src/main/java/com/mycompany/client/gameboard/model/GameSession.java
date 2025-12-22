@@ -15,7 +15,6 @@ public abstract class GameSession {
     protected int draws = 0;
     Timer timer = new Timer();
 
-
     public interface SessionListener {
         void onBoardUpdate(int row, int col, char symbol);
 
@@ -78,7 +77,7 @@ public abstract class GameSession {
         }
     }
 
-    protected void onTurnChanged(){
+    protected void onTurnChanged() {
         // Optional hook
     }
 
@@ -104,7 +103,14 @@ public abstract class GameSession {
         isPlayer1Turn = !isPlayer1Turn;
         if (listener != null)
             listener.onTurnChange(isPlayer1Turn);
-         onTurnChanged(); // Hook for subclasses (AI)
+        onTurnChanged(); // Hook for subclasses (AI)
 
+    }
+
+    public void stop() {
+        if (timer != null) {
+            timer.cancel();
+            timer.purge(); // Removes all cancelled tasks from this timer's task queue.
+        }
     }
 }
