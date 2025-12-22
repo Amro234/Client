@@ -160,25 +160,26 @@ switch (rec.getStatus()) {
     }
 
     private void openReplay(MatchData match) {
-        try {
-            RecordingManager manager = new RecordingManager();
-            GameRecording recording = manager.loadRecording(match.getRecordingFileName(), username);
+    try {
+        RecordingManager manager = new RecordingManager();
+        GameRecording recording =
+                manager.loadRecording(match.getRecordingFileName(), username);
 
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/mycompany/client/game_board.fxml"));
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/mycompany/client/game_board.fxml"));
 
-            Parent root = loader.load();
-            GameBoardController controller = loader.getController();
-            controller.startReplay(recording);
+        Parent root = loader.load();
+        GameBoardController controller = loader.getController();
+        controller.startReplay(recording);
 
-            Stage stage = (Stage) matchListContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+        // ✅ استخدم NavigationService
+        NavigationService.navigateTo(root);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
+
 
     private void displayMatches(List<MatchData> matches) {
         matchListContainer.getChildren().clear();
