@@ -18,11 +18,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -135,7 +132,7 @@ public class DifficultyController implements Initializable {
     /**
      * Handle start game button click
      */
-     @FXML
+    @FXML
     private void handleStartGame(ActionEvent event) {
         if (selectedDifficulty == null) {
             System.out.println("Please select a difficulty level");
@@ -147,7 +144,7 @@ public class DifficultyController implements Initializable {
             Parent root = loader.load();
 
             GameBoardController controller = loader.getController();
-                switch (selectedDifficulty) {
+            switch (selectedDifficulty) {
                 case "Easy":
                     controller.startNewGame(GameMode.SINGLE_PLAYER, Difficulty.EASY);
                     break;
@@ -159,10 +156,7 @@ public class DifficultyController implements Initializable {
                     break;
             }
 
-
-            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            NavigationService.navigateTo(root);
         } catch (IOException e) {
             e.printStackTrace();
         }

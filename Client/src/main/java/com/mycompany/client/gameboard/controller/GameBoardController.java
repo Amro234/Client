@@ -147,24 +147,23 @@ private Label recordingLabel;
          updateRecordButtonUI(false);
     }
 
-public void startNewGame(GameMode mode, Difficulty difficulty) {
+    public void startNewGame(GameMode mode, Difficulty difficulty) {
 
-    boardMode = BoardMode.NORMAL;
-    updateUIForMode();
+        boardMode = BoardMode.NORMAL;
+        updateUIForMode();
 
-    if (mode == GameMode.SINGLE_PLAYER) {
-        currentSession = new SinglePlayerSession(this, "Player 1", "Computer", difficulty);
-    } else if (mode == GameMode.TWO_PLAYERS) {
-        currentSession = new TwoPlayerSession(this, "Player 1", "Player 2");
+        if (mode == GameMode.SINGLE_PLAYER) {
+            currentSession = new SinglePlayerSession(this, "Player 1", "Computer", difficulty);
+        } else if (mode == GameMode.TWO_PLAYERS) {
+            currentSession = new TwoPlayerSession(this, "Player 1", "Player 2");
+        }
+
+        updatePlayerNames();
+        resetBoardUI();
+        resetRecording();
+        startTimer();
+        updateTurnUI(true);
     }
-
-    updatePlayerNames();
-    resetBoardUI();
-    resetRecording();
-    startTimer();
-    updateTurnUI(true);
-}
-
 
     private void attachEventHandlers() {
         for (int i = 0; i < 3; i++) {
@@ -446,8 +445,8 @@ if (winInfo != null) {
     @FXML
     public void handleBackButton() {
         stopTimer();
-        if (currentSession instanceof ReplayGameSession) {
-            ((ReplayGameSession) currentSession).stop();
+        if (currentSession != null) {
+            currentSession.stop();
         }
         NavigationService.goBack();
     }
@@ -456,8 +455,8 @@ if (winInfo != null) {
     public void handleSettingsButton() {
         try {
             stopTimer();
-            if (currentSession instanceof ReplayGameSession) {
-                ((ReplayGameSession) currentSession).stop();
+            if (currentSession != null) {
+                currentSession.stop();
             }
             Parent root = NavigationService.loadFXML("settings");
             NavigationService.navigateTo(root);
@@ -470,8 +469,8 @@ if (winInfo != null) {
     public void handleMenuButton() {
         try {
             stopTimer();
-            if (currentSession instanceof ReplayGameSession) {
-                ((ReplayGameSession) currentSession).stop();
+            if (currentSession != null) {
+                currentSession.stop();
             }
             Parent root = NavigationService.loadFXML("main-menu");
             NavigationService.navigateTo(root);

@@ -15,8 +15,10 @@ public abstract class GameSession {
     protected int p2Wins = 0;
     protected int draws = 0;
 
+
     // 🔥 Timer واحد لكل Session
     protected Timer timer = new Timer(true); // daemon thread
+
 
     public interface SessionListener {
         void onBoardUpdate(int row, int col, char symbol);
@@ -96,7 +98,11 @@ public String getPlayer2Name(){
     }
 
     protected void onTurnChanged() {
+
         // hook
+
+        // Optional hook
+
     }
 
     protected void notifyScoreUpdate() {
@@ -107,7 +113,18 @@ public String getPlayer2Name(){
 
     public void forceSwitchTurn() {
         isPlayer1Turn = !isPlayer1Turn;
-        if (listener != null) listener.onTurnChange(isPlayer1Turn);
-        onTurnChanged();
+
+        if (listener != null)
+            listener.onTurnChange(isPlayer1Turn);
+        onTurnChanged(); // Hook for subclasses (AI)
+
+
+    }
+
+    public void stop() {
+        if (timer != null) {
+            timer.cancel();
+            timer.purge(); // Removes all cancelled tasks from this timer's task queue.
+        }
     }
 }
