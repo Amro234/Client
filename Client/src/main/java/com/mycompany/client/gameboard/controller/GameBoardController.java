@@ -224,21 +224,41 @@ public void startNewGame(GameMode mode, Difficulty difficulty) {
 }
 
 
+if (winInfo != null) {
 
-        if (winInfo != null) {
-            highlightWin(winInfo);
-            String winnerName = (winInfo.winner == 'X')
-                    ? currentSession.getPlayer1Name()
-                    : currentSession.getPlayer2Name();
+    highlightWin(winInfo);
 
+    boolean playerWon = winInfo.winner == 'X';
+
+    if (currentSession instanceof SinglePlayerSession) {
+
+        if (playerWon) {
             GameResultVideoManager.showWinVideo(
-                    () -> showPlayAgainDialog(winnerName + " Wins!"));
-
+                () -> showPlayAgainDialog("You Win! 🎉")
+            );
         } else {
-
-            GameResultVideoManager.showDrawVideo(
-                    () -> showPlayAgainDialog("It's a Draw!"));
+            GameResultVideoManager.showLoseVideo(
+                () -> showPlayAgainDialog("You Lost 💔")
+            );
         }
+
+    } else {
+        // TWO PLAYERS
+        String winnerName = playerWon
+                ? currentSession.getPlayer1Name()
+                : currentSession.getPlayer2Name();
+
+        GameResultVideoManager.showWinVideo(
+            () -> showPlayAgainDialog(winnerName + " Wins!")
+        );
+    }
+
+} else {
+    GameResultVideoManager.showDrawVideo(
+        () -> showPlayAgainDialog("It's a Draw!")
+    );
+}
+
 
     }
 

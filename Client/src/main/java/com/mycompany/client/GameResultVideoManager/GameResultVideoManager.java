@@ -44,6 +44,10 @@ public class GameResultVideoManager {
     public static void showDrawVideo(Runnable onFinish) {
         playVideo(true, onFinish);
     }
+    public static void showLoseVideo(Runnable onFinish) {
+    playLoseVideo(onFinish);
+}
+
 
     private static void playVideo(boolean isDraw, Runnable onFinish) {
         Platform.runLater(() -> {
@@ -102,5 +106,58 @@ public class GameResultVideoManager {
             }
         });
     }
+    private static void playLoseVideo(Runnable onFinish) {
+    Platform.runLater(() -> {
+        try {
+            int index = randomIndex(LOSE_VIDEOS_COUNT);
+            String path = String.format(LOSE_VIDEO_TEMPLATE, index);
+
+            File file = new File(path);
+            if (!file.exists()) {
+                System.err.println("Video not found: " + path);
+                onFinish.run();
+                return;
+            }
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("You Lost 💔");
+
+            MediaPlayer player = new MediaPlayer(
+                new Media(file.toURI().toString())
+            );
+
+            MediaView view = new MediaView(player);
+            view.setFitWidth(600);
+            view.setFitHeight(400);
+            view.setPreserveRatio(true);
+
+            Button skip = new Button("Skip ⏭");
+            skip.setOnAction(e -> {
+                player.stop();
+                stage.close();
+                onFinish.run();
+            });
+
+            VBox root = new VBox(10, view, skip);
+            root.setStyle("-fx-alignment:center; -fx-padding:20");
+
+            stage.setScene(new Scene(root));
+
+            player.setOnEndOfMedia(() -> {
+                stage.close();
+                onFinish.run();
+            });
+
+            player.play();
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            onFinish.run();
+        }
+    });
+}
+
 }
 

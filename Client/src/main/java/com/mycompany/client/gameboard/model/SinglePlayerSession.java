@@ -42,12 +42,25 @@ public class SinglePlayerSession extends GameSession {
                 if (win.winner == 'X') p1Wins++;
                 else p2Wins++;
                 notifyScoreUpdate();
-                if (listener != null) listener.onGameEnd(win);
-            } else if (isBoardFull(board.board)) {
-                draws++;
-                notifyScoreUpdate();
-                if (listener != null) listener.onGameEnd(null);
+                if (listener != null) {
+    Platform.runLater(() -> listener.onGameEnd(win));
+}
+
+              //  if (listener != null) listener.onGameEnd(win);
             }
+            else if (isBoardFull(board.board)) {
+    draws++;
+    notifyScoreUpdate();
+    if (listener != null) {
+        Platform.runLater(() -> listener.onGameEnd(null));
+    }
+}
+
+//            else if (isBoardFull(board.board)) {
+//                draws++;
+//                notifyScoreUpdate();
+//                if (listener != null) listener.onGameEnd(null);
+//            }
             isPlayer1Turn = !isPlayer1Turn;
             if (listener != null) listener.onTurnChange(isPlayer1Turn);
         });
@@ -188,4 +201,5 @@ public class SinglePlayerSession extends GameSession {
                 if (b[i][j] == ' ') return false;
         return true;
     }
+    
 }
