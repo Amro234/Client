@@ -96,20 +96,23 @@ public class MainMenuController {
 
     }
 
-    @FXML
+      @FXML
     private void onSinglePlayerClicked(ActionEvent event) {
         try {
             System.out.println("Single Player clicked - navigating to difficulty selection");
+                        FXMLLoader loader = NavigationService.getFXMLLoader("difficulty");
 
-            Parent root = NavigationService.loadFXML("difficulty");
-            NavigationService.navigateTo(root);
+            Parent singlePlayerRoot = loader.load();
 
+            Stage stage = (Stage) singlePlayerButton.getScene().getWindow();
+            Scene scene = new Scene(singlePlayerRoot);
+            stage.setScene(scene);
+            stage.show();
         } catch (IOException e) {
             System.err.println("Error loading single-player.fxml: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
     @FXML
     private void onSettingsClicked(MouseEvent event) {
         try {

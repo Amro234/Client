@@ -30,6 +30,7 @@ import com.mycompany.client.GameResultVideoManager.GameResultVideoManager;
 import com.mycompany.client.gameboard.model.BoardMode;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.difficulty.Difficulty;
+import com.mycompany.client.gameboard.model.SinglePlayerSession;
 
 public class GameBoardController implements GameSession.SessionListener {
 
@@ -124,21 +125,24 @@ public class GameBoardController implements GameSession.SessionListener {
         initializeTimer();
     }
 
-    public void startNewGame(GameMode mode, Difficulty difficulty) {
+public void startNewGame(GameMode mode, Difficulty difficulty) {
 
-        boardMode = BoardMode.NORMAL;
-        updateUIForMode();
+    boardMode = BoardMode.NORMAL;
+    updateUIForMode();
 
-        if (mode == GameMode.TWO_PLAYERS) {
-            currentSession = new TwoPlayerSession(this, "Player 1", "Player 2");
-        }
-
-        updatePlayerNames();
-        resetBoardUI();
-        resetRecording();
-        startTimer();
-        updateTurnUI(true);
+    if (mode == GameMode.SINGLE_PLAYER) {
+        currentSession = new SinglePlayerSession(this, "Player 1", "Computer", difficulty);
+    } else if (mode == GameMode.TWO_PLAYERS) {
+        currentSession = new TwoPlayerSession(this, "Player 1", "Player 2");
     }
+
+    updatePlayerNames();
+    resetBoardUI();
+    resetRecording();
+    startTimer();
+    updateTurnUI(true);
+}
+
 
     private void attachEventHandlers() {
         for (int i = 0; i < 3; i++) {
