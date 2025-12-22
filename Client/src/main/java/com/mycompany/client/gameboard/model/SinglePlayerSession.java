@@ -2,89 +2,120 @@ package com.mycompany.client.gameboard.model;
 
 import com.mycompany.client.difficulty.Difficulty;
 import java.util.TimerTask;
-import java.util.concurrent.ThreadLocalRandom;
 import javafx.application.Platform;
 
 public class SinglePlayerSession extends GameSession {
 
-    Difficulty difficulty;
+    private Difficulty difficulty;
 
-    public SinglePlayerSession(SessionListener listener, String p1Name, String p2Name, Difficulty difficulty) {
+    public SinglePlayerSession(SessionListener listener,
+                               String p1Name,
+                               String p2Name,
+                               Difficulty difficulty) {
         super(listener, p1Name, p2Name);
         this.difficulty = difficulty;
     }
 
     @Override
     public void handleCellClick(int row, int col) {
-        char symbol = isPlayer1Turn ? 'X' : 'O';
-        if (isPlayer1Turn && board.isValidMove(row, col)) processMove(row, col, symbol);
+        if (!isPlayer1Turn) return;
+
+        char symbol = 'X';
+        if (board.isValidMove(row, col)) {
+            processMove(row, col, symbol);
+        }
     }
 
     @Override
     protected void onTurnChanged() {
-        char computerSymbol = isPlayer1Turn ? 'X' : 'O';
+
+        // لو السيشن اتقفلت
+        if (timer == null) {
+            System.out.println("[AI] onTurnChanged skipped – session closed");
+            return;
+        }
+
+        char computerSymbol = 'O';
+
+        System.out.println("[AI] Scheduling AI move...");
+
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+
+                if (timer == null) {
+                    System.out.println("[AI] Timer task cancelled – session closed");
+                    return;
+                }
+
                 processMoveForAI(computerSymbol);
             }
         }, 1000);
     }
 
     private void processMoveForAI(char symbol) {
+
+        if (timer == null) {
+            System.out.println("[AI] processMoveForAI aborted – session closed");
+            return;
+        }
+
+        System.out.println("[AI] Thinking... Difficulty = " + difficulty);
+
         if (difficulty == Difficulty.EASY) easyGame(symbol);
         else if (difficulty == Difficulty.MEDIUM) medGame(symbol);
         else hardGame(symbol);
 
         Platform.runLater(() -> {
+
+            if (timer == null) {
+                System.out.println("[AI] UI update aborted – session closed");
+                return;
+            }
+
             Board.WinInfo win = board.checkWin();
+
             if (win != null) {
                 if (win.winner == 'X') p1Wins++;
                 else p2Wins++;
                 notifyScoreUpdate();
-                if (listener != null) {
-    Platform.runLater(() -> listener.onGameEnd(win));
-}
 
-              //  if (listener != null) listener.onGameEnd(win);
+                System.out.println("[AI] Game End detected – stopping session");
+                stopSession();
+
+                if (listener != null) listener.onGameEnd(win);
+                return;
             }
-            else if (isBoardFull(board.board)) {
-    draws++;
-    notifyScoreUpdate();
-    if (listener != null) {
-        Platform.runLater(() -> listener.onGameEnd(null));
-    }
-}
 
-//            else if (isBoardFull(board.board)) {
-//                draws++;
-//                notifyScoreUpdate();
-//                if (listener != null) listener.onGameEnd(null);
-//            }
-            isPlayer1Turn = !isPlayer1Turn;
-            if (listener != null) listener.onTurnChange(isPlayer1Turn);
+            if (isBoardFull(board.board)) {
+                draws++;
+                notifyScoreUpdate();
+
+                System.out.println("[AI] Draw detected – stopping session");
+                stopSession();
+
+                if (listener != null) listener.onGameEnd(null);
+                return;
+            }
+
+            isPlayer1Turn = true;
+            if (listener != null) listener.onTurnChange(true);
         });
     }
 
+    /* ================= AI LOGIC (كما هو) ================= */
+
     void easyGame(char symbol) {
-        int randomRow = -1, randomCol = -1;
-        boolean found = false;
-        for (int i = 0; i < 3 && !found; i++) {
-            for (int j = 0; j < 3 && !found; j++) {
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
                 if (board.isValidMove(i, j)) {
-                    randomRow = i;
-                    randomCol = j;
-                    found = true;
+                    board.makeMove(i, j, symbol);
+                    final int r = i, c = j;
+                    Platform.runLater(() -> {
+                        if (listener != null) listener.onBoardUpdate(r, c, symbol);
+                    });
+                    return;
                 }
-            }
-        }
-        if (found) {
-            board.makeMove(randomRow, randomCol, symbol);
-            final int r = randomRow, c = randomCol;
-            Platform.runLater(() -> {
-                if (listener != null) listener.onBoardUpdate(r, c, symbol);
-            });
-        }
     }
 
     void medGame(char symbol) {
@@ -94,51 +125,50 @@ public class SinglePlayerSession extends GameSession {
     }
 
     boolean checkWinMed(char symbol) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
                 if (board.isValidMove(i, j)) {
                     board.board[i][j] = symbol;
-                    Board.WinInfo win = board.checkWin();
-                    if (win != null) {
-                        final int r = i, c = j;
-                        Platform.runLater(() -> {
-                            if (listener != null) listener.onBoardUpdate(r, c, symbol);
-                        });
-                        return true;
-                    } else board.board[i][j] = ' ';
-                }
-            }
-        }
-        return false;
-    }
-
-    boolean checkLosedMed(char symbol) {
-        char opponent = (symbol == 'X') ? 'O' : 'X';
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board.isValidMove(i, j)) {
-                    board.board[i][j] = opponent;
-                    Board.WinInfo win = board.checkWin();
-                    if (win != null) {
+                    if (board.checkWin() != null) {
                         board.board[i][j] = symbol;
                         final int r = i, c = j;
                         Platform.runLater(() -> {
                             if (listener != null) listener.onBoardUpdate(r, c, symbol);
                         });
                         return true;
-                    } else board.board[i][j] = ' ';
+                    }
+                    board.board[i][j] = ' ';
                 }
-            }
-        }
+        return false;
+    }
+
+    boolean checkLosedMed(char symbol) {
+        char opponent = (symbol == 'X') ? 'O' : 'X';
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (board.isValidMove(i, j)) {
+                    board.board[i][j] = opponent;
+                    if (board.checkWin() != null) {
+                        board.board[i][j] = symbol;
+                        final int r = i, c = j;
+                        Platform.runLater(() -> {
+                            if (listener != null) listener.onBoardUpdate(r, c, symbol);
+                        });
+                        return true;
+                    }
+                    board.board[i][j] = ' ';
+                }
         return false;
     }
 
     void hardGame(char symbol) {
         if (isBoardFull(board.board)) return;
+
         int bestScore = Integer.MIN_VALUE;
         int moveRow = -1, moveCol = -1;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
                 if (board.isValidMove(i, j)) {
                     board.board[i][j] = symbol;
                     int score = minimax(board.board, false, symbol);
@@ -149,9 +179,8 @@ public class SinglePlayerSession extends GameSession {
                         moveCol = j;
                     }
                 }
-            }
-        }
-        if (moveRow != -1 && moveCol != -1) {
+
+        if (moveRow != -1) {
             board.makeMove(moveRow, moveCol, symbol);
             final int r = moveRow, c = moveCol;
             Platform.runLater(() -> {
@@ -166,32 +195,26 @@ public class SinglePlayerSession extends GameSession {
         if (isBoardFull(currentBoard)) return 0;
 
         if (isAI) {
-            int maxScore = Integer.MIN_VALUE;
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
+            int max = Integer.MIN_VALUE;
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
                     if (currentBoard[i][j] == ' ') {
                         currentBoard[i][j] = aiSymbol;
-                        int score = minimax(currentBoard, false, aiSymbol);
+                        max = Math.max(max, minimax(currentBoard, false, aiSymbol));
                         currentBoard[i][j] = ' ';
-                        maxScore = Math.max(score, maxScore);
                     }
-                }
-            }
-            return maxScore;
+            return max;
         } else {
-            char opponent = (aiSymbol == 'X') ? 'O' : 'X';
-            int minScore = Integer.MAX_VALUE;
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
+            char opp = aiSymbol == 'X' ? 'O' : 'X';
+            int min = Integer.MAX_VALUE;
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
                     if (currentBoard[i][j] == ' ') {
-                        currentBoard[i][j] = opponent;
-                        int score = minimax(currentBoard, true, aiSymbol);
+                        currentBoard[i][j] = opp;
+                        min = Math.min(min, minimax(currentBoard, true, aiSymbol));
                         currentBoard[i][j] = ' ';
-                        minScore = Math.min(score, minScore);
                     }
-                }
-            }
-            return minScore;
+            return min;
         }
     }
 
@@ -201,5 +224,4 @@ public class SinglePlayerSession extends GameSession {
                 if (b[i][j] == ' ') return false;
         return true;
     }
-    
 }

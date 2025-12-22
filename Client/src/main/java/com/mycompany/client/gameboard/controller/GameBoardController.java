@@ -233,13 +233,15 @@ if (winInfo != null) {
     if (currentSession instanceof SinglePlayerSession) {
 
         if (playerWon) {
-            GameResultVideoManager.showWinVideo(
-                () -> showPlayAgainDialog("You Win! 🎉")
-            );
+            GameResultVideoManager.showLoseVideo(
+    () -> showPlayAgainDialog("You Lost 💔")
+);
+
         } else {
             GameResultVideoManager.showLoseVideo(
-                () -> showPlayAgainDialog("You Lost 💔")
-            );
+    () -> showPlayAgainDialog("You Lost 💔")
+);
+
         }
 
     } else {
