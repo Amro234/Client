@@ -1,7 +1,7 @@
 package com.mycompany.client.gameboard.model;
 
 public class Board {
-    private char[][] board;
+    public char[][] board;
     private int movesCount;
 
     public Board() {

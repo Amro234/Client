@@ -10,13 +10,19 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.mycompany.client.core.navigation.NavigationService;
+import com.mycompany.client.gameboard.controller.GameBoardController;
+import com.mycompany.client.gameboard.model.GameMode;
+import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -129,25 +135,36 @@ public class DifficultyController implements Initializable {
     /**
      * Handle start game button click
      */
-    @FXML
-    private void handleStartGame(javafx.event.ActionEvent event) {
-        if (selectedDifficulty != null) {
-            System.out.println("Starting game with difficulty: " + selectedDifficulty);
-            try {
-                // Load the game board FXML
-                FXMLLoader loader = NavigationService.getFXMLLoader("game_board");
-                Parent root = loader.load();
+     @FXML
+    private void handleStartGame(ActionEvent event) {
+        if (selectedDifficulty == null) {
+            System.out.println("Please select a difficulty level");
+            return;
+        }
 
-                root.getStylesheets().add(getClass().getResource("/styles/game_board.css").toExternalForm());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/game_board.fxml"));
+            Parent root = loader.load();
 
-                NavigationService.navigateTo(root);
-            } catch (IOException e) {
-                System.err.println("Error loading game board: " + e.getMessage());
-                e.printStackTrace();
+            GameBoardController controller = loader.getController();
+                switch (selectedDifficulty) {
+                case "Easy":
+                    controller.startNewGame(GameMode.SINGLE_PLAYER, Difficulty.EASY);
+                    break;
+                case "Medium":
+                    controller.startNewGame(GameMode.SINGLE_PLAYER, Difficulty.MEDIUM);
+                    break;
+                case "Hard":
+                    controller.startNewGame(GameMode.SINGLE_PLAYER, Difficulty.HARD);
+                    break;
             }
-        } else {
-            System.out.println("Please select a difficulty first!");
-            // Optionally show an alert here
+
+
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
