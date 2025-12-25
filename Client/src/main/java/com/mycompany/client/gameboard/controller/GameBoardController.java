@@ -143,10 +143,21 @@ public class GameBoardController implements GameSession.SessionListener {
         updateUIForMode();
 
         if (mode == GameMode.SINGLE_PLAYER) {
-            currentSession = new SinglePlayerSession(this, "Player 1", "Computer", difficulty);
-        } else if (mode == GameMode.TWO_PLAYERS) {
-            currentSession = new TwoPlayerSession(this, "Player 1", "Player 2");
+            currentSession = new SinglePlayerSession(this, "You", "Computer", difficulty);
         }
+
+        updatePlayerNames();
+        resetBoardUI();
+        resetRecording();
+        startTimer();
+        updateTurnUI(true);
+    }
+
+    public void startLocalTwoPlayerGame(String p1Name, String p2Name) {
+        boardMode = BoardMode.NORMAL;
+        updateUIForMode();
+
+        currentSession = new TwoPlayerSession(this, p1Name, p2Name);
 
         updatePlayerNames();
         resetBoardUI();
@@ -620,10 +631,10 @@ public class GameBoardController implements GameSession.SessionListener {
     @FXML
     public void handleSettingsButton() {
         try {
-            stopTimer();
-            if (currentSession != null) {
-                currentSession.stop();
-            }
+            // We NO LONGER stop the timer or session here.
+            // This allows users to change settings (like mute music) without ending the
+            // game.
+            // For online games, the match continues in the background.
             Parent root = NavigationService.loadFXML("settings");
             NavigationService.navigateTo(root);
         } catch (IOException e) {
