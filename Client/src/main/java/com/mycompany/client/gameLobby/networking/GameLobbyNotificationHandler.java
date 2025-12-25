@@ -56,6 +56,10 @@ public class GameLobbyNotificationHandler implements ServerMessageListener {
                     handleChallengeDeclined(json);
                     break;
 
+                case "GAME_STARTED":
+                    handleGameStarted(json);
+                    break;
+
                 default:
                     System.out.println("[GameLobby] Unknown notification type: " + type);
                     break;
@@ -110,5 +114,20 @@ public class GameLobbyNotificationHandler implements ServerMessageListener {
 
         // Execute on JavaFX Application Thread for UI updates
         Platform.runLater(() -> listener.onChallengeDeclined(notification));
+    }
+
+    private void handleGameStarted(JSONObject json) {
+        if (listener == null) {
+            System.out.println("[GameLobby] No listener set for GAME_STARTED");
+            return;
+        }
+
+        String sessionId = json.getString("sessionId");
+        String opponent = json.getString("opponent");
+        String yourSymbol = json.getString("yourSymbol");
+
+        System.out.println("[GameLobby] Game started vs " + opponent);
+
+        Platform.runLater(() -> listener.onGameStarted(sessionId, opponent, yourSymbol));
     }
 }

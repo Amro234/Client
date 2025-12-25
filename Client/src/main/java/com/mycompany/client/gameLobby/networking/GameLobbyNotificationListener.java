@@ -23,4 +23,6 @@ public interface GameLobbyNotificationListener {
      * Called when your challenge is declined by another player
      */
     void onChallengeDeclined(ChallengeDeclinedNotification notification);
+
+    void onGameStarted(String sessionId, String opponentName, String mySymbol);
 }

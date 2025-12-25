@@ -13,7 +13,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        //BackgroundMusicManager.init();
+      //  BackgroundMusicManager.init();
 
         // Load splash screen and create scene
         Scene scene = new Scene(NavigationService.loadFXML("splash"), 1280, 720);

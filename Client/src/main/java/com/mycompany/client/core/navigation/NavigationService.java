@@ -57,6 +57,13 @@ public class NavigationService {
         }
     }
 
+    public static void goBackAndReplace(Parent next) {
+        if (!stack.isEmpty()) {
+            stack.pop(); // Discard the previous screen
+        }
+        scene.setRoot(next);
+    }
+
     public static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/mycompany/client/" + fxml + ".fxml"));
         return fxmlLoader.load();
