@@ -1,0 +1,63 @@
+.setup-container {
+    -fx-background-color: #fff4f1;
+    -fx-pref-width: 800;
+    -fx-pref-height: 600;
+}
+
+.title-label {
+    -fx-font-family: "Outfit", "Segoe UI", sans-serif;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2d3436;
+}
+
+.field-label {
+    -fx-font-family: "Outfit", "Segoe UI", sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #636e72;
+}
+
+.name-input {
+    -fx-background-color: white;
+    -fx-border-color: #dfe6e9;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 12px;
+    -fx-font-size: 16px;
+    -fx-text-fill: #2d3436;
+    -fx-border-width: 2px;
+}
+
+.name-input:focused {
+    -fx-border-color: #0984e3;
+    -fx-background-color: white;
+}
+
+.primary-button {
+    -fx-background-color: #0984e3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-padding: 12px 30px;
+    -fx-background-radius: 30px;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #074b83;
+}
+
+.secondary-button {
+    -fx-background-color: #dfe6e9;
+    -fx-text-fill: #2d3436;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-padding: 12px 30px;
+    -fx-background-radius: 30px;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #b2bec3;
+}
