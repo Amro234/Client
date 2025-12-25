@@ -145,10 +145,10 @@ public class ReplayGameSession extends ReplaySession {
         return isPlaying;
     }
 
-//    @Override
-//    public void handleCellClick(int row, int col) {
-//
-//    }
+    // @Override
+    // public void handleCellClick(int row, int col) {
+    //
+    // }
 
     @Override
     public void loadRecording(String recordingJson) {
@@ -170,6 +170,11 @@ public class ReplayGameSession extends ReplaySession {
 
     @Override
     public void handleCellClick(int row, int col) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public GameRecording getRecording() {
+        return recording;
     }
 }

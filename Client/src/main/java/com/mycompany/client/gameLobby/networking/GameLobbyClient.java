@@ -144,14 +144,20 @@ public class GameLobbyClient {
             String message = response.getString("message");
 
             Challenge opponent = null;
-            if (success && response.has("opponent")) {
-                opponent = Challenge.fromJson(response.getJSONObject("opponent"));
-                System.out.println("Challenge accepted. Opponent: " + opponent.getChallengerUsername());
+            JSONObject gameDetails = null;
+            if (success) {
+                if (response.has("opponent")) {
+                    opponent = Challenge.fromJson(response.getJSONObject("opponent"));
+                }
+                if (response.has("gameDetails")) {
+                    gameDetails = response.getJSONObject("gameDetails");
+                }
+                System.out.println("Challenge accepted.");
             } else {
                 System.out.println("Failed to accept challenge: " + message);
             }
 
-            return new AcceptChallengeResponse(success, message, opponent);
+            return new AcceptChallengeResponse(success, message, opponent, gameDetails);
 
         } catch (IOException e) {
             System.err.println("Network error while accepting challenge: " + e.getMessage());

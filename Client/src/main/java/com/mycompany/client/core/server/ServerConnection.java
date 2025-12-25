@@ -122,10 +122,11 @@ public class ServerConnection {
                 } catch (IOException e) {
                     if (isConnected) {
                         System.err.println("Connection lost: " + e.getMessage());
-                        disconnect();
+                        // Notify listener FIRST before cleaning up
                         if (messageListener != null) {
                             messageListener.onConnectionLost();
                         }
+                        disconnect();
                     }
                     break;
                 }
