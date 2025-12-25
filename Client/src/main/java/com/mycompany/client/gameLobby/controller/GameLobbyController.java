@@ -225,13 +225,13 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
         } catch (GameLobbyException e) {
             System.err.println("Failed to load online users: " + e.getMessage());
             // Show error to user
-            Platform.runLater(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Failed to load online players");
-                alert.setContentText(e.getMessage());
-                alert.showAndWait();
-            });
+            // Platform.runLater(() -> {
+            // Alert alert = new Alert(Alert.AlertType.ERROR);
+            // alert.setTitle("Error");
+            // alert.setHeaderText("Failed to load online players");
+            // alert.setContentText(e.getMessage());
+            // alert.showAndWait();
+            // });
         }
     }
 
@@ -272,5 +272,27 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     public void onChallengeDeclined(ChallengeDeclinedNotification notification) {
         ToastNotification.error(notification.getDeclinedByUsername() + " declined your challenge.",
                 playerTable.getScene().getWindow());
+    }
+
+    @Override
+    public void onGameStarted(String sessionId, String opponentName, String mySymbol) {
+        System.out.println("[GameLobby] Navigating to GameBoard for session: " + sessionId);
+
+        // Stop lobby refresher
+        shutdown();
+
+        try {
+            javafx.fxml.FXMLLoader loader = NavigationService.getFXMLLoader("game_board");
+            Parent root = loader.load();
+
+            com.mycompany.client.gameboard.controller.GameBoardController controller = loader.getController();
+            controller.startOnlineGame(opponentName, mySymbol);
+
+            NavigationService.navigateTo(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            ToastNotification.error("Failed to start game: " + e.getMessage(), playerTable.getScene().getWindow());
+        }
     }
 }

@@ -3,7 +3,6 @@ package com.mycompany.client.gameLobby.controller;
 import com.mycompany.client.core.notification.ToastNotification;
 import com.mycompany.client.gameLobby.networking.GameLobbyClient;
 import com.mycompany.client.gameLobby.networking.exception.GameLobbyException;
-import com.mycompany.client.gameLobby.networking.model.challenge.AcceptChallengeResponse;
 import com.mycompany.client.gameLobby.networking.model.challenge.ChallengeResponse;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -124,14 +123,11 @@ public class ChallengeDialog {
         dialog.close();
 
         try {
-            AcceptChallengeResponse response = GameLobbyClient.acceptChallenge();
+            GameLobbyClient.acceptChallenge();
+            // We do not wait for a response here.
+            // We rely on the GAME_STARTED notification to trigger navigation.
+            // ToastNotification.success("Challenge accepted, waiting for game start...");
 
-            if (response.isSuccess()) {
-                ToastNotification.success(response.getMessage());
-                // TODO: Navigate to game screen with opponent info
-            } else {
-                ToastNotification.error(response.getMessage());
-            }
         } catch (GameLobbyException e) {
             ToastNotification.error("Failed to accept challenge: " + e.getMessage());
         }

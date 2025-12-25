@@ -15,18 +15,28 @@ public abstract class GameSession {
     protected int p2Wins = 0;
     protected int draws = 0;
 
-
     // 🔥 Timer واحد لكل Session
     protected Timer timer = new Timer(true); // daemon thread
 
-
     public interface SessionListener {
         void onBoardUpdate(int row, int col, char symbol);
+
         void onGameEnd(Board.WinInfo winInfo);
+
         void onTurnChange(boolean isPlayer1Turn);
+
         void onScoreUpdate(int p1, int p2, int draws);
+
         void onReplayFinished();
-        void onReplayReset();
+
+        void onSessionReset();
+
+        // Online Rematch
+        default void onRematchRequested() {
+        }
+
+        default void onRematchDeclined() {
+        }
     }
 
     public GameSession(SessionListener listener, String p1Name, String p2Name) {
@@ -36,13 +46,15 @@ public abstract class GameSession {
         this.board = new Board();
         this.isPlayer1Turn = true;
     }
-public String getPlayer1Name(){
-    return player1Name;
-}
-public String getPlayer2Name(){
-    return player2Name;
-}
- 
+
+    public String getPlayer1Name() {
+        return player1Name;
+    }
+
+    public String getPlayer2Name() {
+        return player2Name;
+    }
+
     public abstract void handleCellClick(int row, int col);
 
     // 🔥 مهم جدًا
@@ -51,17 +63,19 @@ public String getPlayer2Name(){
         try {
             timer.cancel();
             timer.purge();
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         timer = null;
     }
 
     public void resetGame() {
         System.out.println("[GameSession] resetGame()");
-        stopSession();                 // 🔥 اقفل أي AI شغال
-        timer = new Timer(true);       // 🔥 Timer جديد
+        stopSession(); // 🔥 اقفل أي AI شغال
+        timer = new Timer(true); // 🔥 Timer جديد
         board.reset();
         isPlayer1Turn = true;
         if (listener != null) {
+            listener.onSessionReset();
             listener.onTurnChange(true);
         }
     }
@@ -75,23 +89,28 @@ public String getPlayer2Name(){
 
             Board.WinInfo win = board.checkWin();
             if (win != null) {
-                if (win.winner == 'X') p1Wins++;
-                else p2Wins++;
+                if (win.winner == 'X')
+                    p1Wins++;
+                else
+                    p2Wins++;
                 notifyScoreUpdate();
 
                 stopSession(); // 🔥 مهم
-                if (listener != null) listener.onGameEnd(win);
+                if (listener != null)
+                    listener.onGameEnd(win);
 
             } else if (board.isFull()) {
                 draws++;
                 notifyScoreUpdate();
 
                 stopSession(); // 🔥 مهم
-                if (listener != null) listener.onGameEnd(null);
+                if (listener != null)
+                    listener.onGameEnd(null);
 
             } else {
                 isPlayer1Turn = !isPlayer1Turn;
-                if (listener != null) listener.onTurnChange(isPlayer1Turn);
+                if (listener != null)
+                    listener.onTurnChange(isPlayer1Turn);
                 onTurnChanged();
             }
         }
@@ -118,7 +137,6 @@ public String getPlayer2Name(){
             listener.onTurnChange(isPlayer1Turn);
         onTurnChanged(); // Hook for subclasses (AI)
 
-
     }
 
     public void stop() {
@@ -126,5 +144,9 @@ public String getPlayer2Name(){
             timer.cancel();
             timer.purge(); // Removes all cancelled tasks from this timer's task queue.
         }
+        disconnect();
     }
+
+    public void disconnect() {
+    } // Optional hook for subclasses (e.g. online)
 }
