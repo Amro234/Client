@@ -124,21 +124,11 @@ public class MainMenuController {
     @FXML
     private void onTwoPlayersClicked(ActionEvent event) {
         try {
-            System.out.println("Two Players clicked - navigating to Game Board");
-
-            FXMLLoader loader = NavigationService.getFXMLLoader("game_board");
-            Parent gameBoardRoot = loader.load();
-
-            // Add CSS stylesheet
-            gameBoardRoot.getStylesheets().add(App.class.getResource("/styles/game_board.css").toExternalForm());
-
-            // Initialize Game Session
-            com.mycompany.client.gameboard.controller.GameBoardController controller = loader.getController();
-            controller.startNewGame(com.mycompany.client.gameboard.model.GameMode.TWO_PLAYERS, null);
-
-            NavigationService.navigateTo(gameBoardRoot);
+            System.out.println("Two Players clicked - navigating to Setup Screen");
+            Parent root = NavigationService.loadFXML("two_players_setup");
+            NavigationService.navigateTo(root);
         } catch (IOException e) {
-            System.err.println("Error loading game_board.fxml: " + e.getMessage());
+            System.err.println("Error loading two_players_setup.fxml: " + e.getMessage());
             e.printStackTrace();
         }
     }
