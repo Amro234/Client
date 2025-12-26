@@ -117,7 +117,7 @@ private GameReplayManager replayManager = new GameReplayManager();
     private Button replayPauseBtn;
     @FXML
     private Button replaySpeedBtn;
-    private boolean isFastReplay = false;
+ 
     @FXML
     private Circle recordingIndicator;
     @FXML
@@ -437,10 +437,12 @@ recordingManager.saveRecording(
         });
     }
 
-    private void resetRecording() {
-        isRecordingEnabled = false;
-        gameRecorder = new GameRecorder();
-    }
+  private void resetRecording() {
+    isRecordingEnabled = false;
+    recordingStoppedManually = false;
+    gameRecorder = new GameRecorder();
+}
+
 
     @Override
     public void onTurnChange(boolean isPlayer1Turn) {
