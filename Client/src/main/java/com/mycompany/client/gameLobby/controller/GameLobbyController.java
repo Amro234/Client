@@ -238,7 +238,24 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     // Buttons
     @FXML
     private void onLogOutPressed(ActionEvent event) {
-        Platform.exit();
+        try {
+            // Stop lobby refresher
+            shutdown();
+
+            // Clear session
+            UserSession.getInstance().clearSession();
+
+            // Disconnect from server
+            ServerConnection.disconnect();
+
+            // Navigate back to main menu
+            Parent root = NavigationService.loadFXML("main-menu");
+            NavigationService.replaceWith(root);
+
+        } catch (IOException e) {
+            System.err.println("Error navigating to main menu after logout: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
