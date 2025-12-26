@@ -210,7 +210,7 @@
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
-                  <Button fx:id="recordGame" mnemonicParsing="false" onAction="#onRecording" prefHeight="27.0" prefWidth="242.0" text="Record Game" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="recordGame" mnemonicParsing="false" onAction="#onRecording" prefHeight="27.0" prefWidth="242.0" style="-fx-background-color: red; -fx-background-radius: 20; -fx-text-fill: white; -fx-font-weight: bold;" text="Record Game" HBox.hgrow="ALWAYS" />
                   <HBox fx:id="recordingBox" alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="68.0" spacing="4.0" visible="false" HBox.hgrow="ALWAYS">
                      <children>
                         <Circle fx:id="recordingIndicator" fill="#7f1d1d" radius="10.0" stroke="BLACK" strokeType="INSIDE" HBox.hgrow="ALWAYS">
