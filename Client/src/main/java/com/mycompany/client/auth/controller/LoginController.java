@@ -67,16 +67,14 @@ public class LoginController implements Initializable {
 
         new Thread(() -> {
             try {
-//                AuthResponse response = com.mycompany.client.auth.AuthClient
-//                        .login(username, password);
- AuthClient.AuthResponse response =
+
+                AuthClient.AuthResponse response =
                 AuthClient.login(usernameField.getText(), passwordField.getText());
-                // Store user in session
                 UserSession.getInstance().setCurrentUser(response.getUser());
 
                 Platform.runLater(() -> {
 
-                    navigateToMainMenu();
+                    navigateToGameLobby();
                 });
 
             } catch (com.mycompany.client.auth.AuthClient.AuthException e) {
@@ -108,7 +106,7 @@ public class LoginController implements Initializable {
         alert.showAndWait();
     }
 
-    private void navigateToMainMenu() {
+    private void navigateToGameLobby() {
         try {
             Parent root = NavigationService.loadFXML("gameLobby");
             NavigationService.replaceWith(root);

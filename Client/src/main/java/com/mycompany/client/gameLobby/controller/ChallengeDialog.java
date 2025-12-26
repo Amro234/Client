@@ -117,6 +117,11 @@ public class ChallengeDialog {
         scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
         dialog.setScene(scene);
         dialog.setResizable(false);
+
+        dialog.setOnCloseRequest(e -> {
+            e.consume();
+            handleRefuse();
+        });
     }
 
     private void handleAccept() {

@@ -2,6 +2,7 @@ package com.mycompany.client;
 
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.settings.manager.BackgroundMusicManager;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -13,7 +14,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        //BackgroundMusicManager.init();
+        // BackgroundMusicManager.init();
+        SoundEffectsManager.init();
 
         // Load splash screen and create scene
         Scene scene = new Scene(NavigationService.loadFXML("splash"), 1280, 720);

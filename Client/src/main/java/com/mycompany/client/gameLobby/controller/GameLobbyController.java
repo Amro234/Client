@@ -5,6 +5,7 @@ import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.notification.ToastNotification;
 import com.mycompany.client.core.server.ServerConnection;
 import com.mycompany.client.core.session.UserSession;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
 import com.mycompany.client.gameLobby.controller.uicomponents.ActionTableCell;
 import com.mycompany.client.gameLobby.controller.uicomponents.PlayerTableCell;
 import com.mycompany.client.gameLobby.controller.uicomponents.StatusTableCell;
@@ -217,13 +218,20 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
         } catch (GameLobbyException e) {
             System.err.println("Failed to load online users: " + e.getMessage());
             // Show error to user
-            // Platform.runLater(() -> {
-            // Alert alert = new Alert(Alert.AlertType.ERROR);
-            // alert.setTitle("Error");
-            // alert.setHeaderText("Failed to load online players");
-            // alert.setContentText(e.getMessage());
-            // alert.showAndWait();
-            // });
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Failed to load online players");
+                alert.setContentText(e.getMessage());
+                shutdown();
+                try {
+                    NavigationService.navigateTo(NavigationService.loadFXML("main-menu"));
+                } catch (IOException e1) {
+
+                    e1.printStackTrace();
+                }
+                alert.showAndWait();
+            });
         }
     }
 
@@ -262,6 +270,9 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     // Notifications
     @Override
     public void onChallengeReceived(ChallengeReceivedNotification notification) {
+        // Play challenge sound
+        SoundEffectsManager.playChallenge();
+
         ChallengeDialog dialog = new ChallengeDialog(
                 notification.getChallengerUsername(),
                 (javafx.stage.Stage) playerTable.getScene().getWindow());
