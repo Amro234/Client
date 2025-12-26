@@ -5,6 +5,7 @@ import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.notification.ToastNotification;
 import com.mycompany.client.core.server.ServerConnection;
 import com.mycompany.client.core.session.UserSession;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
 import com.mycompany.client.gameLobby.controller.uicomponents.ActionTableCell;
 import com.mycompany.client.gameLobby.controller.uicomponents.PlayerTableCell;
 import com.mycompany.client.gameLobby.controller.uicomponents.StatusTableCell;
@@ -262,6 +263,9 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     // Notifications
     @Override
     public void onChallengeReceived(ChallengeReceivedNotification notification) {
+        // Play challenge sound
+        SoundEffectsManager.playChallenge();
+
         ChallengeDialog dialog = new ChallengeDialog(
                 notification.getChallengerUsername(),
                 (javafx.stage.Stage) playerTable.getScene().getWindow());
