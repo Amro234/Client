@@ -73,19 +73,11 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     @FXML
     private Button lobbyBtn;
     @FXML
-    private Button statsBtn;
-    @FXML
-    private Button friendsBtn;
-    @FXML
     private Label titleLabel;
     @FXML
     private Circle onlineDot;
     @FXML
     private Label onlineCountLabel;
-    @FXML
-    private Circle matchesDot;
-    @FXML
-    private Label matchesCountLabel;
 
     private final ObservableList<OnlineUser> playerData = FXCollections.observableArrayList();
 
@@ -238,7 +230,21 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     // Buttons
     @FXML
     private void onLogOutPressed(ActionEvent event) {
-        Platform.exit();
+        // Stop auto-refresh
+        shutdown();
+
+        // Disconnect from server
+        ServerConnection.disconnect();
+
+        // Navigate back to main menu
+        try {
+            Parent root = NavigationService.loadFXML("main-menu");
+            NavigationService.navigateTo(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // If navigation fails, exit the application
+            Platform.exit();
+        }
     }
 
     @FXML
