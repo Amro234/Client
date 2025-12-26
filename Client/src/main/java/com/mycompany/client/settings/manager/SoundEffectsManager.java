@@ -19,7 +19,7 @@ public class SoundEffectsManager {
     private static void loadSounds() {
         try {
             URL challengeUrl = SoundEffectsManager.class.getResource("/assets/audios/Challenge.wav");
-            URL clickUrl = SoundEffectsManager.class.getResource("/assets/audios/Click-Sound.wav");
+            URL clickUrl = SoundEffectsManager.class.getResource("/assets/audios/Clicking-Sound.wav");
 
             if (challengeUrl != null) {
                 challengeSound = new AudioClip(challengeUrl.toExternalForm());
@@ -58,7 +58,10 @@ public class SoundEffectsManager {
     public static void playClick() {
         double volume = getCurrentEffectsVolume();
         if (clickSound != null && volume > 0) {
+            System.out.println("Playing click sound at volume: " + volume);
             clickSound.play(volume);
+        } else {
+            System.out.println("Click sound is null or volume is zero.");
         }
     }
 }
