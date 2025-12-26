@@ -23,6 +23,7 @@ public class ReplayGameSession extends ReplaySession {
 
     private Timeline timeline;
     private GameRecording recording;
+private boolean isFinished = false;
 
     public ReplayGameSession(SessionListener listener,
             String p1Name,
@@ -57,41 +58,55 @@ public class ReplayGameSession extends ReplaySession {
     }
 
     @Override
-    public void play() {
-        if (isPlaying)
-            return;
+public void play() {
 
-        timeline = new Timeline();
-        timeline.setCycleCount(1);
-
-        for (int i = currentMoveIndex; i < recordedMoves.size(); i++) {
-            final int index = i;
-
-            KeyFrame frame = new KeyFrame(
-                    Duration.seconds((i - currentMoveIndex) * 1.0 / playbackSpeed),
-                    e -> {
-                        Move m = recordedMoves.get(index);
-                        listener.onBoardUpdate(m.row, m.col, m.symbol);
-                        currentMoveIndex = index + 1;
-                    });
-            timeline.getKeyFrames().add(frame);
-        }
-
-        timeline.setOnFinished(e -> {
-            isPlaying = false;
-            listener.onReplayFinished();
-        });
-
-        isPlaying = true;
-        timeline.play();
+    
+    if (isFinished) {
+        return;
     }
+
+   
+    if (timeline != null && !isPlaying) {
+        timeline.play();
+        isPlaying = true;
+        return;
+    }
+
+    timeline = new Timeline();
+    timeline.setCycleCount(1);
+
+    for (int i = currentMoveIndex; i < recordedMoves.size(); i++) {
+        final int index = i;
+
+        KeyFrame frame = new KeyFrame(
+                Duration.seconds((i - currentMoveIndex) / playbackSpeed),
+                e -> {
+                    Move m = recordedMoves.get(index);
+                    listener.onBoardUpdate(m.row, m.col, m.symbol);
+                    currentMoveIndex = index + 1;
+                });
+        timeline.getKeyFrames().add(frame);
+    }
+
+    timeline.setOnFinished(e -> {
+        isPlaying = false;
+        isFinished = true;
+        listener.onReplayFinished();
+    });
+
+    isPlaying = true;
+    timeline.play();
+}
+
 
     @Override
-    public void pause() {
-        if (timeline != null) {
-            timeline.pause();
-        }
+public void pause() {
+    if (timeline != null && isPlaying) {
+        timeline.pause();
+        isPlaying = false;
     }
+}
+
 
     @Override
     public void resume() {
@@ -109,13 +124,16 @@ public class ReplayGameSession extends ReplaySession {
         currentMoveIndex = 0;
     }
 
-    public void reset() {
-        if (timeline != null) {
-            timeline.stop();
-        }
-        currentMoveIndex = 0;
-        isPlaying = false;
+    
+public void reset() {
+    if (timeline != null) {
+        timeline.stop();
     }
+    currentMoveIndex = 0;
+    isPlaying = false;
+    isFinished = false;
+}
+
 
     @Override
     public void stepForward() {
@@ -144,6 +162,9 @@ public class ReplayGameSession extends ReplaySession {
     public boolean isPlaying() {
         return isPlaying;
     }
+public boolean isFinished() {
+    return isFinished;
+}
 
     // @Override
     // public void handleCellClick(int row, int col) {

@@ -5,6 +5,7 @@
 package com.mycompany.client.match_recording;
 
 import com.mycompany.client.core.navigation.NavigationService;
+import com.mycompany.client.core.session.UserSession;
 import com.mycompany.client.gameboard.controller.GameBoardController;
 import com.mycompany.client.matches.data.FilterType;
 import com.mycompany.client.matches.data.MatchData;
@@ -50,20 +51,24 @@ public class MatchHistoryController implements Initializable {
     private ArrayList<MatchData> allMatches;
     private FilterType currentFilter = FilterType.ALL;
 
-    private final String username = "Player 1";
+   // private final String username = "Player 1";
     private final String recordingsPath = System.getProperty("user.home") + "/.tic_tac_toe/recordings";
     @FXML
     private Button backToMenuBtn;
+    private String username;
+
 
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
+public void initialize(URL url, ResourceBundle rb) {
 
-        allMatches = loadMatchesFromRecordings();
+    username = UserSession.getInstance().getUsername();
 
-        setupFilterButtons();
-        setupSearch();
-        displayMatches(allMatches);
-    }
+    allMatches = loadMatchesFromRecordings();
+    setupFilterButtons();
+    setupSearch();
+    displayMatches(allMatches);
+}
+
 
     private ArrayList<MatchData> loadMatchesFromRecordings() {
 

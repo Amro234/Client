@@ -29,6 +29,7 @@ import javafx.scene.shape.Circle;
 import com.mycompany.client.GameResultVideoManager.GameResultVideoManager;
 import com.mycompany.client.gameboard.model.BoardMode;
 import com.mycompany.client.core.navigation.NavigationService;
+import com.mycompany.client.core.session.UserSession;
 import com.mycompany.client.difficulty.Difficulty;
 import javafx.scene.layout.HBox;
 
@@ -38,6 +39,10 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 
 public class GameBoardController implements GameSession.SessionListener {
+private Timeline replayTimeline;
+private boolean isReplayMode = false;
+private int replayStepIndex = 0;
+private GameRecording currentReplay;
 
     private BoardMode boardMode = BoardMode.NORMAL;
 
@@ -170,6 +175,7 @@ private boolean recordingDecisionAsked = false;
         resetRecording();
         startTimer();
         updateTurnUI(true);
+        askRecordingDecision();
     }
 
     public void startOnlineGame(String opponentName, String mySymbol) {
@@ -189,9 +195,10 @@ private boolean recordingDecisionAsked = false;
         }
 
         resetBoardUI();
-        resetRecording();
+       // resetRecording();
         startTimer();
         updateTurnUI(true); // Always X starts
+        askRecordingDecision();
     }
 
     private void attachEventHandlers() {
@@ -240,10 +247,16 @@ private boolean recordingDecisionAsked = false;
             }
 
             gameRecorder.stopRecording(status);
+String ownerUsername = UserSession.getInstance().getUsername();
 
-            recordingManager.saveRecording(
-                    gameRecorder.getRecording(),
-                    currentSession.getPlayer1Name());
+recordingManager.saveRecording(
+        gameRecorder.getRecording(),
+        ownerUsername
+);
+
+//            recordingManager.saveRecording(
+//                    gameRecorder.getRecording(),
+//                    currentSession.getPlayer1Name());
 
             isRecordingEnabled = false;
             stopRecordingIndicator();
@@ -725,15 +738,29 @@ private boolean recordingDecisionAsked = false;
     // Replay methods (omitted for brevity, can be copied from existing or left as
     // is if not changing)
     public void startReplay(GameRecording recording) {
-        isFastReplay = false;
-        replaySpeedBtn.setText("Fast Speed");
-        boardMode = BoardMode.REPLAY;
-        updateUIForMode();
-        stopTimer();
-        resetBoardUI();
-        currentSession = new ReplayGameSession(this, recording.playerName, recording.opponentPlayerName, recording);
-        ((ReplayGameSession) currentSession).play();
-    }
+
+    // 🔴 أهم سطر
+    hideReplayFinishedLabel();
+
+    isFastReplay = false;
+    replaySpeedBtn.setText("⚡ Fast Speed");
+
+    boardMode = BoardMode.REPLAY;
+    updateUIForMode();
+
+    stopTimer();
+    resetBoardUI();
+
+    currentSession = new ReplayGameSession(
+            this,
+            recording.playerName,
+            recording.opponentPlayerName,
+            recording
+    );
+
+    ((ReplayGameSession) currentSession).play();
+}
+
 
     @FXML
     private void onReplayPlay() {
@@ -763,10 +790,17 @@ private boolean recordingDecisionAsked = false;
         }
     }
 
-    @FXML
-    private void onReplayRestart(ActionEvent e) {
+  @FXML
+private void onReplayRestart(ActionEvent e) {
+    if (currentSession instanceof ReplayGameSession) {
         startReplay(((ReplayGameSession) currentSession).getRecording());
     }
+}
+private void hideReplayFinishedLabel() {
+    replayStatusLabel.setVisible(false);
+    replayStatusLabel.setManaged(false);
+}
+
 
     @Override
     public void onReplayFinished() {
