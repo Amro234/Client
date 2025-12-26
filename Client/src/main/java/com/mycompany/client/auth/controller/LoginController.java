@@ -1,6 +1,7 @@
 
 package com.mycompany.client.auth.controller;
 
+import com.mycompany.client.auth.AuthClient;
 import com.mycompany.client.auth.AuthClient.AuthResponse;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.session.UserSession;
@@ -66,9 +67,10 @@ public class LoginController implements Initializable {
 
         new Thread(() -> {
             try {
-                AuthResponse response = com.mycompany.client.auth.AuthClient
-                        .login(username, password);
-
+//                AuthResponse response = com.mycompany.client.auth.AuthClient
+//                        .login(username, password);
+ AuthClient.AuthResponse response =
+                AuthClient.login(usernameField.getText(), passwordField.getText());
                 // Store user in session
                 UserSession.getInstance().setCurrentUser(response.getUser());
 

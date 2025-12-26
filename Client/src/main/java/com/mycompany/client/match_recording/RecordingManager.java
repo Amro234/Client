@@ -117,6 +117,26 @@ public static void showToast(String message, Scene scene) {
     new SequentialTransition(fadeIn, stay, fadeOut).play();
 }
 
+public void deleteAllRecordings(String username) {
+
+    File dir = getRecordingsDirectory(username);
+
+    if (!dir.exists() || !dir.isDirectory()) {
+        return;
+    }
+
+    File[] files = dir.listFiles((d, name) -> name.endsWith(".json"));
+
+    if (files == null) return;
+
+    for (File file : files) {
+        try {
+            file.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
 
 
 }

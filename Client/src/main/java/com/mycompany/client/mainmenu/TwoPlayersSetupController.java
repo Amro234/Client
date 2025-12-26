@@ -2,6 +2,7 @@ package com.mycompany.client.mainmenu;
 
 import com.mycompany.client.App;
 import com.mycompany.client.core.navigation.NavigationService;
+import com.mycompany.client.core.session.UserSession;
 import com.mycompany.client.gameboard.controller.GameBoardController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,35 +19,29 @@ public class TwoPlayersSetupController {
     @FXML
     private TextField p2NameField;
 
-    @FXML
-    private void onStartClicked(ActionEvent event) {
-        String p1Name = p1NameField.getText().trim();
-        String p2Name = p2NameField.getText().trim();
+@FXML
+private void onStartClicked(ActionEvent event) {
 
-        if (p1Name.isEmpty()) {
-            showAlert("Validation Error", "Player 1 name is required!");
-            return;
-        }
+    String p1Name = p1NameField.getText().trim();
+    String p2Name = p2NameField.getText().trim();
 
-        if (p2Name.isEmpty()) {
-            showAlert("Validation Error", "Player 2 name is required!");
-            return;
-        }
-
-        try {
-            FXMLLoader loader = NavigationService.getFXMLLoader("game_board");
-            Parent gameBoardRoot = loader.load();
-
-            gameBoardRoot.getStylesheets().add(App.class.getResource("/styles/game_board.css").toExternalForm());
-
-            GameBoardController controller = loader.getController();
-            controller.startLocalTwoPlayerGame(p1Name, p2Name);
-
-            NavigationService.navigateTo(gameBoardRoot);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    if (p1Name.isEmpty() || p2Name.isEmpty()) {
+        showAlert("Validation Error", "Both player names are required!");
+        return;
     }
+
+    try {
+        FXMLLoader loader = NavigationService.getFXMLLoader("game_board");
+        Parent gameBoardRoot = loader.load();
+
+        GameBoardController controller = loader.getController();
+        controller.startLocalTwoPlayerGame(p1Name, p2Name);
+
+        NavigationService.navigateTo(gameBoardRoot);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
 
     private void showAlert(String title, String content) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);

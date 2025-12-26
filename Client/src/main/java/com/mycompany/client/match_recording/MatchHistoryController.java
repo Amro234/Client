@@ -5,6 +5,7 @@
 package com.mycompany.client.match_recording;
 
 import com.mycompany.client.core.navigation.NavigationService;
+import com.mycompany.client.core.session.UserSession;
 import com.mycompany.client.gameboard.controller.GameBoardController;
 import com.mycompany.client.matches.data.FilterType;
 import com.mycompany.client.matches.data.MatchData;
@@ -24,7 +25,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
@@ -48,18 +51,24 @@ public class MatchHistoryController implements Initializable {
     private ArrayList<MatchData> allMatches;
     private FilterType currentFilter = FilterType.ALL;
 
-    private final String username = "Player 1";
+   // private final String username = "Player 1";
     private final String recordingsPath = System.getProperty("user.home") + "/.tic_tac_toe/recordings";
+    @FXML
+    private Button backToMenuBtn;
+    private String username;
+
 
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
+public void initialize(URL url, ResourceBundle rb) {
 
-        allMatches = loadMatchesFromRecordings();
+    username = UserSession.getInstance().getUsername();
 
-        setupFilterButtons();
-        setupSearch();
-        displayMatches(allMatches);
-    }
+    allMatches = loadMatchesFromRecordings();
+    setupFilterButtons();
+    setupSearch();
+    displayMatches(allMatches);
+}
+
 
     private ArrayList<MatchData> loadMatchesFromRecordings() {
 
@@ -172,7 +181,7 @@ switch (rec.getStatus()) {
         GameBoardController controller = loader.getController();
         controller.startReplay(recording);
 
-        // ✅ استخدم NavigationService
+        //NavigationService
         NavigationService.navigateTo(root);
 
     } catch (Exception e) {
@@ -182,20 +191,87 @@ switch (rec.getStatus()) {
 
 
     private void displayMatches(List<MatchData> matches) {
-        matchListContainer.getChildren().clear();
 
-        for (MatchData match : matches) {
-            MatchCard card = new MatchCard(match);
+    matchListContainer.getChildren().clear();
 
-            card.setOnReplayRequested(this::openReplay);
+    for (MatchData match : matches) {
 
-            matchListContainer.getChildren().add(card);
-        }
+        MatchCard card = new MatchCard(match);
+
+        card.setOnReplayRequested(this::openReplay);
+        card.setOnDeleteRequested(this::deleteSingleMatch);
+
+        matchListContainer.getChildren().add(card);
     }
+}
+private void deleteSingleMatch(MatchData match) {
+
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Delete Recording");
+    alert.setHeaderText("Delete this match?");
+    alert.setContentText("This recording will be permanently deleted.");
+
+    alert.showAndWait().ifPresent(response -> {
+        if (response == ButtonType.OK) {
+
+            File file = new File(
+                    recordingsPath + "/" + username + "/" + match.getRecordingFileName()
+            );
+
+            if (file.exists()) {
+                file.delete();
+            }
+
+            allMatches.remove(match);
+            filterAndDisplayMatches();
+
+            RecordingManager.showToast(
+                    "❌ Recording deleted",
+                    matchListContainer.getScene()
+            );
+        }
+    });
+}
+
 
     @FXML
     private void onBackToMenuBtnClicked(ActionEvent event) {
         NavigationService.goBack();
     }
+
+   
+@FXML
+private void onDeleteAllRecords(ActionEvent event) {
+
+    if (allMatches == null || allMatches.isEmpty()) {
+        RecordingManager.showToast(
+                "No recordings to delete",
+                matchListContainer.getScene()
+        );
+        return;
+    }
+
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Delete All Recordings");
+    alert.setHeaderText("Are you sure?");
+    alert.setContentText("This will permanently delete all recorded matches.");
+
+    alert.showAndWait().ifPresent(response -> {
+        if (response == ButtonType.OK) {
+
+            RecordingManager manager = new RecordingManager();
+            manager.deleteAllRecordings(username);
+
+            allMatches.clear();
+            matchListContainer.getChildren().clear();
+
+            RecordingManager.showToast(
+                    "✅ All recordings deleted successfully",
+                    matchListContainer.getScene()
+            );
+        }
+    });
+}
+
 
 }
