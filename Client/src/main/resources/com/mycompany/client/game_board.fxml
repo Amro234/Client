@@ -23,7 +23,6 @@
          </padding>
          <children>
             <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButton" prefHeight="40.0" prefWidth="92.0" styleClass="back-button" text="←" textAlignment="CENTER" />
-            <Label fx:id="matchLabel" styleClass="match-label" text="Match #4029" />
             <Pane prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS">
                <children>
                   <Button fx:id="replayPlayBtn" layoutX="97.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplayPlay" stylesheets="@../../../styles/replayButtonStyles.css" text="Play">
