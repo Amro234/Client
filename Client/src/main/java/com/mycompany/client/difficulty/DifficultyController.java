@@ -13,6 +13,7 @@ import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.session.UserSession;
 import com.mycompany.client.gameboard.controller.GameBoardController;
 import com.mycompany.client.gameboard.model.GameMode;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
 import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
@@ -82,6 +83,7 @@ public class DifficultyController implements Initializable {
      */
     @FXML
     private void onCardClick(MouseEvent event) {
+        SoundEffectsManager.playClick();
         VBox clickedCard = (VBox) event.getSource();
 
         // Deselect previous card
@@ -125,6 +127,7 @@ public class DifficultyController implements Initializable {
      */
     @FXML
     private void onBackToMenu(MouseEvent event) {
+        SoundEffectsManager.playClick();
         // Parent root = NavigationService.loadFXML("main_menu");
         // Set root of current scene to preserve window size and stylesheets
         NavigationService.goBack();
@@ -134,42 +137,42 @@ public class DifficultyController implements Initializable {
      * Handle start game button click
      */
 
-@FXML
-private void handleStartGame(ActionEvent event) {
+    @FXML
+    private void handleStartGame(ActionEvent event) {
+        SoundEffectsManager.playClick();
 
-    if (selectedDifficulty == null) {
-        return;
-    }
-
-    if (!UserSession.getInstance().isLoggedIn()) {
-        UserSession.getInstance().setGuestUsername("Player");
-    }
-
-    try {
-        FXMLLoader loader =
-                new FXMLLoader(getClass().getResource("/com/mycompany/client/game_board.fxml"));
-        Parent root = loader.load();
-
-        GameBoardController controller = loader.getController();
-
-        switch (selectedDifficulty) {
-            case "Easy":
-                controller.startNewGame(GameMode.SINGLE_PLAYER, Difficulty.EASY);
-                break;
-            case "Medium":
-                controller.startNewGame(GameMode.SINGLE_PLAYER, Difficulty.MEDIUM);
-                break;
-            case "Hard":
-                controller.startNewGame(GameMode.SINGLE_PLAYER, Difficulty.HARD);
-                break;
+        if (selectedDifficulty == null) {
+            return;
         }
 
-        NavigationService.navigateTo(root);
+        if (!UserSession.getInstance().isLoggedIn()) {
+            UserSession.getInstance().setGuestUsername("Player");
+        }
 
-    } catch (IOException e) {
-        e.printStackTrace();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/client/game_board.fxml"));
+            Parent root = loader.load();
+
+            GameBoardController controller = loader.getController();
+
+            switch (selectedDifficulty) {
+                case "Easy":
+                    controller.startNewGame(GameMode.SINGLE_PLAYER, Difficulty.EASY);
+                    break;
+                case "Medium":
+                    controller.startNewGame(GameMode.SINGLE_PLAYER, Difficulty.MEDIUM);
+                    break;
+                case "Hard":
+                    controller.startNewGame(GameMode.SINGLE_PLAYER, Difficulty.HARD);
+                    break;
+            }
+
+            NavigationService.navigateTo(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-}
 
     /**
      * Get the selected difficulty

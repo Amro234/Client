@@ -19,7 +19,8 @@ public class SoundEffectsManager {
     private static void loadSounds() {
         try {
             URL challengeUrl = SoundEffectsManager.class.getResource("/assets/audios/Challenge.wav");
-            URL clickUrl = SoundEffectsManager.class.getResource("/assets/audios/Clicking-Sound.wav");
+            URL clickUrl = SoundEffectsManager.class
+                    .getResource("/assets/audios/mixkit-retro-arcade-casino-notification-211.wav");
 
             if (challengeUrl != null) {
                 challengeSound = new AudioClip(challengeUrl.toExternalForm());
