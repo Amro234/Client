@@ -29,6 +29,7 @@ public class MatchCard extends HBox {
 
     private final MatchData matchData;
     private Consumer<MatchData> onReplayRequested;
+private Consumer<MatchData> onDeleteRequested;
 
     public MatchCard(MatchData matchData) {
         this.matchData = matchData;
@@ -47,11 +48,13 @@ public class MatchCard extends HBox {
         setPadding(new Insets(16, 20, 16, 20));
 
         getChildren().addAll(
-                createResultIcon(),
-                createMatchInfo(),
-                createSpacer(),
-                createWatchReplayButton()
-        );
+        createResultIcon(),
+        createMatchInfo(),
+        createSpacer(),
+        createWatchReplayButton(),
+        createDeleteButton()
+);
+
     }
 
     private StackPane createResultIcon() {
@@ -125,5 +128,48 @@ public class MatchCard extends HBox {
 
     return btn;
 }
+public void setOnDeleteRequested(Consumer<MatchData> handler) {
+    this.onDeleteRequested = handler;
+}
+private Button createDeleteButton() {
+
+    Button btn = new Button("❌");
+
+    btn.setStyle(
+        "-fx-background-color: transparent;" +
+        "-fx-text-fill: #dc2626;" +
+        "-fx-font-size: 14px;" +
+        "-fx-cursor: hand;"
+    );
+
+    btn.setOnMouseEntered(e ->
+        btn.setStyle(
+            "-fx-background-color: transparent;" +
+            "-fx-text-fill: #991b1b;" +
+            "-fx-font-size: 14px;" +
+            "-fx-cursor: hand;" +
+            "-fx-scale-x: 1.1;" +
+            "-fx-scale-y: 1.1;"
+        )
+    );
+
+    btn.setOnMouseExited(e ->
+        btn.setStyle(
+            "-fx-background-color: transparent;" +
+            "-fx-text-fill: #dc2626;" +
+            "-fx-font-size: 14px;" +
+            "-fx-cursor: hand;"
+        )
+    );
+
+    btn.setOnAction(e -> {
+        if (onDeleteRequested != null) {
+            onDeleteRequested.accept(matchData);
+        }
+    });
+
+    return btn;
+}
+
 
 }

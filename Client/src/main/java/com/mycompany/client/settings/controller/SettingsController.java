@@ -232,7 +232,9 @@ public class SettingsController implements Initializable {
     }
 
     @FXML
-    public void handleBack() {
+    private void handleBack() {
+        
         NavigationService.goBack();
+
     }
 }
