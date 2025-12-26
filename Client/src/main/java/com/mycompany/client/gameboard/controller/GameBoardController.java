@@ -34,15 +34,14 @@ import com.mycompany.client.difficulty.Difficulty;
 import javafx.scene.layout.HBox;
 
 import com.mycompany.client.gameboard.model.SinglePlayerSession;
+import com.mycompany.client.match_recording.GameReplayManager;
 import javafx.animation.PauseTransition;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 
 public class GameBoardController implements GameSession.SessionListener {
-private Timeline replayTimeline;
-private boolean isReplayMode = false;
-private int replayStepIndex = 0;
-private GameRecording currentReplay;
+
+private GameReplayManager replayManager = new GameReplayManager();
 
     private BoardMode boardMode = BoardMode.NORMAL;
 
@@ -118,7 +117,7 @@ private GameRecording currentReplay;
     private Button replayPauseBtn;
     @FXML
     private Button replaySpeedBtn;
-    private boolean isFastReplay = false;
+ 
     @FXML
     private Circle recordingIndicator;
     @FXML
@@ -438,10 +437,12 @@ recordingManager.saveRecording(
         });
     }
 
-    private void resetRecording() {
-        isRecordingEnabled = false;
-        gameRecorder = new GameRecorder();
-    }
+  private void resetRecording() {
+    isRecordingEnabled = false;
+    recordingStoppedManually = false;
+    gameRecorder = new GameRecorder();
+}
+
 
     @Override
     public void onTurnChange(boolean isPlayer1Turn) {
@@ -620,6 +621,7 @@ recordingManager.saveRecording(
 
     @FXML
     public void handleBackButton() {
+        replayManager.reset();
         stopTimer();
         if (currentSession != null) {
             currentSession.stop();
@@ -737,13 +739,9 @@ recordingManager.saveRecording(
 
     // Replay methods (omitted for brevity, can be copied from existing or left as
     // is if not changing)
-    public void startReplay(GameRecording recording) {
+   public void startReplay(GameRecording recording) {
 
-    // 🔴 أهم سطر
     hideReplayFinishedLabel();
-
-    isFastReplay = false;
-    replaySpeedBtn.setText("⚡ Fast Speed");
 
     boardMode = BoardMode.REPLAY;
     updateUIForMode();
@@ -751,51 +749,56 @@ recordingManager.saveRecording(
     stopTimer();
     resetBoardUI();
 
-    currentSession = new ReplayGameSession(
-            this,
-            recording.playerName,
-            recording.opponentPlayerName,
-            recording
+    ReplayGameSession replaySession =
+            new ReplayGameSession(
+                    this,
+                    recording.playerName,
+                    recording.opponentPlayerName,
+                    recording
+            );
+
+    replayManager.startReplay(
+            replaySession,
+            () -> onReplayFinished()
     );
 
-    ((ReplayGameSession) currentSession).play();
+    currentSession = replaySession;
+}
+
+
+
+    @FXML
+    
+private void onReplayPlay() {
+    replayManager.play();
 }
 
 
     @FXML
-    private void onReplayPlay() {
-        if (currentSession instanceof ReplayGameSession)
-            ((ReplayGameSession) currentSession).play();
-    }
+private void onReplayPause() {
+    replayManager.pause();
+}
 
-    @FXML
-    private void onReplayPause() {
-        if (currentSession instanceof ReplayGameSession)
-            ((ReplayGameSession) currentSession).pause();
-    }
 
-    @FXML
-    private void onReplaySpeed() {
-        ReplayGameSession s = (ReplayGameSession) currentSession;
-        if (s == null)
-            return;
-        if (isFastReplay) {
-            s.setPlaybackSpeed(1.0);
-            isFastReplay = false;
-            replaySpeedBtn.setText("⚡ Fast Speed");
-        } else {
-            s.setPlaybackSpeed(2.0);
-            isFastReplay = true;
-            replaySpeedBtn.setText("🐢 Normal Speed");
-        }
-    }
+   @FXML
+private void onReplaySpeed() {
+    replayManager.toggleSpeed();
 
-  @FXML
-private void onReplayRestart(ActionEvent e) {
+    replaySpeedBtn.setText(
+            replayManager.isFastSpeed()
+                    ? "🐢 Normal Speed"
+                    : "⚡ Fast Speed"
+    );
+}
+
+
+ @FXML
+private void onReplayRestart() {
     if (currentSession instanceof ReplayGameSession) {
         startReplay(((ReplayGameSession) currentSession).getRecording());
     }
 }
+
 private void hideReplayFinishedLabel() {
     replayStatusLabel.setVisible(false);
     replayStatusLabel.setManaged(false);
@@ -813,6 +816,7 @@ private void hideReplayFinishedLabel() {
 
     @Override
 public void onSessionReset() {
+    replayManager.reset();
     boardMode = BoardMode.NORMAL;
     updateUIForMode();
     resetBoardUI();
@@ -957,8 +961,6 @@ private void disableRecordingButtonOnly() {
 
 private void resetRecordingDecision() {
     recordingDecisionAsked = false;
-
-   
     recordGame.setDisable(false);
     recordGame.setVisible(true);
     recordGame.setManaged(true);
@@ -967,6 +969,7 @@ private void resetRecordingDecision() {
 }
 private void goToMainMenuDirectly() {
     Platform.runLater(() -> {
+        replayManager.reset();
         try {
             stopTimer();
             if (currentSession != null) {

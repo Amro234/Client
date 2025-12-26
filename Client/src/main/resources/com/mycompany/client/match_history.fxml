@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="720" prefWidth="1280" styleClass="match-history-root" stylesheets="@../../../styles/customStyles.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="com.mycompany.client.match_recording.MatchHistoryController">
+<AnchorPane id="AnchorPane" prefHeight="720" prefWidth="1280" styleClass="match-history-root" stylesheets="@../../../styles/customStyles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.match_recording.MatchHistoryController">
     
     <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.leftAnchor="200" AnchorPane.rightAnchor="200" AnchorPane.topAnchor="40">
         
@@ -64,7 +64,10 @@
                 <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
                     <Image url="@../../../assets/images/search.png" />
                 </ImageView>
-                <TextField fx:id="searchField" promptText="Search opponent..." styleClass="search-field" />
+                <TextField fx:id="searchField" promptText="Search opponent..." styleClass="search-field">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin></TextField>
             </HBox>
         </HBox>
         
@@ -84,5 +87,8 @@
          <Insets left="40.0" top="40.0" />
       </padding>
    </HBox>
-   <Button layoutX="1160.0" layoutY="77.0" mnemonicParsing="false" onAction="#onDeleteAllRecords" style="-fx-background-color: linear-gradient(#dc2626, #991b1b); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 16; -fx-cursor: hand;" styleClass="danger-btn" text="Delete All Records" />
+   <Button alignment="BOTTOM_CENTER" layoutX="1097.0" layoutY="20.0" mnemonicParsing="false" onAction="#onDeleteAllRecords" prefHeight="60.0" prefWidth="160.0" style="-fx-background-color: linear-gradient(#dc2626, #991b1b); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 16; -fx-cursor: hand; -fx-font-size: 16;" styleClass="danger-btn" text="Delete All Records">
+      <padding>
+         <Insets bottom="20.0" top="10.0" />
+      </padding></Button>
 </AnchorPane>

@@ -8,7 +8,6 @@ package com.mycompany.client.gameboard.model;
  *
  * @author Mohamed_Ali
  */
-
 import com.mycompany.client.gameboard.model.GameSession.SessionListener;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -23,7 +22,12 @@ public class ReplayGameSession extends ReplaySession {
 
     private Timeline timeline;
     private GameRecording recording;
-private boolean isFinished = false;
+    private boolean isFinished = false;
+    private Runnable onReplayFinished;
+
+    public void setOnReplayFinished(Runnable r) {
+        this.onReplayFinished = r;
+    }
 
     public ReplayGameSession(SessionListener listener,
             String p1Name,
@@ -58,55 +62,55 @@ private boolean isFinished = false;
     }
 
     @Override
-public void play() {
+    public void play() {
 
-    
-    if (isFinished) {
-        return;
+        if (isFinished) {
+            return;
+        }
+
+        if (timeline != null && !isPlaying) {
+            timeline.play();
+            isPlaying = true;
+            return;
+        }
+
+        timeline = new Timeline();
+        timeline.setCycleCount(1);
+
+        for (int i = currentMoveIndex; i < recordedMoves.size(); i++) {
+            final int index = i;
+
+            KeyFrame frame = new KeyFrame(
+                    Duration.seconds((i - currentMoveIndex) / playbackSpeed),
+                    e -> {
+                        Move m = recordedMoves.get(index);
+                        listener.onBoardUpdate(m.row, m.col, m.symbol);
+                        currentMoveIndex = index + 1;
+                    });
+            timeline.getKeyFrames().add(frame);
+        }
+
+       timeline.setOnFinished(e -> {
+    isPlaying = false;
+    isFinished = true;
+
+    if (onReplayFinished != null) {
+        onReplayFinished.run();
     }
+});
 
-   
-    if (timeline != null && !isPlaying) {
-        timeline.play();
+
         isPlaying = true;
-        return;
+        timeline.play();
     }
-
-    timeline = new Timeline();
-    timeline.setCycleCount(1);
-
-    for (int i = currentMoveIndex; i < recordedMoves.size(); i++) {
-        final int index = i;
-
-        KeyFrame frame = new KeyFrame(
-                Duration.seconds((i - currentMoveIndex) / playbackSpeed),
-                e -> {
-                    Move m = recordedMoves.get(index);
-                    listener.onBoardUpdate(m.row, m.col, m.symbol);
-                    currentMoveIndex = index + 1;
-                });
-        timeline.getKeyFrames().add(frame);
-    }
-
-    timeline.setOnFinished(e -> {
-        isPlaying = false;
-        isFinished = true;
-        listener.onReplayFinished();
-    });
-
-    isPlaying = true;
-    timeline.play();
-}
-
 
     @Override
-public void pause() {
-    if (timeline != null && isPlaying) {
-        timeline.pause();
-        isPlaying = false;
+    public void pause() {
+        if (timeline != null && isPlaying) {
+            timeline.pause();
+            isPlaying = false;
+        }
     }
-}
-
 
     @Override
     public void resume() {
@@ -124,16 +128,14 @@ public void pause() {
         currentMoveIndex = 0;
     }
 
-    
-public void reset() {
-    if (timeline != null) {
-        timeline.stop();
+    public void reset() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+        currentMoveIndex = 0;
+        isPlaying = false;
+        isFinished = false;
     }
-    currentMoveIndex = 0;
-    isPlaying = false;
-    isFinished = false;
-}
-
 
     @Override
     public void stepForward() {
@@ -162,37 +164,37 @@ public void reset() {
     public boolean isPlaying() {
         return isPlaying;
     }
-public boolean isFinished() {
-    return isFinished;
-}
+
+    public boolean isFinished() {
+        return isFinished;
+    }
 
     // @Override
     // public void handleCellClick(int row, int col) {
     //
     // }
-
     @Override
     public void loadRecording(String recordingJson) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public void loadRecordingFromFile(String filePath) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public void jumpToMove(int moveIndex) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public void handleCellClick(int row, int col) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public GameRecording getRecording() {

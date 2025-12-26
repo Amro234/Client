@@ -24,14 +24,41 @@
          <children>
             <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButton" prefHeight="40.0" prefWidth="92.0" styleClass="back-button" text="←" textAlignment="CENTER" />
             <Label fx:id="matchLabel" styleClass="match-label" text="Match #4029" />
-            <Pane prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
+            <Pane prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Button fx:id="replayPlayBtn" layoutX="97.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplayPlay" stylesheets="@../../../styles/replayButtonStyles.css" text="Play">
+                     <styleClass>
+                        <String fx:value="replay-play" />
+                        <String fx:value="replay-btn" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="replayPauseBtn" layoutX="186.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplayPause" stylesheets="@../../../styles/replayButtonStyles.css" text="Pause">
+                     <styleClass>
+                        <String fx:value="replay-btn" />
+                        <String fx:value="replay-pause" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="replaySpeedBtn" layoutX="277.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplaySpeed" stylesheets="@../../../styles/replayButtonStyles.css" text="Speed x2">
+                     <styleClass>
+                        <String fx:value="replay-btn" />
+                        <String fx:value="replay-speed" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="replayRestartBtn" layoutX="398.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplayRestart" stylesheets="@../../../styles/replayButtonStyles.css" text="Restart">
+                     <styleClass>
+                        <String fx:value="replay-btn" />
+                        <String fx:value="replay-restart" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="recordGame" alignment="CENTER" contentDisplay="RIGHT" layoutX="746.0" layoutY="21.0" mnemonicParsing="false" onAction="#onRecording" prefHeight="27.0" prefWidth="114.0" style="-fx-background-color: red; -fx-background-radius: 20; -fx-text-fill: white; -fx-font-weight: bold;" text="Record" />
+               </children></Pane>
             <Button fx:id="settingsButton" mnemonicParsing="false" onAction="#handleSettingsButton" prefHeight="40.0" prefWidth="40.0" styleClass="icon-button" text="⚙" />
             <Button fx:id="menuButton" mnemonicParsing="false" onAction="#handleMenuButton" prefHeight="40.0" prefWidth="40.0" styleClass="icon-button" text="☰" />
          </children>
       </HBox>
    </top>
    <center>
-      <HBox alignment="CENTER" spacing="30.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="620.0" prefWidth="1210.0" spacing="30.0" BorderPane.alignment="CENTER">
          <padding>
             <Insets bottom="20.0" left="40.0" right="40.0" top="20.0" />
          </padding>
@@ -203,14 +230,16 @@
                </children>
             </VBox>
          </children>
+         <BorderPane.margin>
+            <Insets right="120.0" />
+         </BorderPane.margin>
       </HBox>
    </center>
    <left>
-      <VBox spacing="10.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="606.0" prefWidth="138.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
-                  <Button fx:id="recordGame" mnemonicParsing="false" onAction="#onRecording" prefHeight="27.0" prefWidth="242.0" style="-fx-background-color: red; -fx-background-radius: 20; -fx-text-fill: white; -fx-font-weight: bold;" text="Record Game" HBox.hgrow="ALWAYS" />
                   <HBox fx:id="recordingBox" alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="68.0" spacing="4.0" visible="false" HBox.hgrow="ALWAYS">
                      <children>
                         <Circle fx:id="recordingIndicator" fill="#7f1d1d" radius="10.0" stroke="BLACK" strokeType="INSIDE" HBox.hgrow="ALWAYS">
@@ -226,26 +255,6 @@
                   </HBox>
                </children>
             </HBox>
-            <Button fx:id="replayPlayBtn" mnemonicParsing="false" onAction="#onReplayPlay" stylesheets="@../../../styles/replayButtonStyles.css" text="Play">
-               <styleClass>
-                  <String fx:value="replay-play" />
-                  <String fx:value="replay-btn" />
-               </styleClass></Button>
-            <Button fx:id="replayPauseBtn" mnemonicParsing="false" onAction="#onReplayPause" stylesheets="@../../../styles/replayButtonStyles.css" text="Pause">
-               <styleClass>
-                  <String fx:value="replay-btn" />
-                  <String fx:value="replay-pause" />
-               </styleClass></Button>
-            <Button fx:id="replaySpeedBtn" mnemonicParsing="false" onAction="#onReplaySpeed" stylesheets="@../../../styles/replayButtonStyles.css" text="Speed x2">
-               <styleClass>
-                  <String fx:value="replay-btn" />
-                  <String fx:value="replay-speed" />
-               </styleClass></Button>
-            <Button fx:id="replayRestartBtn" layoutX="10.0" layoutY="123.0" mnemonicParsing="false" onAction="#onReplayRestart" stylesheets="@../../../styles/replayButtonStyles.css" text="Restart">
-               <styleClass>
-                  <String fx:value="replay-btn" />
-                  <String fx:value="replay-restart" />
-               </styleClass></Button>
          </children>
          <padding>
             <Insets left="2.0" />
