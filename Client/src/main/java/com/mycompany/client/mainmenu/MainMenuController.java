@@ -18,6 +18,8 @@ import com.mycompany.client.settings.manager.SettingsManager;
 import com.mycompany.client.App;
 import com.mycompany.client.auth.controller.LoginController;
 import com.mycompany.client.core.navigation.NavigationService;
+import com.mycompany.client.core.session.UserSession;
+import com.mycompany.client.core.server.ServerConnection;
 
 public class MainMenuController {
 
@@ -91,7 +93,22 @@ public class MainMenuController {
 
     @FXML
     private void onLogoutClicked(MouseEvent event) {
+        // Clear session
+        UserSession.getInstance().clearSession();
 
+        // Disconnect from server
+        ServerConnection.disconnect();
+
+        // Reset UI
+        if (usernameLabel != null) {
+            usernameLabel.setText("👤 Guest");
+        }
+        if (logoutLabel != null) {
+            logoutLabel.setVisible(false);
+            logoutLabel.setManaged(false);
+        }
+
+        System.out.println("Logout successful - back to guest mode");
     }
 
     @FXML
