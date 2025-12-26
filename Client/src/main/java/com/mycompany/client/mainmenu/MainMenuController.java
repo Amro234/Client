@@ -15,6 +15,7 @@ import java.io.IOException;
 import javafx.scene.image.Image;
 import com.mycompany.client.settings.manager.BackgroundMusicManager;
 import com.mycompany.client.settings.manager.SettingsManager;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
 import com.mycompany.client.App;
 import com.mycompany.client.auth.controller.LoginController;
 import com.mycompany.client.core.navigation.NavigationService;
@@ -119,7 +120,9 @@ public class MainMenuController {
 
             Parent singlePlayerRoot = loader.load();
 
+            SoundEffectsManager.playClick();
             NavigationService.navigateTo(singlePlayerRoot);
+
         } catch (IOException e) {
             System.err.println("Error loading single-player.fxml: " + e.getMessage());
             e.printStackTrace();
@@ -132,6 +135,7 @@ public class MainMenuController {
 
             Parent root = NavigationService.loadFXML("settings");
             NavigationService.navigateTo(root);
+            SoundEffectsManager.playClick();
         } catch (IOException ex) {
             System.getLogger(LoginController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
 
@@ -144,6 +148,7 @@ public class MainMenuController {
             System.out.println("Two Players clicked - navigating to Setup Screen");
             Parent root = NavigationService.loadFXML("two_players_setup");
             NavigationService.navigateTo(root);
+            SoundEffectsManager.playClick();
         } catch (IOException e) {
             System.err.println("Error loading two_players_setup.fxml: " + e.getMessage());
             e.printStackTrace();
@@ -170,6 +175,7 @@ public class MainMenuController {
         // Toggle the master volume state using SettingsManager
         boolean newState = !SettingsManager.isMasterVolumeOn();
         SettingsManager.setMasterVolumeOn(newState);
+        SoundEffectsManager.playClick();
 
         // Update the BackgroundMusicManager volume
         if (newState) {
@@ -195,6 +201,7 @@ public class MainMenuController {
 
             Parent root = NavigationService.loadFXML("match_history");
             NavigationService.navigateTo(root);
+            SoundEffectsManager.playClick();
 
         } catch (IOException e) {
             System.err.println("Error loading recordings.fxml: " + e.getMessage());
@@ -205,6 +212,7 @@ public class MainMenuController {
     @FXML
     private void onPlayOnlineClicked(ActionEvent event) {
         ServerConnectionDialog.show(playOnlineButton.getScene().getWindow());
+        SoundEffectsManager.playClick();
     }
 
 }
