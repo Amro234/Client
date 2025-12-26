@@ -33,6 +33,9 @@ import com.mycompany.client.difficulty.Difficulty;
 import javafx.scene.layout.HBox;
 
 import com.mycompany.client.gameboard.model.SinglePlayerSession;
+import javafx.animation.PauseTransition;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
 
 public class GameBoardController implements GameSession.SessionListener {
 
@@ -118,7 +121,9 @@ public class GameBoardController implements GameSession.SessionListener {
 
     @FXML
     private Label recordingLabel;
+private boolean recordingDecisionAsked = false;
 
+    private Timeline recordingPulse;
     public void initialize() {
         cells = new StackPane[][] {
                 { cell00, cell01, cell02 },
@@ -153,6 +158,7 @@ public class GameBoardController implements GameSession.SessionListener {
         resetRecording();
         startTimer();
         updateTurnUI(true);
+        askRecordingDecision();
     }
 
     public void startOnlineGame(String opponentName, String mySymbol) {
@@ -646,34 +652,42 @@ public class GameBoardController implements GameSession.SessionListener {
     }
 
     private void showPlayAgainDialog(String message) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Game Over");
+    Platform.runLater(() -> {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Game Over");
 
-            if (message.contains("Draw")) {
-                alert.setHeaderText("🤝 " + message + " 🤝");
-                alert.setContentText("No winner this time! Want a rematch?");
+        if (message.contains("Draw")) {
+            alert.setHeaderText("🤝 " + message + " 🤝");
+            alert.setContentText("No winner this time! Want a rematch?");
+        } else {
+            alert.setHeaderText("🎉 " + message + " 🎉");
+            alert.setContentText("Do you want to play again?");
+        }
+
+        ButtonType playAgainButton = new ButtonType("Play Again");
+        ButtonType cancelButton = new ButtonType("Exit to Menu");
+
+        alert.getButtonTypes().setAll(playAgainButton, cancelButton);
+
+        alert.showAndWait().ifPresent(response -> {
+
+            if (response == playAgainButton) {
+
+                currentSession.resetGame();
+                resetBoardUI();
+                startTimer();
+
+                resetRecording();
+                resetRecordingDecision();
+                askRecordingDecision();
+
             } else {
-                alert.setHeaderText("🎉 " + message + " 🎉");
-                alert.setContentText("Do you want to play again?");
+                
+                goToMainMenuDirectly();
             }
-
-            ButtonType playAgainButton = new ButtonType("Play Again");
-            ButtonType cancelButton = new ButtonType("Exit to Menu");
-
-            alert.getButtonTypes().setAll(playAgainButton, cancelButton);
-
-            alert.showAndWait().ifPresent(response -> {
-                if (response == playAgainButton) {
-                    currentSession.resetGame();
-                    resetBoardUI();
-                    startTimer();
-                } else {
-                    handleBackButton();
-                }
-            });
         });
-    }
+    });
+}
 
     @FXML
     private void onRecording(ActionEvent event) {
@@ -746,14 +760,24 @@ public class GameBoardController implements GameSession.SessionListener {
     @Override
     public void onReplayFinished() {
         Platform.runLater(() -> {
+            replayStatusLabel.setText("▶ Replay Finished");
             replayStatusLabel.setVisible(true);
+            replayStatusLabel.setManaged(true);
         });
     }
 
     @Override
-    public void onSessionReset() {
+public void onSessionReset() {
+    boardMode = BoardMode.NORMAL;
+    updateUIForMode();
+    resetBoardUI();
+    isGameEnded = false;
+}
+
+     public void onReplayReset() {
         resetBoardUI();
         replayStatusLabel.setVisible(false);
+        replayStatusLabel.setManaged(false);
     }
 
     private void updateUIForMode() {
@@ -774,17 +798,143 @@ public class GameBoardController implements GameSession.SessionListener {
         turnIndicatorLabel.setManaged(!isReplay);
     }
 
-    private void startRecordingIndicator() {
-        recordingBox.setVisible(true);
-        recordingBox.setManaged(true);
-    }
+   private void startRecordingIndicator() {
+
+    recordingBox.setVisible(true);
+    recordingBox.setManaged(true);
+
+    applyRecordingGlow();
+
+    
+    PauseTransition delay = new PauseTransition(Duration.millis(300));
+    delay.setOnFinished(e -> startPulseAnimation());
+    delay.play();
+}
 
     private void stopRecordingIndicator() {
-        recordingBox.setVisible(false);
-        recordingBox.setManaged(false);
+
+    if (recordingPulse != null) {
+        recordingPulse.stop();
     }
+
+    recordingBox.setVisible(false);
+    recordingBox.setManaged(false);
+
+    recordingIndicator.setOpacity(1.0);
+    recordingIndicator.setEffect(null);
+}
 
     private void updateRecordButtonUI(boolean recording) {
         recordGame.setText(recording ? "⏹ Stop" : "⏺ Record");
     }
+    private void applyRecordingGlow() {
+    DropShadow glow = new DropShadow();
+    glow.setRadius(8);
+    glow.setColor(Color.web("#dc2626")); // Red glow
+    recordingIndicator.setEffect(glow);
+}
+private void startPulseAnimation() {
+
+    recordingPulse = new Timeline(
+        new KeyFrame(Duration.ZERO, e -> {
+            recordingIndicator.setOpacity(1.0);
+            recordingLabel.setOpacity(1.0);
+        }),
+        new KeyFrame(Duration.seconds(0.6), e -> {
+            recordingIndicator.setOpacity(0.4);
+            recordingLabel.setOpacity(0.4);
+        }),
+        new KeyFrame(Duration.seconds(1.2), e -> {
+            recordingIndicator.setOpacity(1.0);
+            recordingLabel.setOpacity(1.0);
+        })
+    );
+
+    recordingPulse.setCycleCount(Timeline.INDEFINITE);
+    recordingPulse.play();
+}
+private void askRecordingDecision() {
+
+    if (recordingDecisionAsked) return;
+    recordingDecisionAsked = true;
+
+    Platform.runLater(() -> {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Record Match");
+        alert.setHeaderText("🎥 Record this match?");
+        alert.setContentText("Do you want to record this game?");
+
+        ButtonType yesBtn = new ButtonType("Yes");
+        ButtonType noBtn = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesBtn, noBtn);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == yesBtn) {
+                enableAutoRecording();
+            } else {
+                disableRecordingButtonOnly();
+            }
+        });
+    });
+}
+private void enableAutoRecording() {
+
+    isRecordingEnabled = true;
+    recordingStoppedManually = false;
+
+    gameRecorder.startRecording(
+            GameMode.TWO_PLAYERS,
+            currentSession.getPlayer1Name(),
+            currentSession.getPlayer2Name(),
+            'X'
+    );
+
+    // REC effect
+    startRecordingIndicator();
+
+   
+    recordGame.setVisible(false);
+    recordGame.setManaged(false);
+}
+private void disableRecordingButtonOnly() {
+
+    isRecordingEnabled = false;
+
+    recordGame.setDisable(true);
+    recordGame.setOpacity(0.5);
+    recordGame.setText("Recording Disabled");
+
+  
+    stopRecordingIndicator();
+}
+
+private void resetRecordingDecision() {
+    recordingDecisionAsked = false;
+
+   
+    recordGame.setDisable(false);
+    recordGame.setVisible(true);
+    recordGame.setManaged(true);
+    recordGame.setOpacity(1.0);
+    recordGame.setText("⏺ Record");
+}
+private void goToMainMenuDirectly() {
+    Platform.runLater(() -> {
+        try {
+            stopTimer();
+            if (currentSession != null) {
+                currentSession.stop();
+            }
+
+            Parent root = NavigationService.loadFXML("main-menu");
+            NavigationService.navigateTo(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    });
+}
+
 }
