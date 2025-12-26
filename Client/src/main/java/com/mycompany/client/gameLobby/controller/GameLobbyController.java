@@ -73,19 +73,11 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     @FXML
     private Button lobbyBtn;
     @FXML
-    private Button statsBtn;
-    @FXML
-    private Button friendsBtn;
-    @FXML
     private Label titleLabel;
     @FXML
     private Circle onlineDot;
     @FXML
     private Label onlineCountLabel;
-    @FXML
-    private Circle matchesDot;
-    @FXML
-    private Label matchesCountLabel;
 
     private final ObservableList<OnlineUser> playerData = FXCollections.observableArrayList();
 
