@@ -232,12 +232,7 @@ public class SettingsController implements Initializable {
     }
 
     @FXML
-    private void handleBack() {
-        try {
-            Parent root = NavigationService.loadFXML("main-menu");
-            NavigationService.navigateTo(root);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+    public void handleBack() {
+        NavigationService.goBack();
     }
 }

@@ -41,20 +41,22 @@
                   <Insets bottom="25.0" left="20.0" right="20.0" top="25.0" />
                </padding>
                <children>
-                  <Pane prefHeight="100.0" prefWidth="100.0">
+                  <StackPane maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0">
                      <children>
-                        <Circle fx:id="player1Avatar" centerX="50.0" centerY="50.0" fill="#E3F2FD" layoutX="20.0" radius="50.0" stroke="#4A90E2" strokeType="INSIDE" strokeWidth="2.0" />
-                        <Label layoutX="50.0" layoutY="21.0" styleClass="avatar-icon" text="👤">
-                        </Label>
-                        <Circle centerX="75.0" centerY="75.0" fill="#4A90E2" layoutX="23.0" radius="18.0" />
-                        <Label layoutX="93.0" layoutY="65.0" styleClass="symbol-label" text="X">
-                        </Label>
+                        <Circle fx:id="player1Avatar" fill="#E3F2FD" radius="50.0" stroke="#4A90E2" strokeType="INSIDE" strokeWidth="2.0" />
+                        <Label styleClass="avatar-icon" text="👤" />
+                        <Pane mouseTransparent="true">
+                           <children>
+                              <Circle centerX="82.0" centerY="82.0" fill="#4A90E2" radius="18.0" />
+                              <Label alignment="CENTER" layoutX="70.0" layoutY="70.0" prefHeight="24.0" prefWidth="24.0" styleClass="symbol-label" text="X" />
+                           </children>
+                        </Pane>
                      </children>
-                  </Pane>
+                  </StackPane>
                   
-                  <Label fx:id="player1NameLabel" prefHeight="26.0" prefWidth="135.0" styleClass="player-name-label" text="Player 1  (You)" />
+                  <Label fx:id="player1NameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="player-name-label" text="Player 1  (You)" textAlignment="CENTER" />
                   
-                  <Label fx:id="player1TurnLabel" prefHeight="32.0" prefWidth="120.0" text="Your Turn" textAlignment="CENTER">
+                  <Label fx:id="player1TurnLabel" alignment="CENTER" prefHeight="32.0" prefWidth="120.0" text="Your Turn" textAlignment="CENTER">
                      <padding>
                         <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
                      </padding>
@@ -174,20 +176,22 @@
                   <Insets bottom="25.0" left="20.0" right="20.0" top="25.0" />
                </padding>
                <children>
-                  <Pane prefHeight="100.0" prefWidth="100.0">
+                  <StackPane maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0">
                      <children>
-                        <Circle fx:id="player2Avatar" centerX="50.0" centerY="50.0" fill="#F5F5F5" layoutX="18.0" radius="50.0" stroke="#E5E7EB" strokeType="INSIDE" strokeWidth="2.0" />
-                        <Label layoutX="48.0" layoutY="18.0" prefHeight="65.0" prefWidth="40.0" styleClass="avatar-icon" text="👤" textAlignment="CENTER">
-                        </Label>
-                        <Circle centerX="75.0" centerY="75.0" fill="#D0021B" layoutX="19.0" layoutY="-4.0" radius="18.0" />
-                        <Label layoutX="89.0" layoutY="61.0" styleClass="symbol-label" text="O">
-                        </Label>
+                        <Circle fx:id="player2Avatar" fill="#F5F5F5" radius="50.0" stroke="#E5E7EB" strokeType="INSIDE" strokeWidth="2.0" />
+                        <Label styleClass="avatar-icon" text="👤" />
+                        <Pane mouseTransparent="true">
+                           <children>
+                              <Circle centerX="82.0" centerY="82.0" fill="#D0021B" radius="18.0" />
+                              <Label alignment="CENTER" layoutX="70.0" layoutY="70.0" prefHeight="24.0" prefWidth="24.0" styleClass="symbol-label" text="O" />
+                           </children>
+                        </Pane>
                      </children>
-                  </Pane>
+                  </StackPane>
                   
-                  <Label fx:id="player2NameLabel" prefHeight="26.0" prefWidth="78.0" styleClass="player-name-label" text="Player 2" textAlignment="CENTER" />
+                  <Label fx:id="player2NameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="player-name-label" text="Player 2" textAlignment="CENTER" />
                   
-                  <Label fx:id="player2StatusLabel" prefHeight="32.0" prefWidth="120.0" text="Waiting..." textAlignment="CENTER">
+                  <Label fx:id="player2StatusLabel" alignment="CENTER" prefHeight="32.0" prefWidth="120.0" text="Waiting..." textAlignment="CENTER">
                      <padding>
                         <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
                      </padding>
