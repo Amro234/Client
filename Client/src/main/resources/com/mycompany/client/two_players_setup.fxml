@@ -9,23 +9,25 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 
-<VBox alignment="CENTER" spacing="30.0" styleClass="setup-container" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.mainmenu.TwoPlayersSetupController">
+<VBox alignment="CENTER" spacing="30.0" styleClass="setup-container"
+    xmlns="http://javafx.com/javafx/17"
+    xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.mainmenu.TwoPlayersSetupController">
     <stylesheets>
-        <URL value="@/styles/two_players_setup.css" />
+        <URL value="@../../../styles/two_players_setup.css" />
     </stylesheets>
-    
+
     <padding>
         <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
     </padding>
 
     <Label styleClass="title-label" text="Local Multiplayers" />
-    
+
     <VBox spacing="20.0" maxWidth="400.0">
         <VBox spacing="10.0">
             <Label styleClass="field-label" text="Player 1 Name (X)" />
             <TextField fx:id="p1NameField" promptText="Enter Player 1 Name" styleClass="name-input" />
         </VBox>
-        
+
         <VBox spacing="10.0">
             <Label styleClass="field-label" text="Player 2 Name (O)" />
             <TextField fx:id="p2NameField" promptText="Enter Player 2 Name" styleClass="name-input" />

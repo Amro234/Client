@@ -43,11 +43,6 @@ public class NavigationService {
             return;
         }
 
-        if (!stack.isEmpty()) {
-            stack.pop();
-            stack.push(next);
-        }
-
         scene.setRoot(next);
     }
 
