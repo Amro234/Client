@@ -126,10 +126,8 @@ public class DifficultyController implements Initializable {
      * Navigate back to main menu
      */
     @FXML
-    private void onBackToMenu(MouseEvent event) {
+    private void handleBack(ActionEvent event) {
         SoundEffectsManager.playClick();
-        // Parent root = NavigationService.loadFXML("main_menu");
-        // Set root of current scene to preserve window size and stylesheets
         NavigationService.goBack();
     }
 

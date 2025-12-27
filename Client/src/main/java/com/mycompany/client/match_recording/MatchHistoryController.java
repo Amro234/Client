@@ -55,7 +55,7 @@ public class MatchHistoryController implements Initializable {
     // private final String username = "Player 1";
     private final String recordingsPath = System.getProperty("user.home") + "/.tic_tac_toe/recordings";
     @FXML
-    private Button backToMenuBtn;
+    private Button backBtn;
     private String username;
 
     @Override
@@ -240,7 +240,7 @@ public class MatchHistoryController implements Initializable {
     }
 
     @FXML
-    private void onBackToMenuBtnClicked(ActionEvent event) {
+    private void handleBack(ActionEvent event) {
         SoundEffectsManager.playClick();
         NavigationService.goBack();
     }
