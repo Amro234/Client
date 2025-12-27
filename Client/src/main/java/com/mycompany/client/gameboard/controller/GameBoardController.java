@@ -409,7 +409,6 @@ boolean iWon = (winInfo.winner == mySymbol);
     public void onServerDisconnected() {
         Platform.runLater(() -> {
             closeActiveDialog();
-            asa
             stopTimer();
             if (currentSession != null) {
                 currentSession.stop();

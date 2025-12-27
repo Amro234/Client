@@ -72,6 +72,7 @@ public class ServerConnectionDialog {
                             ex.printStackTrace();
                         }
                     } else {
+                        
                         CustomAlertDialog.show(dialog, "Connection Failed", "Could not establish persistent connection to server.");
                     }
                 } else {
