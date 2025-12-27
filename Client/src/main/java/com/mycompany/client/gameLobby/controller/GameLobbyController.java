@@ -106,6 +106,7 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
         statusComboBox.getItems().add(null);
         statusComboBox.getItems().addAll(PlayerStatus.values());
         statusComboBox.setValue(null);
+        
 
         statusComboBox.setCellFactory(cb -> new ListCell<>() {
             @Override
