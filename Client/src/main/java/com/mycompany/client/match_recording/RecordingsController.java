@@ -75,7 +75,6 @@ public class RecordingsController implements Initializable {
         try {
             RecordingManager manager = new RecordingManager();
             GameRecording recording = manager.loadRecording(selectedFile, username);
-
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/mycompany/client/game_board.fxml"));
             Parent root = loader.load();
