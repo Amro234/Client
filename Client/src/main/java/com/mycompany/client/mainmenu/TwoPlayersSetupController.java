@@ -56,4 +56,9 @@ public class TwoPlayersSetupController {
         NavigationService.goBack();
         SoundEffectsManager.playClick();
     }
+
+    @FXML
+    private void handleBack(ActionEvent event) {
+        onBackClicked(event);
+    }
 }

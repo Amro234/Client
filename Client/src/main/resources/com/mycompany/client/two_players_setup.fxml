@@ -8,34 +8,54 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
-<VBox alignment="CENTER" spacing="30.0" styleClass="setup-container"
-    xmlns="http://javafx.com/javafx/17"
-    xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.mainmenu.TwoPlayersSetupController">
-    <stylesheets>
-        <URL value="@../../../styles/two_players_setup.css" />
-    </stylesheets>
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.mycompany.client.mainmenu.TwoPlayersSetupController">
 
-    <padding>
-        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-    </padding>
+    <VBox alignment="CENTER" spacing="30.0" styleClass="setup-container"
+          AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" 
+          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <stylesheets>
+            <URL value="@../../../styles/two_players_setup.css" />
+        </stylesheets>
 
-    <Label styleClass="title-label" text="Local Multiplayers" />
+        <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+        </padding>
 
-    <VBox spacing="20.0" maxWidth="400.0">
-        <VBox spacing="10.0">
-            <Label styleClass="field-label" text="Player 1 Name (X)" />
-            <TextField fx:id="p1NameField" promptText="Enter Player 1 Name" styleClass="name-input" />
+        <Label styleClass="title-label" text="Local Multiplayers" />
+
+        <VBox spacing="20.0" maxWidth="400.0">
+            <VBox spacing="10.0">
+                <Label styleClass="field-label" text="Player 1 Name (X)" />
+                <TextField fx:id="p1NameField" promptText="Enter Player 1 Name" styleClass="name-input" />
+            </VBox>
+
+            <VBox spacing="10.0">
+                <Label styleClass="field-label" text="Player 2 Name (O)" />
+                <TextField fx:id="p2NameField" promptText="Enter Player 2 Name" styleClass="name-input" />
+            </VBox>
         </VBox>
 
-        <VBox spacing="10.0">
-            <Label styleClass="field-label" text="Player 2 Name (O)" />
-            <TextField fx:id="p2NameField" promptText="Enter Player 2 Name" styleClass="name-input" />
-        </VBox>
+        <HBox alignment="CENTER" spacing="20.0">
+             <Button onAction="#onStartClicked" styleClass="primary-button" text="Start Game" />
+        </HBox>
     </VBox>
 
-    <HBox alignment="CENTER" spacing="20.0">
-        <Button onAction="#onBackClicked" styleClass="secondary-button" text="Back" />
-        <Button onAction="#onStartClicked" styleClass="primary-button" text="Start Game" />
-    </HBox>
-</VBox>
+    <Button fx:id="backBtn" onAction="#handleBack" 
+            style="-fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 10;" 
+            AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="30.0" pickOnBounds="false">
+        <graphic>
+            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true" pickOnBounds="true">
+                <image>
+                    <Image url="@../../../assets/images/arrow-back.png" />
+                </image>
+            </ImageView>
+        </graphic>
+    </Button>
+
+</AnchorPane>
