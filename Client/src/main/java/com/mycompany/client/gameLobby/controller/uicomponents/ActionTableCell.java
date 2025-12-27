@@ -5,6 +5,8 @@ import com.mycompany.client.gameLobby.networking.GameLobbyClient;
 import com.mycompany.client.gameLobby.networking.exception.GameLobbyException;
 import com.mycompany.client.gameLobby.networking.model.challenge.ChallengeResponse;
 import com.mycompany.client.gameLobby.networking.model.user.OnlineUser;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
+
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
@@ -36,6 +38,7 @@ public class ActionTableCell extends TableCell<OnlineUser, Void> {
             btn.getStyleClass().add("action-button");
 
             btn.setOnAction(event -> {
+                SoundEffectsManager.playClick();
                 btn.setDisable(true);
                 sendChallenge(user);
 
