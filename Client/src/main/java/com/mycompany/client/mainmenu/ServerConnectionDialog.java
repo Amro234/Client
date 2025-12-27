@@ -92,6 +92,8 @@ public class ServerConnectionDialog {
             }
         });
 
+        
+     
         // Layout
         VBox layout = new VBox(15);
         layout.setPadding(new Insets(20));
