@@ -31,6 +31,7 @@ import com.mycompany.client.gameboard.model.BoardMode;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.session.UserSession;
 import com.mycompany.client.difficulty.Difficulty;
+import com.mycompany.client.gameboard.model.ClientOnlineSession;
 import javafx.scene.layout.HBox;
 
 import com.mycompany.client.gameboard.model.SinglePlayerSession;
@@ -235,33 +236,46 @@ public class GameBoardController implements GameSession.SessionListener {
 
     @Override
     public void onGameEnd(Board.WinInfo winInfo) {
-        stopTimer();
+     stopTimer();
 
-        if (isRecordingEnabled && !recordingStoppedManually) {
+    if (isRecordingEnabled && !recordingStoppedManually) {
 
-            String status;
+        String status;
 
-            if (winInfo == null) {
-                status = "DRAW";
+        if (winInfo == null) {
+            status = "DRAW";
+        } else {
+
+            // Online pov
+            if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+
+                com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession =
+                        (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
+
+                char mySymbol = onlineSession.getMySymbol().charAt(0);
+                status = (winInfo.winner == mySymbol) ? "WIN" : "LOSE";
+
             } else {
+                //Local / Single
                 status = (winInfo.winner == 'X') ? "WIN" : "LOSE";
             }
-
-            gameRecorder.stopRecording(status);
-            String ownerUsername = UserSession.getInstance().getUsername();
-
-            recordingManager.saveRecording(
-                    gameRecorder.getRecording(),
-                    ownerUsername);
-
-            // recordingManager.saveRecording(
-            // gameRecorder.getRecording(),
-            // currentSession.getPlayer1Name());
-
-            isRecordingEnabled = false;
-            stopRecordingIndicator();
-            updateRecordButtonUI(false);
         }
+
+       
+        gameRecorder.stopRecording(status);
+
+        String ownerUsername = UserSession.getInstance().getUsername();
+        recordingManager.saveRecording(
+                gameRecorder.getRecording(),
+                ownerUsername
+        );
+
+        isRecordingEnabled = false;
+        stopRecordingIndicator();
+        updateRecordButtonUI(false);
+    }
+
+        
 
         if (winInfo != null) {
 
@@ -283,9 +297,12 @@ public class GameBoardController implements GameSession.SessionListener {
 
             } else if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
                 // Online Session
-                boolean iAmX = ((com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession).getMySymbol()
-                        .equals("X");
-                boolean iWon = (iAmX && playerWon) || (!iAmX && !playerWon);
+                ClientOnlineSession onlineSession =
+        (ClientOnlineSession) currentSession;
+
+char mySymbol = onlineSession.getMySymbol().charAt(0);
+boolean iWon = (winInfo.winner == mySymbol);
+
 
                 if (iWon) {
                     GameResultVideoManager.showWinVideo(
