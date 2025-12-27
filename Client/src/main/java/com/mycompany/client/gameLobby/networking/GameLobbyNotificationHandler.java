@@ -74,7 +74,9 @@ public class GameLobbyNotificationHandler implements ServerMessageListener {
     @Override
     public void onConnectionLost() {
         System.err.println("[GameLobby] Connection to server lost");
-        // You can notify the UI here if needed
+        if (listener != null) {
+            Platform.runLater(() -> listener.onServerDisconnected());
+        }
     }
 
     private void handleChallengeReceived(JSONObject json) {

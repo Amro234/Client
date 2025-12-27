@@ -426,6 +426,30 @@ public class GameBoardController implements GameSession.SessionListener {
         });
     }
 
+    @Override
+    public void onServerDisconnected() {
+        Platform.runLater(() -> {
+            closeActiveDialog();
+            stopTimer();
+            if (currentSession != null) {
+                currentSession.stop();
+            }
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Connection Lost");
+            alert.setHeaderText("Server Disconnected");
+            alert.setContentText("The connection to the server was lost.");
+            alert.showAndWait();
+
+            try {
+                Parent root = NavigationService.loadFXML("main-menu");
+                NavigationService.navigateTo(root);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public void onOpponentLeft(String status) {
         Platform.runLater(() -> {
             closeActiveDialog();

@@ -54,6 +54,8 @@ public class ServerConnection {
         }
     }
 
+    private static java.util.concurrent.ScheduledExecutorService heartbeatExecutor;
+
     public static synchronized boolean connect() {
         if (isConnected()) {
             System.out.println("Already connected to server");
@@ -68,6 +70,9 @@ public class ServerConnection {
             isConnected = true;
 
             System.out.println("Connected to server: " + SERVER_HOST + ":" + SERVER_PORT);
+
+            startHeartbeat();
+
             return true;
         } catch (IOException e) {
             System.err.println("Failed to connect to server: " + e.getMessage());
@@ -99,8 +104,50 @@ public class ServerConnection {
             listenerThread.interrupt();
         }
 
+        stopHeartbeat();
+
         cleanup();
         System.out.println("Disconnected from server");
+    }
+
+    private static void startHeartbeat() {
+        stopHeartbeat();
+        heartbeatExecutor = java.util.concurrent.Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "HeartbeatThread");
+            t.setDaemon(true);
+            return t;
+        });
+
+        heartbeatExecutor.scheduleAtFixedRate(() -> {
+            if (isConnected) {
+                try {
+                    // Send PING
+                    // Using direct write to avoid polluting logs with excessive PING messages
+                    synchronized (ServerConnection.class) {
+                        if (out != null) {
+                            org.json.JSONObject ping = new org.json.JSONObject();
+                            ping.put("type", "PING");
+                            out.writeUTF(ping.toString());
+                            out.flush();
+                        }
+                    }
+                } catch (IOException e) {
+                    System.err.println("Heartbeat failed: " + e.getMessage());
+                    // This is the CRITICAL point where we detect connection loss actively
+                    if (messageListener != null) {
+                        messageListener.onConnectionLost();
+                    }
+                    disconnect();
+                }
+            }
+        }, 2, 2, java.util.concurrent.TimeUnit.SECONDS);
+    }
+
+    private static void stopHeartbeat() {
+        if (heartbeatExecutor != null && !heartbeatExecutor.isShutdown()) {
+            heartbeatExecutor.shutdownNow();
+        }
+        heartbeatExecutor = null;
     }
 
     private static void startListenerThread() {
@@ -109,6 +156,12 @@ public class ServerConnection {
                 try {
                     if (in != null && in.available() > 0) {
                         String message = in.readUTF();
+
+                        // Ignore PONG responses
+                        if (message.contains("\"type\":\"PONG\"") || message.contains("\"type\": \"PONG\"")) {
+                            continue;
+                        }
+
                         System.out.println("Received from server: " + message);
 
                         if (messageListener != null) {
@@ -147,8 +200,12 @@ public class ServerConnection {
             out.flush();
             System.out.println("Request sent to server: " + requestJson);
 
-            // Wait for immediate response
-            String response = in.readUTF();
+            // Wait for immediate response and ignore PONGs (Heartbeat responses)
+            String response;
+            do {
+                response = in.readUTF();
+            } while (response.contains("\"type\":\"PONG\"") || response.contains("\"type\": \"PONG\""));
+
             System.out.println("Response received from server: " + response);
             return response;
 
