@@ -146,4 +146,10 @@ public class LoginController implements Initializable {
         }
     }
 
+    @FXML
+    private void handleBack(ActionEvent event) {
+        SoundEffectsManager.playClick();
+        NavigationService.goBack();
+    }
+
 }
