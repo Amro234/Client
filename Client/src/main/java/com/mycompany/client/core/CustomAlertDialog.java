@@ -38,6 +38,7 @@ public class CustomAlertDialog {
 
             Button okBtn = new Button("OK");
            
+            
             okBtn.setStyle(
                     "-fx-background-color: #3498DB;" +
                             "-fx-text-fill: white;" +
