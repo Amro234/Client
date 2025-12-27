@@ -25,4 +25,7 @@ public interface GameLobbyNotificationListener {
     void onChallengeDeclined(ChallengeDeclinedNotification notification);
 
     void onGameStarted(String sessionId, String opponentName, String mySymbol);
+
+    default void onServerDisconnected() {
+    }
 }

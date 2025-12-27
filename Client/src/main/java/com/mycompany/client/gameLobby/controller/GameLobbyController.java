@@ -318,4 +318,24 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
             ToastNotification.error("Failed to start game: " + e.getMessage(), playerTable.getScene().getWindow());
         }
     }
+
+    @Override
+    public void onServerDisconnected() {
+        System.out.println("[GameLobby] Server disconnected. Navigating to Main Menu.");
+        shutdown(); // Stop Auto-Refresh
+
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Connection Lost");
+            alert.setHeaderText("Server Disconnected");
+            alert.setContentText("You have been disconnected from the server.");
+            alert.showAndWait();
+
+            try {
+                NavigationService.navigateTo(NavigationService.loadFXML("main-menu"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 }

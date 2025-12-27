@@ -7,6 +7,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import com.mycompany.client.core.session.UserSession;
+
 public class ClientOnlineSession extends OnlineSession implements ServerMessageListener {
 
     private final String mySymbol;
@@ -99,14 +101,10 @@ public class ClientOnlineSession extends OnlineSession implements ServerMessageL
     @Override
     public void onConnectionLost() {
         Platform.runLater(() -> {
-            if (listener != null) {
-                // Reuse onGameEnd to show error or specialized method?
-                // Let's assume onGameEnd(null) but that means Draw.
-                // Better to alert controller.
-                // We will update interface GameBoardController later.
-                // For now print err.
-            }
             System.err.println("Connection Lost!");
+            if (listener != null) {
+                listener.onServerDisconnected();
+            }
         });
     }
 
@@ -157,6 +155,15 @@ public class ClientOnlineSession extends OnlineSession implements ServerMessageL
                     this.p1Wins = json.getInt("sessionP1Wins");
                     this.p2Wins = json.getInt("sessionP2Wins");
                     this.draws = json.getInt("sessionDraws");
+                }
+
+                // Update User Score in Session
+                if (json.has("p1Score") && json.has("p2Score")) {
+                    int p1Score = json.getInt("p1Score");
+                    int p2Score = json.getInt("p2Score");
+
+                    int newScore = "X".equals(mySymbol) ? p1Score : p2Score;
+                    UserSession.getInstance().getCurrentUser().setScore(newScore);
                 }
 
                 Platform.runLater(() -> {
