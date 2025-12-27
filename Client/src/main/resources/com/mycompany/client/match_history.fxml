@@ -13,16 +13,18 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="720" prefWidth="1280" styleClass="match-history-root" stylesheets="@../../../styles/customStyles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.match_recording.MatchHistoryController">
-    
+<AnchorPane id="AnchorPane" prefHeight="720" prefWidth="1280" styleClass="match-history-root" stylesheets="@../../../styles/customStyles.css"
+    xmlns="http://javafx.com/javafx/25"
+    xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.match_recording.MatchHistoryController">
+
     <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.leftAnchor="200" AnchorPane.rightAnchor="200" AnchorPane.topAnchor="40">
-        
+
         <!-- Header Section -->
         <VBox alignment="CENTER_LEFT" spacing="8">
             <Label styleClass="match-history-title" text="Match Records" />
             <Label styleClass="match-history-subtitle" text="Browse your past games and watch replays." />
         </VBox>
-        
+
         <!-- Filter Bar and Search -->
         <HBox alignment="CENTER_LEFT" spacing="15">
             <!-- Filter Buttons -->
@@ -56,39 +58,42 @@
                     </graphic>
                 </ToggleButton>
             </HBox>
-            
+
             <Region HBox.hgrow="ALWAYS" />
-            
+
             <!-- Search Box -->
             <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-box">
                 <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
                     <Image url="@../../../assets/images/search.png" />
                 </ImageView>
                 <TextField fx:id="searchField" promptText="Search opponent..." styleClass="search-field">
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin></TextField>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </TextField>
             </HBox>
         </HBox>
-        
+
         <!-- Match List -->
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="Infinity" prefHeight="400" styleClass="match-list-scroll" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
             <VBox fx:id="matchListContainer" spacing="12" styleClass="match-list-container">
                 <!-- Match cards will be added dynamically -->
             </VBox>
         </ScrollPane>
-        
+
     </VBox>
-   <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-      <children>
-         <Button fx:id="backToMenuBtn" mnemonicParsing="false" onAction="#onBackToMenuBtnClicked" text="Back" />
-      </children>
-      <padding>
-         <Insets left="40.0" top="40.0" />
-      </padding>
-   </HBox>
-   <Button alignment="BOTTOM_CENTER" layoutX="1097.0" layoutY="20.0" mnemonicParsing="false" onAction="#onDeleteAllRecords" prefHeight="60.0" prefWidth="160.0" style="-fx-background-color: linear-gradient(#dc2626, #991b1b); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 16; -fx-cursor: hand; -fx-font-size: 16;" styleClass="danger-btn" text="Delete All Records">
-      <padding>
-         <Insets bottom="20.0" top="10.0" />
-      </padding></Button>
+    <Button alignment="BOTTOM_CENTER" layoutX="1097.0" layoutY="20.0" mnemonicParsing="false" onAction="#onDeleteAllRecords" prefHeight="60.0" prefWidth="160.0" style="-fx-background-color: linear-gradient(#dc2626, #991b1b); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 16; -fx-cursor: hand; -fx-font-size: 16;" styleClass="danger-btn" text="Delete All Records">
+        <padding>
+            <Insets bottom="20.0" top="10.0" />
+        </padding>
+    </Button>
+    <Button fx:id="backBtn" onAction="#handleBack" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 10;" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="30.0" pickOnBounds="false">
+        <graphic>
+            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true" pickOnBounds="true">
+                <image>
+                    <Image url="@../../../assets/images/arrow-back.png" />
+                </image>
+            </ImageView>
+        </graphic>
+    </Button>
 </AnchorPane>

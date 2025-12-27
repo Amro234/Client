@@ -40,6 +40,8 @@ import javafx.animation.PauseTransition;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 
+import com.mycompany.client.settings.manager.SoundEffectsManager;
+
 public class GameBoardController implements GameSession.SessionListener {
 
     private GameReplayManager replayManager = new GameReplayManager();
@@ -58,7 +60,7 @@ public class GameBoardController implements GameSession.SessionListener {
     private Label[][] labels;
 
     @FXML
-    private Button backButton;
+    private Button backBtn;
     @FXML
     private Label turnIndicatorLabel;
     @FXML
@@ -369,14 +371,15 @@ boolean iWon = (winInfo.winner == mySymbol);
             activeDialog = alert;
 
             alert.showAndWait().ifPresent(response -> {
+                SoundEffectsManager.playClick();
                 if (response == lobbyButton) {
-                    handleBackButton(); // Disconnects session and goes back
+                    handleBack(null); // Disconnects session and goes back
                 } else if (response == rematchButton) {
                     if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
                         ((com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession).requestRematch();
                         // Show waiting tooltip or toast?
                         com.mycompany.client.match_recording.RecordingManager.showToast("Rematch request sent...",
-                                backButton.getScene());
+                                backBtn.getScene());
                         // Keep dialog open? No, effectively standard flows might suggest waiting.
                         // But actually, showing "Waiting for opponent..." would be better.
                         // For now we just close or keep it?
@@ -412,6 +415,7 @@ boolean iWon = (winInfo.winner == mySymbol);
             activeDialog = alert;
 
             alert.showAndWait().ifPresent(response -> {
+                SoundEffectsManager.playClick();
                 if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
                     com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession = (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
 
@@ -423,7 +427,7 @@ boolean iWon = (winInfo.winner == mySymbol);
                         onlineSession.declineRematch();
                         // Explicitly close/clear dialog reference before navigating
                         activeDialog = null;
-                        handleBackButton();
+                        handleBack(null);
                     }
                 }
                 activeDialog = null;
@@ -439,7 +443,7 @@ boolean iWon = (winInfo.winner == mySymbol);
             alert.setTitle("Rematch Declined");
             alert.setHeaderText("Opponent declined rematch.");
             alert.showAndWait();
-            handleBackButton();
+            handleBack(null);
         });
     }
 
@@ -474,7 +478,7 @@ boolean iWon = (winInfo.winner == mySymbol);
             if (isGameEnded) {
                 // Game was already over (e.g. at Game Over dialog), and opponent left
                 com.mycompany.client.match_recording.RecordingManager.showToast("Opponent left the session.",
-                        backButton.getScene());
+                        backBtn.getScene());
                 // Directly quit without confirmation since game is ended
                 executeQuit(true);
             } else {
@@ -482,7 +486,7 @@ boolean iWon = (winInfo.winner == mySymbol);
                 isGameEnded = true; // Mark ended to prevent exit confirmation
 
                 com.mycompany.client.match_recording.RecordingManager.showToast("Opponent Left! You Win!",
-                        backButton.getScene());
+                        backBtn.getScene());
 
                 // Play Win Video, then automatically go back to lobby
                 com.mycompany.client.GameResultVideoManager.GameResultVideoManager.showWinVideo(() -> {
@@ -674,9 +678,31 @@ boolean iWon = (winInfo.winner == mySymbol);
     }
 
     @FXML
-    public void handleBackButton() {
-        if (!isGameEnded && currentSession != null) {
-            showExitConfirmation(() -> executeQuit(true));
+    public void handleBack(ActionEvent event) {
+        SoundEffectsManager.playClick();
+        replayManager.reset();
+        stopTimer();
+        if (currentSession != null) {
+            currentSession.stop();
+        }
+
+        if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+            try {
+                // Determine CSS files to load? GameLobby usually doesn't apply dynamic CSS args
+                // in NavigationService calls in other places?
+                // Looking at GameLobbyController, it seems standard.
+                // NavigationService.loadFXML("gameLobby") should be enough if styles are
+                // attached in FXML or default.
+                // But wait, does gameLobby.fxml have stylesheets?
+                // Usually good to just loadFXML.
+                Parent root = NavigationService.loadFXML("gameLobby");
+                NavigationService.goBackAndReplace(root);
+                return;
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Fallback
+                NavigationService.goBack();
+            }
         } else {
             executeQuit(true);
         }
@@ -684,6 +710,7 @@ boolean iWon = (winInfo.winner == mySymbol);
 
     @FXML
     public void handleSettingsButton() {
+        SoundEffectsManager.playClick();
         try {
             // We NO LONGER stop the timer or session here.
             // This allows users to change settings (like mute music) without ending the
@@ -777,6 +804,7 @@ boolean iWon = (winInfo.winner == mySymbol);
             alert.getButtonTypes().setAll(playAgainButton, cancelButton);
 
             alert.showAndWait().ifPresent(response -> {
+                SoundEffectsManager.playClick();
 
                 if (response == playAgainButton) {
 
@@ -798,6 +826,7 @@ boolean iWon = (winInfo.winner == mySymbol);
 
     @FXML
     private void onRecording(ActionEvent event) {
+        SoundEffectsManager.playClick();
         if (currentSession == null) {
             return;
         }
@@ -846,16 +875,19 @@ boolean iWon = (winInfo.winner == mySymbol);
     @FXML
 
     private void onReplayPlay() {
+        SoundEffectsManager.playClick();
         replayManager.play();
     }
 
     @FXML
     private void onReplayPause() {
+        SoundEffectsManager.playClick();
         replayManager.pause();
     }
 
     @FXML
     private void onReplaySpeed() {
+        SoundEffectsManager.playClick();
         replayManager.toggleSpeed();
 
         replaySpeedBtn.setText(
@@ -866,6 +898,7 @@ boolean iWon = (winInfo.winner == mySymbol);
 
     @FXML
     private void onReplayRestart() {
+        SoundEffectsManager.playClick();
         if (currentSession instanceof ReplayGameSession) {
             startReplay(((ReplayGameSession) currentSession).getRecording());
         }
@@ -994,6 +1027,7 @@ boolean iWon = (winInfo.winner == mySymbol);
             alert.getButtonTypes().setAll(yesBtn, noBtn);
 
             alert.showAndWait().ifPresent(response -> {
+                SoundEffectsManager.playClick();
                 if (response == yesBtn) {
                     enableAutoRecording();
                 } else {

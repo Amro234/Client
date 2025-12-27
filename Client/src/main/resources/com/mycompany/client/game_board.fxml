@@ -4,6 +4,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -15,249 +18,266 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../../../styles/game_board.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.gameboard.controller.GameBoardController">
-   <top>
-      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0" styleClass="top-hbox" BorderPane.alignment="CENTER">
-         <padding>
-            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-         </padding>
-         <children>
-            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButton" prefHeight="40.0" prefWidth="92.0" styleClass="back-button" text="←" textAlignment="CENTER" />
-            <Pane prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS">
-               <children>
-                  <Button fx:id="replayPlayBtn" layoutX="97.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplayPlay" stylesheets="@../../../styles/replayButtonStyles.css" text="Play">
-                     <styleClass>
-                        <String fx:value="replay-play" />
-                        <String fx:value="replay-btn" />
-                     </styleClass>
-                  </Button>
-                  <Button fx:id="replayPauseBtn" layoutX="186.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplayPause" stylesheets="@../../../styles/replayButtonStyles.css" text="Pause">
-                     <styleClass>
-                        <String fx:value="replay-btn" />
-                        <String fx:value="replay-pause" />
-                     </styleClass>
-                  </Button>
-                  <Button fx:id="replaySpeedBtn" layoutX="277.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplaySpeed" stylesheets="@../../../styles/replayButtonStyles.css" text="Speed x2">
-                     <styleClass>
-                        <String fx:value="replay-btn" />
-                        <String fx:value="replay-speed" />
-                     </styleClass>
-                  </Button>
-                  <Button fx:id="replayRestartBtn" layoutX="428.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplayRestart" stylesheets="@../../../styles/replayButtonStyles.css" text="Restart">
-                     <styleClass>
-                        <String fx:value="replay-btn" />
-                        <String fx:value="replay-restart" />
-                     </styleClass>
-                  </Button>
-                  <Button fx:id="recordGame" alignment="CENTER" contentDisplay="RIGHT" layoutX="746.0" layoutY="21.0" mnemonicParsing="false" onAction="#onRecording" prefHeight="27.0" prefWidth="114.0" style="-fx-background-color: red; -fx-background-radius: 20; -fx-text-fill: white; -fx-font-weight: bold;" text="Record" />
-               </children></Pane>
-            <Button fx:id="settingsButton" mnemonicParsing="false" onAction="#handleSettingsButton" prefHeight="40.0" prefWidth="40.0" styleClass="icon-button" text="⚙" />
-            <Button fx:id="menuButton" mnemonicParsing="false" onAction="#handleMenuButton" prefHeight="40.0" prefWidth="40.0" styleClass="icon-button" text="☰" />
-         </children>
-      </HBox>
-   </top>
-   <center>
-      <HBox alignment="CENTER" prefHeight="620.0" prefWidth="1210.0" spacing="30.0" BorderPane.alignment="CENTER">
-         <padding>
-            <Insets bottom="20.0" left="40.0" right="40.0" top="20.0" />
-         </padding>
-         <children>
-            <VBox alignment="CENTER" prefWidth="200.0" spacing="15.0" styleClass="player-panel-1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../../../styles/game_board.css"
+   xmlns="http://javafx.com/javafx/25"
+   xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.client.gameboard.controller.GameBoardController">
+   <children>
+      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0" styleClass="top-hbox" BorderPane.alignment="CENTER">
                <padding>
-                  <Insets bottom="25.0" left="20.0" right="20.0" top="25.0" />
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </padding>
                <children>
-                  <StackPane maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0">
+                  <!-- Old back button removed -->
+                  <Pane prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Circle fx:id="player1Avatar" fill="#E3F2FD" radius="50.0" stroke="#4A90E2" strokeType="INSIDE" strokeWidth="2.0" />
-                        <Label styleClass="avatar-icon" text="👤" />
-                        <Pane mouseTransparent="true">
-                           <children>
-                              <Circle centerX="82.0" centerY="82.0" fill="#4A90E2" radius="18.0" />
-                              <Label alignment="CENTER" layoutX="70.0" layoutY="70.0" prefHeight="24.0" prefWidth="24.0" styleClass="symbol-label" text="X" />
-                           </children>
-                        </Pane>
+                        <Button fx:id="replayPlayBtn" layoutX="97.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplayPlay" stylesheets="@../../../styles/replayButtonStyles.css" text="Play">
+                           <styleClass>
+                              <String fx:value="replay-play" />
+                              <String fx:value="replay-btn" />
+                           </styleClass>
+                        </Button>
+                        <Button fx:id="replayPauseBtn" layoutX="186.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplayPause" stylesheets="@../../../styles/replayButtonStyles.css" text="Pause">
+                           <styleClass>
+                              <String fx:value="replay-btn" />
+                              <String fx:value="replay-pause" />
+                           </styleClass>
+                        </Button>
+                        <Button fx:id="replaySpeedBtn" layoutX="277.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplaySpeed" stylesheets="@../../../styles/replayButtonStyles.css" text="Speed x2">
+                           <styleClass>
+                              <String fx:value="replay-btn" />
+                              <String fx:value="replay-speed" />
+                           </styleClass>
+                        </Button>
+                        <Button fx:id="replayRestartBtn" layoutX="428.0" layoutY="17.0" mnemonicParsing="false" onAction="#onReplayRestart" stylesheets="@../../../styles/replayButtonStyles.css" text="Restart">
+                           <styleClass>
+                              <String fx:value="replay-btn" />
+                              <String fx:value="replay-restart" />
+                           </styleClass>
+                        </Button>
+                        <Button fx:id="recordGame" alignment="CENTER" contentDisplay="RIGHT" layoutX="746.0" layoutY="21.0" mnemonicParsing="false" onAction="#onRecording" prefHeight="27.0" prefWidth="114.0" style="-fx-background-color: red; -fx-background-radius: 20; -fx-text-fill: white; -fx-font-weight: bold;" text="Record" />
                      </children>
-                  </StackPane>
-                  
-                  <Label fx:id="player1NameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="player-name-label" text="Player 1  (You)" textAlignment="CENTER" />
-                  
-                  <Label fx:id="player1TurnLabel" alignment="CENTER" prefHeight="32.0" prefWidth="120.0" text="Your Turn" textAlignment="CENTER">
-                     <padding>
-                        <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
-                     </padding>
-                  </Label>
-                  
-                  <Label styleClass="wins-caption-label" text="WINS" textAlignment="CENTER" />
-                  
-                  <Label fx:id="player1WinsLabel" styleClass="wins-score-label" text="0" textAlignment="CENTER" />
-               </children>
-            </VBox>
-            
-            <VBox alignment="CENTER" spacing="15.0">
-               <children>
-                  <Label fx:id="replayStatusLabel" style="-fx-text-fill: #4CAF50; -fx-font-size: 16px; -fx-font-weight: bold;" />
-                  <HBox alignment="CENTER" spacing="20.0" styleClass="score-hbox">
-                     <children>
-                        <VBox alignment="CENTER" spacing="4.0">
-                           <Label styleClass="score-caption-label" text="P1" />
-                           <Label fx:id="player1ScoreLabel" styleClass="score-value-label-p1" text="0" />
-                        </VBox>
-                        <VBox alignment="CENTER" spacing="4.0">
-                           <Label styleClass="score-caption-label" text="DRAWS" />
-                           <Label fx:id="drawsLabel" styleClass="score-value-label-neutral" text="0" />
-                        </VBox>
-                        <VBox alignment="CENTER" spacing="4.0">
-                           <Label styleClass="score-caption-label" text="P2" />
-                           <Label fx:id="player2ScoreLabel" styleClass="score-value-label-neutral" text="0" />
-                        </VBox>
-                     </children>
-                  </HBox>
-                  
-                  <Label fx:id="turnIndicatorLabel" styleClass="turn-indicator-label" text="Your Turn" textAlignment="CENTER" />
-                  
-                  <GridPane fx:id="boardGrid" alignment="CENTER" styleClass="board-grid">
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="33.33" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="33.33" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="33.33" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" percentHeight="33.3" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" percentHeight="33.3" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" percentHeight="33.3" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <children>
-                        <StackPane fx:id="cell00" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                           <children>
-                              <Label fx:id="label00" styleClass="cell-label">
-                              </Label>
-                           </children>
-                        </StackPane>
-                        <StackPane fx:id="cell01" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                           <children>
-                              <Label fx:id="label01" styleClass="cell-label-o">
-                              </Label>
-                           </children>
-                        </StackPane>
-                        <StackPane fx:id="cell02" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                           <children>
-                              <Label fx:id="label02" styleClass="cell-label">
-                              </Label>
-                           </children>
-                        </StackPane>
-                        <StackPane fx:id="cell10" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                           <children>
-                              <Label fx:id="label10" styleClass="cell-label">
-                              </Label>
-                           </children>
-                        </StackPane>
-                        <StackPane fx:id="cell11" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                           <children>
-                              <Label fx:id="label11" styleClass="cell-label-x">
-                              </Label>
-                           </children>
-                        </StackPane>
-                        <StackPane fx:id="cell12" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                           <children>
-                              <Label fx:id="label12" styleClass="cell-label">
-                              </Label>
-                           </children>
-                        </StackPane>
-                        <StackPane fx:id="cell20" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                           <children>
-                              <Label fx:id="label20" styleClass="cell-label-o">
-                              </Label>
-                           </children>
-                        </StackPane>
-                        <StackPane fx:id="cell21" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                           <children>
-                              <Label fx:id="label21" styleClass="cell-label">
-                              </Label>
-                           </children>
-                        </StackPane>
-                        <StackPane fx:id="cell22" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                           <children>
-                              <Label fx:id="label22" styleClass="cell-label">
-                              </Label>
-                           </children>
-                        </StackPane>
-                     </children>
-                     <padding>
-                        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
-                     </padding>
-                  </GridPane>
-                  
-                  <HBox alignment="CENTER" spacing="8.0">
-                     <children>
-                        <Label styleClass="timer-icon" text="🕐" />
-                        <Label fx:id="timerLabel" styleClass="timer-label timer-text-label" text="00:14" />
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
-            
-            <VBox alignment="CENTER" prefWidth="200.0" spacing="15.0" styleClass="player-panel-2">
-               <padding>
-                  <Insets bottom="25.0" left="20.0" right="20.0" top="25.0" />
-               </padding>
-               <children>
-                  <StackPane maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0">
-                     <children>
-                        <Circle fx:id="player2Avatar" fill="#F5F5F5" radius="50.0" stroke="#E5E7EB" strokeType="INSIDE" strokeWidth="2.0" />
-                        <Label styleClass="avatar-icon" text="👤" />
-                        <Pane mouseTransparent="true">
-                           <children>
-                              <Circle centerX="82.0" centerY="82.0" fill="#D0021B" radius="18.0" />
-                              <Label alignment="CENTER" layoutX="70.0" layoutY="70.0" prefHeight="24.0" prefWidth="24.0" styleClass="symbol-label" text="O" />
-                           </children>
-                        </Pane>
-                     </children>
-                  </StackPane>
-                  
-                  <Label fx:id="player2NameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="player-name-label" text="Player 2" textAlignment="CENTER" />
-                  
-                  <Label fx:id="player2StatusLabel" alignment="CENTER" prefHeight="32.0" prefWidth="120.0" text="Waiting..." textAlignment="CENTER">
-                     <padding>
-                        <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
-                     </padding>
-                  </Label>
-                  
-                  <Label styleClass="wins-caption-label" text="WINS" textAlignment="CENTER" />
-                  
-                  <Label fx:id="player2WinsLabel" styleClass="wins-score-label" text="0" textAlignment="CENTER" />
-               </children>
-            </VBox>
-         </children>
-         <BorderPane.margin>
-            <Insets right="120.0" />
-         </BorderPane.margin>
-      </HBox>
-   </center>
-   <left>
-      <VBox prefHeight="606.0" prefWidth="138.0" spacing="10.0" BorderPane.alignment="CENTER">
-         <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
-               <children>
-                  <HBox fx:id="recordingBox" alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="68.0" spacing="4.0" visible="false" HBox.hgrow="ALWAYS">
-                     <children>
-                        <Circle fx:id="recordingIndicator" fill="#7f1d1d" radius="10.0" stroke="BLACK" strokeType="INSIDE" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets bottom="10.0" left="10.0" top="10.0" />
-                           </HBox.margin></Circle>
-                        <Label fx:id="recordingLabel" style="-fx-text-fill: #7f1d1d;" text="REC">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </HBox>
+                  </Pane>
+                  <Button fx:id="settingsButton" mnemonicParsing="false" onAction="#handleSettingsButton" prefHeight="40.0" prefWidth="40.0" styleClass="icon-button" text="⚙" />
+                  <Button fx:id="menuButton" mnemonicParsing="false" onAction="#handleMenuButton" prefHeight="40.0" prefWidth="40.0" styleClass="icon-button" text="☰" />
                </children>
             </HBox>
-         </children>
-         <padding>
-            <Insets left="2.0" />
-         </padding>
-      </VBox>
-   </left>
-</BorderPane>
+         </top>
+         <center>
+            <HBox alignment="CENTER" prefHeight="620.0" prefWidth="1210.0" spacing="30.0" BorderPane.alignment="CENTER">
+               <padding>
+                  <Insets bottom="20.0" left="40.0" right="40.0" top="20.0" />
+               </padding>
+               <children>
+                  <VBox alignment="CENTER" prefWidth="200.0" spacing="15.0" styleClass="player-panel-1">
+                     <padding>
+                        <Insets bottom="25.0" left="20.0" right="20.0" top="25.0" />
+                     </padding>
+                     <children>
+                        <StackPane maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0">
+                           <children>
+                              <Circle fx:id="player1Avatar" fill="#E3F2FD" radius="50.0" stroke="#4A90E2" strokeType="INSIDE" strokeWidth="2.0" />
+                              <Label styleClass="avatar-icon" text="👤" />
+                              <Pane mouseTransparent="true">
+                                 <children>
+                                    <Circle centerX="82.0" centerY="82.0" fill="#4A90E2" radius="18.0" />
+                                    <Label alignment="CENTER" layoutX="70.0" layoutY="70.0" prefHeight="24.0" prefWidth="24.0" styleClass="symbol-label" text="X" />
+                                 </children>
+                              </Pane>
+                           </children>
+                        </StackPane>
+
+                        <Label fx:id="player1NameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="player-name-label" text="Player 1  (You)" textAlignment="CENTER" />
+
+                        <Label fx:id="player1TurnLabel" alignment="CENTER" prefHeight="32.0" prefWidth="120.0" text="Your Turn" textAlignment="CENTER">
+                           <padding>
+                              <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
+                           </padding>
+                        </Label>
+
+                        <Label styleClass="wins-caption-label" text="WINS" textAlignment="CENTER" />
+
+                        <Label fx:id="player1WinsLabel" styleClass="wins-score-label" text="0" textAlignment="CENTER" />
+                     </children>
+                  </VBox>
+
+                  <VBox alignment="CENTER" spacing="15.0">
+                     <children>
+                        <Label fx:id="replayStatusLabel" style="-fx-text-fill: #4CAF50; -fx-font-size: 16px; -fx-font-weight: bold;" />
+                        <HBox alignment="CENTER" spacing="20.0" styleClass="score-hbox">
+                           <children>
+                              <VBox alignment="CENTER" spacing="4.0">
+                                 <Label styleClass="score-caption-label" text="P1" />
+                                 <Label fx:id="player1ScoreLabel" styleClass="score-value-label-p1" text="0" />
+                              </VBox>
+                              <VBox alignment="CENTER" spacing="4.0">
+                                 <Label styleClass="score-caption-label" text="DRAWS" />
+                                 <Label fx:id="drawsLabel" styleClass="score-value-label-neutral" text="0" />
+                              </VBox>
+                              <VBox alignment="CENTER" spacing="4.0">
+                                 <Label styleClass="score-caption-label" text="P2" />
+                                 <Label fx:id="player2ScoreLabel" styleClass="score-value-label-neutral" text="0" />
+                              </VBox>
+                           </children>
+                        </HBox>
+
+                        <Label fx:id="turnIndicatorLabel" styleClass="turn-indicator-label" text="Your Turn" textAlignment="CENTER" />
+
+                        <GridPane fx:id="boardGrid" alignment="CENTER" styleClass="board-grid">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="33.33" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="33.33" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="33.33" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" percentHeight="33.3" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" percentHeight="33.3" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" percentHeight="33.3" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <StackPane fx:id="cell00" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                 <children>
+                                    <Label fx:id="label00" styleClass="cell-label">
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="cell01" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                 <children>
+                                    <Label fx:id="label01" styleClass="cell-label-o">
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="cell02" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                 <children>
+                                    <Label fx:id="label02" styleClass="cell-label">
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="cell10" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                 <children>
+                                    <Label fx:id="label10" styleClass="cell-label">
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="cell11" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                 <children>
+                                    <Label fx:id="label11" styleClass="cell-label-x">
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="cell12" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                 <children>
+                                    <Label fx:id="label12" styleClass="cell-label">
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="cell20" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                 <children>
+                                    <Label fx:id="label20" styleClass="cell-label-o">
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="cell21" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                 <children>
+                                    <Label fx:id="label21" styleClass="cell-label">
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                              <StackPane fx:id="cell22" maxHeight="96.0" maxWidth="96.0" prefHeight="96.0" prefWidth="96.0" styleClass="game-cell" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                 <children>
+                                    <Label fx:id="label22" styleClass="cell-label">
+                                    </Label>
+                                 </children>
+                              </StackPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                           </padding>
+                        </GridPane>
+
+                        <HBox alignment="CENTER" spacing="8.0">
+                           <children>
+                              <Label styleClass="timer-icon" text="🕐" />
+                              <Label fx:id="timerLabel" styleClass="timer-label timer-text-label" text="00:14" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+
+                  <VBox alignment="CENTER" prefWidth="200.0" spacing="15.0" styleClass="player-panel-2">
+                     <padding>
+                        <Insets bottom="25.0" left="20.0" right="20.0" top="25.0" />
+                     </padding>
+                     <children>
+                        <StackPane maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0">
+                           <children>
+                              <Circle fx:id="player2Avatar" fill="#F5F5F5" radius="50.0" stroke="#E5E7EB" strokeType="INSIDE" strokeWidth="2.0" />
+                              <Label styleClass="avatar-icon" text="👤" />
+                              <Pane mouseTransparent="true">
+                                 <children>
+                                    <Circle centerX="82.0" centerY="82.0" fill="#D0021B" radius="18.0" />
+                                    <Label alignment="CENTER" layoutX="70.0" layoutY="70.0" prefHeight="24.0" prefWidth="24.0" styleClass="symbol-label" text="O" />
+                                 </children>
+                              </Pane>
+                           </children>
+                        </StackPane>
+
+                        <Label fx:id="player2NameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="player-name-label" text="Player 2" textAlignment="CENTER" />
+
+                        <Label fx:id="player2StatusLabel" alignment="CENTER" prefHeight="32.0" prefWidth="120.0" text="Waiting..." textAlignment="CENTER">
+                           <padding>
+                              <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
+                           </padding>
+                        </Label>
+
+                        <Label styleClass="wins-caption-label" text="WINS" textAlignment="CENTER" />
+
+                        <Label fx:id="player2WinsLabel" styleClass="wins-score-label" text="0" textAlignment="CENTER" />
+                     </children>
+                  </VBox>
+               </children>
+               <BorderPane.margin>
+                  <Insets right="120.0" />
+               </BorderPane.margin>
+            </HBox>
+         </center>
+         <left>
+            <VBox prefHeight="606.0" prefWidth="138.0" spacing="10.0" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                     <children>
+                        <HBox fx:id="recordingBox" alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="68.0" spacing="4.0" visible="false" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Circle fx:id="recordingIndicator" fill="#7f1d1d" radius="10.0" stroke="BLACK" strokeType="INSIDE" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Circle>
+                              <Label fx:id="recordingLabel" style="-fx-text-fill: #7f1d1d;" text="REC">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets left="2.0" />
+               </padding>
+            </VBox>
+         </left>
+      </BorderPane>
+      <Button fx:id="backBtn" onAction="#handleBack" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 10;" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="30.0" pickOnBounds="false">
+         <graphic>
+            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true" pickOnBounds="true">
+               <image>
+                  <Image url="@../../../assets/images/arrow-back.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+   </children>
+</AnchorPane>

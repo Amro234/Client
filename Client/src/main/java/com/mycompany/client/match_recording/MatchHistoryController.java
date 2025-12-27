@@ -32,6 +32,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
 
 /**
  * FXML Controller class
@@ -51,24 +52,22 @@ public class MatchHistoryController implements Initializable {
     private ArrayList<MatchData> allMatches;
     private FilterType currentFilter = FilterType.ALL;
 
-   // private final String username = "Player 1";
+    // private final String username = "Player 1";
     private final String recordingsPath = System.getProperty("user.home") + "/.tic_tac_toe/recordings";
     @FXML
-    private Button backToMenuBtn;
+    private Button backBtn;
     private String username;
 
-
     @Override
-public void initialize(URL url, ResourceBundle rb) {
+    public void initialize(URL url, ResourceBundle rb) {
 
-    username = UserSession.getInstance().getUsername();
+        username = UserSession.getInstance().getUsername();
 
-    allMatches = loadMatchesFromRecordings();
-    setupFilterButtons();
-    setupSearch();
-    displayMatches(allMatches);
-}
-
+        allMatches = loadMatchesFromRecordings();
+        setupFilterButtons();
+        setupSearch();
+        displayMatches(allMatches);
+    }
 
     private ArrayList<MatchData> loadMatchesFromRecordings() {
 
@@ -88,37 +87,33 @@ public void initialize(URL url, ResourceBundle rb) {
             try {
                 GameRecording rec = manager.loadRecording(file.getName(), username);
 
-               MatchResult result;
+                MatchResult result;
 
-switch (rec.getStatus()) {
-    case "WIN":
-        result = MatchResult.VICTORY;
-        break;
-    case "DRAW":
-        result = MatchResult.DRAW;
-        break;
-    case "LOSE":
-        result = MatchResult.DEFEAT;
-        break;
-    case "CANCELLED":
-        result = MatchResult.CANCELLED;
-        break;
-    default:
-        continue; // safety
-}
+                switch (rec.getStatus()) {
+                    case "WIN":
+                        result = MatchResult.VICTORY;
+                        break;
+                    case "DRAW":
+                        result = MatchResult.DRAW;
+                        break;
+                    case "LOSE":
+                        result = MatchResult.DEFEAT;
+                        break;
+                    case "CANCELLED":
+                        result = MatchResult.CANCELLED;
+                        break;
+                    default:
+                        continue; // safety
+                }
 
-
-               matches.add(
-    new MatchData(
-        rec.opponentPlayerName,
-        result,
-        rec.date,
-        rec.time,
-        rec.getSteps().size(),
-        file.getName()
-    )
-);
-
+                matches.add(
+                        new MatchData(
+                                rec.opponentPlayerName,
+                                result,
+                                rec.date,
+                                rec.time,
+                                rec.getSteps().size(),
+                                file.getName()));
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -129,10 +124,22 @@ switch (rec.getStatus()) {
     }
 
     private void setupFilterButtons() {
-        allGamesBtn.setOnAction(e -> applyFilter(allGamesBtn, FilterType.ALL));
-        winsBtn.setOnAction(e -> applyFilter(winsBtn, FilterType.VICTORY));
-        lossesBtn.setOnAction(e -> applyFilter(lossesBtn, FilterType.DEFEAT));
-        drawsBtn.setOnAction(e -> applyFilter(drawsBtn, FilterType.DRAW));
+        allGamesBtn.setOnAction(e -> {
+            SoundEffectsManager.playClick();
+            applyFilter(allGamesBtn, FilterType.ALL);
+        });
+        winsBtn.setOnAction(e -> {
+            SoundEffectsManager.playClick();
+            applyFilter(winsBtn, FilterType.VICTORY);
+        });
+        lossesBtn.setOnAction(e -> {
+            SoundEffectsManager.playClick();
+            applyFilter(lossesBtn, FilterType.DEFEAT);
+        });
+        drawsBtn.setOnAction(e -> {
+            SoundEffectsManager.playClick();
+            applyFilter(drawsBtn, FilterType.DRAW);
+        });
     }
 
     private void applyFilter(ToggleButton activeBtn, FilterType filter) {
@@ -169,109 +176,106 @@ switch (rec.getStatus()) {
     }
 
     private void openReplay(MatchData match) {
-    try {
-        RecordingManager manager = new RecordingManager();
-        GameRecording recording =
-                manager.loadRecording(match.getRecordingFileName(), username);
+        SoundEffectsManager.playClick();
+        try {
+            RecordingManager manager = new RecordingManager();
+            GameRecording recording = manager.loadRecording(match.getRecordingFileName(), username);
 
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/mycompany/client/game_board.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mycompany/client/game_board.fxml"));
 
-        Parent root = loader.load();
-        GameBoardController controller = loader.getController();
-        controller.startReplay(recording);
+            Parent root = loader.load();
+            GameBoardController controller = loader.getController();
+            controller.startReplay(recording);
 
-        //NavigationService
-        NavigationService.navigateTo(root);
+            // NavigationService
+            NavigationService.navigateTo(root);
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-}
-
 
     private void displayMatches(List<MatchData> matches) {
 
-    matchListContainer.getChildren().clear();
+        matchListContainer.getChildren().clear();
 
-    for (MatchData match : matches) {
+        for (MatchData match : matches) {
 
-        MatchCard card = new MatchCard(match);
+            MatchCard card = new MatchCard(match);
 
-        card.setOnReplayRequested(this::openReplay);
-        card.setOnDeleteRequested(this::deleteSingleMatch);
+            card.setOnReplayRequested(this::openReplay);
+            card.setOnDeleteRequested(this::deleteSingleMatch);
 
-        matchListContainer.getChildren().add(card);
-    }
-}
-private void deleteSingleMatch(MatchData match) {
-
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setTitle("Delete Recording");
-    alert.setHeaderText("Delete this match?");
-    alert.setContentText("This recording will be permanently deleted.");
-
-    alert.showAndWait().ifPresent(response -> {
-        if (response == ButtonType.OK) {
-
-            File file = new File(
-                    recordingsPath + "/" + username + "/" + match.getRecordingFileName()
-            );
-
-            if (file.exists()) {
-                file.delete();
-            }
-
-            allMatches.remove(match);
-            filterAndDisplayMatches();
-
-            RecordingManager.showToast(
-                    "❌ Recording deleted",
-                    matchListContainer.getScene()
-            );
+            matchListContainer.getChildren().add(card);
         }
-    });
-}
+    }
 
+    private void deleteSingleMatch(MatchData match) {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Recording");
+        alert.setHeaderText("Delete this match?");
+        alert.setContentText("This recording will be permanently deleted.");
+
+        alert.showAndWait().ifPresent(response -> {
+            SoundEffectsManager.playClick();
+            if (response == ButtonType.OK) {
+
+                File file = new File(
+                        recordingsPath + "/" + username + "/" + match.getRecordingFileName());
+
+                if (file.exists()) {
+                    file.delete();
+                }
+
+                allMatches.remove(match);
+                filterAndDisplayMatches();
+
+                RecordingManager.showToast(
+                        "❌ Recording deleted",
+                        matchListContainer.getScene());
+            }
+        });
+    }
 
     @FXML
-    private void onBackToMenuBtnClicked(ActionEvent event) {
+    private void handleBack(ActionEvent event) {
+        SoundEffectsManager.playClick();
         NavigationService.goBack();
     }
 
-   
-@FXML
-private void onDeleteAllRecords(ActionEvent event) {
+    @FXML
+    private void onDeleteAllRecords(ActionEvent event) {
+        SoundEffectsManager.playClick();
 
-    if (allMatches == null || allMatches.isEmpty()) {
-        RecordingManager.showToast(
-                "No recordings to delete",
-                matchListContainer.getScene()
-        );
-        return;
-    }
-
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setTitle("Delete All Recordings");
-    alert.setHeaderText("Are you sure?");
-    alert.setContentText("This will permanently delete all recorded matches.");
-
-    alert.showAndWait().ifPresent(response -> {
-        if (response == ButtonType.OK) {
-
-            RecordingManager manager = new RecordingManager();
-            manager.deleteAllRecordings(username);
-
-            allMatches.clear();
-            matchListContainer.getChildren().clear();
-
+        if (allMatches == null || allMatches.isEmpty()) {
             RecordingManager.showToast(
-                    "✅ All recordings deleted successfully",
-                    matchListContainer.getScene()
-            );
+                    "No recordings to delete",
+                    matchListContainer.getScene());
+            return;
         }
-    });
-}
 
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete All Recordings");
+        alert.setHeaderText("Are you sure?");
+        alert.setContentText("This will permanently delete all recorded matches.");
+
+        alert.showAndWait().ifPresent(response -> {
+            SoundEffectsManager.playClick();
+            if (response == ButtonType.OK) {
+
+                RecordingManager manager = new RecordingManager();
+                manager.deleteAllRecordings(username);
+
+                allMatches.clear();
+                matchListContainer.getChildren().clear();
+
+                RecordingManager.showToast(
+                        "✅ All recordings deleted successfully",
+                        matchListContainer.getScene());
+            }
+        });
+    }
 
 }
