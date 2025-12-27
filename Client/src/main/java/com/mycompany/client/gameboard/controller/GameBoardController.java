@@ -14,9 +14,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -28,6 +26,7 @@ import javafx.scene.shape.Circle;
 
 import com.mycompany.client.GameResultVideoManager.GameResultVideoManager;
 import com.mycompany.client.gameboard.model.BoardMode;
+import com.mycompany.client.core.CustomAlertDialog;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.session.UserSession;
 import com.mycompany.client.difficulty.Difficulty;
@@ -41,6 +40,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 
 import com.mycompany.client.settings.manager.SoundEffectsManager;
+import javafx.stage.Stage;
 
 public class GameBoardController implements GameSession.SessionListener {
 
@@ -336,16 +336,7 @@ boolean iWon = (winInfo.winner == mySymbol);
 
     }
 
-    private Alert activeDialog;
     private boolean isGameEnded = false;
-
-    private void closeActiveDialog() {
-        if (activeDialog != null) {
-            activeDialog.setResult(ButtonType.CLOSE);
-            activeDialog.close();
-            activeDialog = null;
-        }
-    }
 
     private boolean hasPendingRematchRequest = false;
 
@@ -358,39 +349,25 @@ boolean iWon = (winInfo.winner == mySymbol);
             }
 
             isGameEnded = true;
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Game Over");
-            alert.setHeaderText(title);
-            alert.setContentText("What would you like to do?");
-
-            ButtonType lobbyButton = new ButtonType("Back to Lobby");
-            ButtonType rematchButton = new ButtonType("Rematch");
-
-            alert.getButtonTypes().setAll(rematchButton, lobbyButton);
-
-            activeDialog = alert;
-
-            alert.showAndWait().ifPresent(response -> {
-                SoundEffectsManager.playClick();
-                if (response == lobbyButton) {
-                    handleBack(null); // Disconnects session and goes back
-                } else if (response == rematchButton) {
+            String header = title;
+            if (title.equals("It's a Draw!")) {
+                header = "🤝 " + title + " 🤝";
+            } else {
+                header = "🎉 " + title + " 🎉";
+            }
+            CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Game Over", header, "What would you like to do?",
+                () -> {
+                    SoundEffectsManager.playClick();
                     if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
                         ((com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession).requestRematch();
-                        // Show waiting tooltip or toast?
                         com.mycompany.client.match_recording.RecordingManager.showToast("Rematch request sent...",
                                 backBtn.getScene());
-                        // Keep dialog open? No, effectively standard flows might suggest waiting.
-                        // But actually, showing "Waiting for opponent..." would be better.
-                        // For now we just close or keep it?
-                        // The user said: "when one send play again close play again to the second"
-                        // This implies the Sender is waiting. The current flow closes the dialog for
-                        // sender?
-                        // Actually showAndWait closes it.
                     }
-                }
-                activeDialog = null;
-            });
+                },
+                () -> {
+                    SoundEffectsManager.playClick();
+                    handleBack(null); // Disconnects session and goes back
+                });
         });
     }
 
@@ -400,49 +377,30 @@ boolean iWon = (winInfo.winner == mySymbol);
         hasPendingRematchRequest = true;
 
         Platform.runLater(() -> {
-            closeActiveDialog(); // Close "Game Over" dialog if open
-
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Rematch Request");
-            alert.setHeaderText("Opponent wants a rematch!");
-            alert.setContentText("Do you accept?");
-
-            ButtonType acceptBtn = new ButtonType("Accept");
-            ButtonType declineBtn = new ButtonType("Decline");
-
-            alert.getButtonTypes().setAll(acceptBtn, declineBtn);
-
-            activeDialog = alert;
-
-            alert.showAndWait().ifPresent(response -> {
-                SoundEffectsManager.playClick();
-                if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
-                    com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession = (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
-
-                    if (response == acceptBtn) {
+            CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Rematch Request", "Opponent wants a rematch!", "Do you accept?",
+                () -> {
+                    SoundEffectsManager.playClick();
+                    if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+                        com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession = (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
                         onlineSession.acceptRematch();
                         isGameEnded = false;
                         hasPendingRematchRequest = false; // Reset on accept
-                    } else {
-                        onlineSession.declineRematch();
-                        // Explicitly close/clear dialog reference before navigating
-                        activeDialog = null;
+                    }
+                },
+                () -> {
+                    SoundEffectsManager.playClick();
+                    if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+                        ((com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession).declineRematch();
                         handleBack(null);
                     }
-                }
-                activeDialog = null;
-            });
+                });
         });
     }
 
     @Override
     public void onRematchDeclined() {
         Platform.runLater(() -> {
-            closeActiveDialog();
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Rematch Declined");
-            alert.setHeaderText("Opponent declined rematch.");
-            alert.showAndWait();
+            CustomAlertDialog.show((Stage) backBtn.getScene().getWindow(), "Rematch Declined", "Opponent declined rematch.");
             handleBack(null);
         });
     }
@@ -456,11 +414,7 @@ boolean iWon = (winInfo.winner == mySymbol);
                 currentSession.stop();
             }
 
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Connection Lost");
-            alert.setHeaderText("Server Disconnected");
-            alert.setContentText("The connection to the server was lost.");
-            alert.showAndWait();
+            CustomAlertDialog.show((Stage) backBtn.getScene().getWindow(), "Connection Lost", "Server Disconnected\nThe connection to the server was lost.");
 
             try {
                 Parent root = NavigationService.loadFXML("main-menu");
@@ -733,21 +687,8 @@ boolean iWon = (winInfo.winner == mySymbol);
     }
 
     private void showExitConfirmation(Runnable onConfirm) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Exit Game");
-        alert.setHeaderText("Do you want to leave the game?");
-        alert.setContentText("Your progress may be lost.");
-
-        ButtonType yesBtn = new ButtonType("Yes, Leave");
-        ButtonType noBtn = new ButtonType("No, Stay");
-
-        alert.getButtonTypes().setAll(yesBtn, noBtn);
-
-        alert.showAndWait().ifPresent(response -> {
-            if (response == yesBtn) {
-                onConfirm.run();
-            }
-        });
+        CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Exit Game", "Do you want to leave the game?", "Your progress may be lost.",
+            onConfirm, null);
     }
 
     private void executeQuit(boolean backToLobby) {
@@ -787,40 +728,30 @@ boolean iWon = (winInfo.winner == mySymbol);
 
     private void showPlayAgainDialog(String message) {
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Game Over");
-
+            String header;
+            String content;
             if (message.contains("Draw")) {
-                alert.setHeaderText("🤝 " + message + " 🤝");
-                alert.setContentText("No winner this time! Want a rematch?");
+                header = "🤝 " + message + " 🤝";
+                content = "No winner this time! Want a rematch?";
             } else {
-                alert.setHeaderText("🎉 " + message + " 🎉");
-                alert.setContentText("Do you want to play again?");
+                header = "🎉 " + message + " 🎉";
+                content = "Do you want to play again?";
             }
 
-            ButtonType playAgainButton = new ButtonType("Play Again");
-            ButtonType cancelButton = new ButtonType("Exit to Menu");
-
-            alert.getButtonTypes().setAll(playAgainButton, cancelButton);
-
-            alert.showAndWait().ifPresent(response -> {
-                SoundEffectsManager.playClick();
-
-                if (response == playAgainButton) {
-
+            CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Game Over", header, content,
+                () -> {
+                    SoundEffectsManager.playClick();
                     currentSession.resetGame();
                     resetBoardUI();
                     startTimer();
-
                     resetRecording();
                     resetRecordingDecision();
                     askRecordingDecision();
-
-                } else {
-
+                },
+                () -> {
+                    SoundEffectsManager.playClick();
                     goToMainMenuDirectly();
-                }
-            });
+                });
         });
     }
 
@@ -1015,25 +946,15 @@ boolean iWon = (winInfo.winner == mySymbol);
         recordingDecisionAsked = true;
 
         Platform.runLater(() -> {
-
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Record Match");
-            alert.setHeaderText("🎥 Record this match?");
-            alert.setContentText("Do you want to record this game?");
-
-            ButtonType yesBtn = new ButtonType("Yes");
-            ButtonType noBtn = new ButtonType("No");
-
-            alert.getButtonTypes().setAll(yesBtn, noBtn);
-
-            alert.showAndWait().ifPresent(response -> {
-                SoundEffectsManager.playClick();
-                if (response == yesBtn) {
+            CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Record Match", "🎥 Record this match?", "Do you want to record this game?",
+                () -> {
+                    SoundEffectsManager.playClick();
                     enableAutoRecording();
-                } else {
+                },
+                () -> {
+                    SoundEffectsManager.playClick();
                     disableRecordingButtonOnly();
-                }
-            });
+                });
         });
     }
 
@@ -1091,6 +1012,11 @@ boolean iWon = (winInfo.winner == mySymbol);
                 e.printStackTrace();
             }
         });
+    }
+
+    private void closeActiveDialog() {
+        // Placeholder method to close any active dialogs if needed
+        // Currently, no active dialog management is implemented
     }
 
 }

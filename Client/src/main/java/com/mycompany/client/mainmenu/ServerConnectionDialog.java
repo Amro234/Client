@@ -1,13 +1,12 @@
 package com.mycompany.client.mainmenu;
 
+import com.mycompany.client.core.CustomAlertDialog;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.server.ServerConnection;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -73,21 +72,12 @@ public class ServerConnectionDialog {
                             ex.printStackTrace();
                         }
                     } else {
-                        Alert alert = new Alert(AlertType.ERROR);
-                        alert.setTitle("Connection Failed");
-                        alert.setHeaderText("Unable to establish connection");
-                        alert.setContentText("Could not establish persistent connection to server.");
-                        alert.showAndWait();
+                        CustomAlertDialog.show(dialog, "Connection Failed", "Could not establish persistent connection to server.");
                     }
                 } else {
                     // Show error dialog
-                    Alert alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Connection Failed");
-                    alert.setHeaderText("Unable to connect to server");
-                    alert.setContentText("Could not connect to " + serverIp + ":" + "5000"
+                    CustomAlertDialog.show(dialog, "Connection Failed", "Could not connect to " + serverIp + ":" + "5000"
                             + "\nPlease check the server address and try again.");
-                    alert.initOwner(dialog);
-                    alert.showAndWait();
                 }
             }
         });

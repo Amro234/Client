@@ -1,6 +1,7 @@
 package com.mycompany.client.gameLobby.controller;
 
 import com.mycompany.client.auth.model.User;
+import com.mycompany.client.core.CustomAlertDialog;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.notification.ToastNotification;
 import com.mycompany.client.core.server.ServerConnection;
@@ -325,11 +326,7 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
         shutdown(); // Stop Auto-Refresh
 
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Connection Lost");
-            alert.setHeaderText("Server Disconnected");
-            alert.setContentText("You have been disconnected from the server.");
-            alert.showAndWait();
+            CustomAlertDialog.show((javafx.stage.Stage) playerTable.getScene().getWindow(), "Connection Lost", "Server Disconnected");
 
             try {
                 NavigationService.navigateTo(NavigationService.loadFXML("main-menu"));
