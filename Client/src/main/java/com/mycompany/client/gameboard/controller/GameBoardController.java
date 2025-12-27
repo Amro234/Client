@@ -59,7 +59,7 @@ public class GameBoardController implements GameSession.SessionListener {
     private Label[][] labels;
 
     @FXML
-    private Button backButton;
+    private Button backBtn;
     @FXML
     private Label turnIndicatorLabel;
     @FXML
@@ -356,13 +356,13 @@ public class GameBoardController implements GameSession.SessionListener {
             alert.showAndWait().ifPresent(response -> {
                 SoundEffectsManager.playClick();
                 if (response == lobbyButton) {
-                    handleBackButton(); // Disconnects session and goes back
+                    handleBack(null); // Disconnects session and goes back
                 } else if (response == rematchButton) {
                     if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
                         ((com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession).requestRematch();
                         // Show waiting tooltip or toast?
                         com.mycompany.client.match_recording.RecordingManager.showToast("Rematch request sent...",
-                                backButton.getScene());
+                                backBtn.getScene());
                         // Keep dialog open? No, effectively standard flows might suggest waiting.
                         // But actually, showing "Waiting for opponent..." would be better.
                         // For now we just close or keep it?
@@ -410,7 +410,7 @@ public class GameBoardController implements GameSession.SessionListener {
                         onlineSession.declineRematch();
                         // Explicitly close/clear dialog reference before navigating
                         activeDialog = null;
-                        handleBackButton();
+                        handleBack(null);
                     }
                 }
                 activeDialog = null;
@@ -426,7 +426,7 @@ public class GameBoardController implements GameSession.SessionListener {
             alert.setTitle("Rematch Declined");
             alert.setHeaderText("Opponent declined rematch.");
             alert.showAndWait();
-            handleBackButton();
+            handleBack(null);
         });
     }
 
@@ -461,7 +461,7 @@ public class GameBoardController implements GameSession.SessionListener {
             if (isGameEnded) {
                 // Game was already over (e.g. at Game Over dialog), and opponent left
                 com.mycompany.client.match_recording.RecordingManager.showToast("Opponent left the session.",
-                        backButton.getScene());
+                        backBtn.getScene());
                 // Directly quit without confirmation since game is ended
                 executeQuit(true);
             } else {
@@ -469,7 +469,7 @@ public class GameBoardController implements GameSession.SessionListener {
                 isGameEnded = true; // Mark ended to prevent exit confirmation
 
                 com.mycompany.client.match_recording.RecordingManager.showToast("Opponent Left! You Win!",
-                        backButton.getScene());
+                        backBtn.getScene());
 
                 // Play Win Video, then automatically go back to lobby
                 com.mycompany.client.GameResultVideoManager.GameResultVideoManager.showWinVideo(() -> {
@@ -661,7 +661,7 @@ public class GameBoardController implements GameSession.SessionListener {
     }
 
     @FXML
-    public void handleBackButton() {
+    public void handleBack(ActionEvent event) {
         SoundEffectsManager.playClick();
         replayManager.reset();
         stopTimer();
