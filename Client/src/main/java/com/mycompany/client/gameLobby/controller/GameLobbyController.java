@@ -242,6 +242,7 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     @FXML
     private void onLogOutPressed(ActionEvent event) {
         // Stop auto-refresh
+        SoundEffectsManager.playClick();
         shutdown();
 
         // Disconnect from server
@@ -260,12 +261,14 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
 
     @FXML
     private void onSettingsPressed(ActionEvent event) throws IOException {
+        SoundEffectsManager.playClick();
         Parent root = NavigationService.loadFXML("settings");
         NavigationService.navigateTo(root);
     }
 
     @FXML
     private void onQuickPlayPressed(ActionEvent event) throws IOException {
+        SoundEffectsManager.playClick();
         Parent root = NavigationService.loadFXML("difficulty");
         NavigationService.navigateTo(root);
     }

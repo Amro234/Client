@@ -183,6 +183,7 @@ public class GameBoardController implements GameSession.SessionListener {
     public void startOnlineGame(String opponentName, String mySymbol) {
         boardMode = BoardMode.NORMAL;
         updateUIForMode();
+        hasPendingRematchRequest = false;
 
         currentSession = new com.mycompany.client.gameboard.model.ClientOnlineSession(
                 this, "You", opponentName, mySymbol);
@@ -329,9 +330,16 @@ public class GameBoardController implements GameSession.SessionListener {
         }
     }
 
+    private boolean hasPendingRematchRequest = false;
+
     // --- Online Game End Dialog with Rematch ---
     private void showOnlineGameEndDialog(String title, boolean isWin) {
         Platform.runLater(() -> {
+            // Prevent showing Game Over dialog if a Rematch Request is already pending
+            if (hasPendingRematchRequest) {
+                return;
+            }
+
             isGameEnded = true;
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Game Over");
@@ -371,6 +379,9 @@ public class GameBoardController implements GameSession.SessionListener {
 
     @Override
     public void onRematchRequested() {
+        // Set flag immediately to prevent pending Game Over dialogs from appearing
+        hasPendingRematchRequest = true;
+
         Platform.runLater(() -> {
             closeActiveDialog(); // Close "Game Over" dialog if open
 
@@ -394,8 +405,11 @@ public class GameBoardController implements GameSession.SessionListener {
                     if (response == acceptBtn) {
                         onlineSession.acceptRematch();
                         isGameEnded = false;
+                        hasPendingRematchRequest = false; // Reset on accept
                     } else {
                         onlineSession.declineRematch();
+                        // Explicitly close/clear dialog reference before navigating
+                        activeDialog = null;
                         handleBackButton();
                     }
                 }
@@ -702,7 +716,6 @@ public class GameBoardController implements GameSession.SessionListener {
             alert.getButtonTypes().setAll(playAgainButton, cancelButton);
 
             alert.showAndWait().ifPresent(response -> {
-                SoundEffectsManager.playClick();
 
                 if (response == playAgainButton) {
 
@@ -771,20 +784,18 @@ public class GameBoardController implements GameSession.SessionListener {
     }
 
     @FXML
+
     private void onReplayPlay() {
-        SoundEffectsManager.playClick();
         replayManager.play();
     }
 
     @FXML
     private void onReplayPause() {
-        SoundEffectsManager.playClick();
         replayManager.pause();
     }
 
     @FXML
     private void onReplaySpeed() {
-        SoundEffectsManager.playClick();
         replayManager.toggleSpeed();
 
         replaySpeedBtn.setText(
@@ -795,7 +806,6 @@ public class GameBoardController implements GameSession.SessionListener {
 
     @FXML
     private void onReplayRestart() {
-        SoundEffectsManager.playClick();
         if (currentSession instanceof ReplayGameSession) {
             startReplay(((ReplayGameSession) currentSession).getRecording());
         }
@@ -822,6 +832,7 @@ public class GameBoardController implements GameSession.SessionListener {
         updateUIForMode();
         resetBoardUI();
         isGameEnded = false;
+        hasPendingRematchRequest = false;
     }
 
     public void onReplayReset() {
@@ -923,7 +934,6 @@ public class GameBoardController implements GameSession.SessionListener {
             alert.getButtonTypes().setAll(yesBtn, noBtn);
 
             alert.showAndWait().ifPresent(response -> {
-                SoundEffectsManager.playClick();
                 if (response == yesBtn) {
                     enableAutoRecording();
                 } else {

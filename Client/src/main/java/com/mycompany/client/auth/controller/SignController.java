@@ -7,6 +7,7 @@ package com.mycompany.client.auth.controller;
 import com.mycompany.client.auth.AuthClient.AuthResponse;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.session.UserSession;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -63,6 +64,7 @@ public class SignController implements Initializable {
     @FXML
     private void onNavigateToLogin(MouseEvent event) {
         try {
+            SoundEffectsManager.playClick();
             Parent root = NavigationService.loadFXML("login");
             NavigationService.replaceWith(root);
         } catch (IOException ex) {
@@ -73,6 +75,7 @@ public class SignController implements Initializable {
 
     @FXML
     private void onCreateAccount(ActionEvent event) {
+        SoundEffectsManager.playClick();
         // Get input values
         String username = usernameField.getText().trim();
         String email = emailField.getText().trim();
@@ -128,7 +131,7 @@ public class SignController implements Initializable {
                 UserSession.getInstance().setCurrentUser(response.getUser());
                 // Registration successful - update UI on JavaFX thread
                 Platform.runLater(() -> {
-                    navigateToMainMenu();
+                    navigateToGameLobby();
 
                 });
 
@@ -173,7 +176,7 @@ public class SignController implements Initializable {
         alert.showAndWait();
     }
 
-    private void navigateToMainMenu() {
+    private void navigateToGameLobby() {
         try {
             Parent root = NavigationService.loadFXML("gameLobby");
             NavigationService.replaceWith(root);
@@ -185,6 +188,7 @@ public class SignController implements Initializable {
 
     @FXML
     private void onTogglePasswordVisibility(MouseEvent event) {
+        SoundEffectsManager.playClick();
         if (passwordField.isVisible()) {
             // Switch to visible password
             passwordFieldVisible.setText(passwordField.getText());
@@ -204,6 +208,7 @@ public class SignController implements Initializable {
 
     @FXML
     private void onToggleConfirmPasswordVisibility(MouseEvent event) {
+        SoundEffectsManager.playClick();
         if (confirmPasswordField.isVisible()) {
             // Switch to visible password
             confirmPasswordFieldVisible.setText(confirmPasswordField.getText());

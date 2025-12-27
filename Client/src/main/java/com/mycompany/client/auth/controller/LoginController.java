@@ -2,9 +2,9 @@
 package com.mycompany.client.auth.controller;
 
 import com.mycompany.client.auth.AuthClient;
-import com.mycompany.client.auth.AuthClient.AuthResponse;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.session.UserSession;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -49,6 +49,7 @@ public class LoginController implements Initializable {
 
     @FXML
     private void onLogin(ActionEvent event) {
+        SoundEffectsManager.playClick();
         String username = usernameField.getText().trim();
         String password = getPasswordValue();
 
@@ -68,8 +69,7 @@ public class LoginController implements Initializable {
         new Thread(() -> {
             try {
 
-                AuthClient.AuthResponse response =
-                AuthClient.login(usernameField.getText(), passwordField.getText());
+                AuthClient.AuthResponse response = AuthClient.login(usernameField.getText(), passwordField.getText());
                 UserSession.getInstance().setCurrentUser(response.getUser());
 
                 Platform.runLater(() -> {
@@ -119,6 +119,7 @@ public class LoginController implements Initializable {
     @FXML
     private void onCreateAccount(MouseEvent event) {
         try {
+            SoundEffectsManager.playClick();
             Parent root = NavigationService.loadFXML("sign");
             NavigationService.replaceWith(root);
         } catch (IOException ex) {
@@ -128,6 +129,7 @@ public class LoginController implements Initializable {
 
     @FXML
     private void onTogglePasswordVisibility(MouseEvent event) {
+        SoundEffectsManager.playClick();
         if (passwordField.isVisible()) {
             passwordFieldVisible.setText(passwordField.getText());
             passwordField.setVisible(false);
