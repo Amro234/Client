@@ -13,6 +13,7 @@ import com.mycompany.client.matches.data.MatchResult;
 import com.mycompany.client.matches.ui.MatchCard;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +24,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import com.mycompany.client.settings.manager.SoundEffectsManager;
 
 /**

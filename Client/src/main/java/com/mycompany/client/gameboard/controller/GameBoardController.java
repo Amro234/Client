@@ -716,6 +716,7 @@ public class GameBoardController implements GameSession.SessionListener {
             alert.getButtonTypes().setAll(playAgainButton, cancelButton);
 
             alert.showAndWait().ifPresent(response -> {
+                SoundEffectsManager.playClick();
 
                 if (response == playAgainButton) {
 
@@ -786,16 +787,19 @@ public class GameBoardController implements GameSession.SessionListener {
     @FXML
 
     private void onReplayPlay() {
+        SoundEffectsManager.playClick();
         replayManager.play();
     }
 
     @FXML
     private void onReplayPause() {
+        SoundEffectsManager.playClick();
         replayManager.pause();
     }
 
     @FXML
     private void onReplaySpeed() {
+        SoundEffectsManager.playClick();
         replayManager.toggleSpeed();
 
         replaySpeedBtn.setText(
@@ -806,6 +810,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
     @FXML
     private void onReplayRestart() {
+        SoundEffectsManager.playClick();
         if (currentSession instanceof ReplayGameSession) {
             startReplay(((ReplayGameSession) currentSession).getRecording());
         }
@@ -934,6 +939,7 @@ public class GameBoardController implements GameSession.SessionListener {
             alert.getButtonTypes().setAll(yesBtn, noBtn);
 
             alert.showAndWait().ifPresent(response -> {
+                SoundEffectsManager.playClick();
                 if (response == yesBtn) {
                     enableAutoRecording();
                 } else {
