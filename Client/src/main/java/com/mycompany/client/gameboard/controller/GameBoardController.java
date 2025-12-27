@@ -41,7 +41,7 @@ import javafx.scene.paint.Color;
 
 public class GameBoardController implements GameSession.SessionListener {
 
-private GameReplayManager replayManager = new GameReplayManager();
+    private GameReplayManager replayManager = new GameReplayManager();
 
     private BoardMode boardMode = BoardMode.NORMAL;
 
@@ -117,7 +117,7 @@ private GameReplayManager replayManager = new GameReplayManager();
     private Button replayPauseBtn;
     @FXML
     private Button replaySpeedBtn;
- 
+
     @FXML
     private Circle recordingIndicator;
     @FXML
@@ -125,9 +125,10 @@ private GameReplayManager replayManager = new GameReplayManager();
 
     @FXML
     private Label recordingLabel;
-private boolean recordingDecisionAsked = false;
+    private boolean recordingDecisionAsked = false;
 
     private Timeline recordingPulse;
+
     public void initialize() {
         cells = new StackPane[][] {
                 { cell00, cell01, cell02 },
@@ -180,6 +181,7 @@ private boolean recordingDecisionAsked = false;
     public void startOnlineGame(String opponentName, String mySymbol) {
         boardMode = BoardMode.NORMAL;
         updateUIForMode();
+        hasPendingRematchRequest = false;
 
         currentSession = new com.mycompany.client.gameboard.model.ClientOnlineSession(
                 this, "You", opponentName, mySymbol);
@@ -194,7 +196,7 @@ private boolean recordingDecisionAsked = false;
         }
 
         resetBoardUI();
-       // resetRecording();
+        // resetRecording();
         startTimer();
         updateTurnUI(true); // Always X starts
         askRecordingDecision();
@@ -246,16 +248,15 @@ private boolean recordingDecisionAsked = false;
             }
 
             gameRecorder.stopRecording(status);
-String ownerUsername = UserSession.getInstance().getUsername();
+            String ownerUsername = UserSession.getInstance().getUsername();
 
-recordingManager.saveRecording(
-        gameRecorder.getRecording(),
-        ownerUsername
-);
+            recordingManager.saveRecording(
+                    gameRecorder.getRecording(),
+                    ownerUsername);
 
-//            recordingManager.saveRecording(
-//                    gameRecorder.getRecording(),
-//                    currentSession.getPlayer1Name());
+            // recordingManager.saveRecording(
+            // gameRecorder.getRecording(),
+            // currentSession.getPlayer1Name());
 
             isRecordingEnabled = false;
             stopRecordingIndicator();
@@ -327,9 +328,16 @@ recordingManager.saveRecording(
         }
     }
 
+    private boolean hasPendingRematchRequest = false;
+
     // --- Online Game End Dialog with Rematch ---
     private void showOnlineGameEndDialog(String title, boolean isWin) {
         Platform.runLater(() -> {
+            // Prevent showing Game Over dialog if a Rematch Request is already pending
+            if (hasPendingRematchRequest) {
+                return;
+            }
+
             isGameEnded = true;
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Game Over");
@@ -368,6 +376,9 @@ recordingManager.saveRecording(
 
     @Override
     public void onRematchRequested() {
+        // Set flag immediately to prevent pending Game Over dialogs from appearing
+        hasPendingRematchRequest = true;
+
         Platform.runLater(() -> {
             closeActiveDialog(); // Close "Game Over" dialog if open
 
@@ -390,8 +401,11 @@ recordingManager.saveRecording(
                     if (response == acceptBtn) {
                         onlineSession.acceptRematch();
                         isGameEnded = false;
+                        hasPendingRematchRequest = false; // Reset on accept
                     } else {
                         onlineSession.declineRematch();
+                        // Explicitly close/clear dialog reference before navigating
+                        activeDialog = null;
                         handleBackButton();
                     }
                 }
@@ -437,12 +451,11 @@ recordingManager.saveRecording(
         });
     }
 
-  private void resetRecording() {
-    isRecordingEnabled = false;
-    recordingStoppedManually = false;
-    gameRecorder = new GameRecorder();
-}
-
+    private void resetRecording() {
+        isRecordingEnabled = false;
+        recordingStoppedManually = false;
+        gameRecorder = new GameRecorder();
+    }
 
     @Override
     public void onTurnChange(boolean isPlayer1Turn) {
@@ -678,42 +691,42 @@ recordingManager.saveRecording(
     }
 
     private void showPlayAgainDialog(String message) {
-    Platform.runLater(() -> {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Game Over");
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Game Over");
 
-        if (message.contains("Draw")) {
-            alert.setHeaderText("🤝 " + message + " 🤝");
-            alert.setContentText("No winner this time! Want a rematch?");
-        } else {
-            alert.setHeaderText("🎉 " + message + " 🎉");
-            alert.setContentText("Do you want to play again?");
-        }
-
-        ButtonType playAgainButton = new ButtonType("Play Again");
-        ButtonType cancelButton = new ButtonType("Exit to Menu");
-
-        alert.getButtonTypes().setAll(playAgainButton, cancelButton);
-
-        alert.showAndWait().ifPresent(response -> {
-
-            if (response == playAgainButton) {
-
-                currentSession.resetGame();
-                resetBoardUI();
-                startTimer();
-
-                resetRecording();
-                resetRecordingDecision();
-                askRecordingDecision();
-
+            if (message.contains("Draw")) {
+                alert.setHeaderText("🤝 " + message + " 🤝");
+                alert.setContentText("No winner this time! Want a rematch?");
             } else {
-                
-                goToMainMenuDirectly();
+                alert.setHeaderText("🎉 " + message + " 🎉");
+                alert.setContentText("Do you want to play again?");
             }
+
+            ButtonType playAgainButton = new ButtonType("Play Again");
+            ButtonType cancelButton = new ButtonType("Exit to Menu");
+
+            alert.getButtonTypes().setAll(playAgainButton, cancelButton);
+
+            alert.showAndWait().ifPresent(response -> {
+
+                if (response == playAgainButton) {
+
+                    currentSession.resetGame();
+                    resetBoardUI();
+                    startTimer();
+
+                    resetRecording();
+                    resetRecordingDecision();
+                    askRecordingDecision();
+
+                } else {
+
+                    goToMainMenuDirectly();
+                }
+            });
         });
-    });
-}
+    }
 
     @FXML
     private void onRecording(ActionEvent event) {
@@ -739,71 +752,61 @@ recordingManager.saveRecording(
 
     // Replay methods (omitted for brevity, can be copied from existing or left as
     // is if not changing)
-   public void startReplay(GameRecording recording) {
+    public void startReplay(GameRecording recording) {
 
-    hideReplayFinishedLabel();
+        hideReplayFinishedLabel();
 
-    boardMode = BoardMode.REPLAY;
-    updateUIForMode();
+        boardMode = BoardMode.REPLAY;
+        updateUIForMode();
 
-    stopTimer();
-    resetBoardUI();
+        stopTimer();
+        resetBoardUI();
 
-    ReplayGameSession replaySession =
-            new ReplayGameSession(
-                    this,
-                    recording.playerName,
-                    recording.opponentPlayerName,
-                    recording
-            );
+        ReplayGameSession replaySession = new ReplayGameSession(
+                this,
+                recording.playerName,
+                recording.opponentPlayerName,
+                recording);
 
-    replayManager.startReplay(
-            replaySession,
-            () -> onReplayFinished()
-    );
+        replayManager.startReplay(
+                replaySession,
+                () -> onReplayFinished());
 
-    currentSession = replaySession;
-}
-
-
-
-    @FXML
-    
-private void onReplayPlay() {
-    replayManager.play();
-}
-
-
-    @FXML
-private void onReplayPause() {
-    replayManager.pause();
-}
-
-
-   @FXML
-private void onReplaySpeed() {
-    replayManager.toggleSpeed();
-
-    replaySpeedBtn.setText(
-            replayManager.isFastSpeed()
-                    ? "🐢 Normal Speed"
-                    : "⚡ Fast Speed"
-    );
-}
-
-
- @FXML
-private void onReplayRestart() {
-    if (currentSession instanceof ReplayGameSession) {
-        startReplay(((ReplayGameSession) currentSession).getRecording());
+        currentSession = replaySession;
     }
-}
 
-private void hideReplayFinishedLabel() {
-    replayStatusLabel.setVisible(false);
-    replayStatusLabel.setManaged(false);
-}
+    @FXML
 
+    private void onReplayPlay() {
+        replayManager.play();
+    }
+
+    @FXML
+    private void onReplayPause() {
+        replayManager.pause();
+    }
+
+    @FXML
+    private void onReplaySpeed() {
+        replayManager.toggleSpeed();
+
+        replaySpeedBtn.setText(
+                replayManager.isFastSpeed()
+                        ? "🐢 Normal Speed"
+                        : "⚡ Fast Speed");
+    }
+
+    @FXML
+    private void onReplayRestart() {
+        if (currentSession instanceof ReplayGameSession) {
+            startReplay(((ReplayGameSession) currentSession).getRecording());
+        }
+    }
+
+    private void hideReplayFinishedLabel() {
+        replayStatusLabel.setVisible(false);
+        replayStatusLabel.setManaged(false);
+    }
 
     @Override
     public void onReplayFinished() {
@@ -815,15 +818,16 @@ private void hideReplayFinishedLabel() {
     }
 
     @Override
-public void onSessionReset() {
-    replayManager.reset();
-    boardMode = BoardMode.NORMAL;
-    updateUIForMode();
-    resetBoardUI();
-    isGameEnded = false;
-}
+    public void onSessionReset() {
+        replayManager.reset();
+        boardMode = BoardMode.NORMAL;
+        updateUIForMode();
+        resetBoardUI();
+        isGameEnded = false;
+        hasPendingRematchRequest = false;
+    }
 
-     public void onReplayReset() {
+    public void onReplayReset() {
         resetBoardUI();
         replayStatusLabel.setVisible(false);
         replayStatusLabel.setManaged(false);
@@ -847,142 +851,144 @@ public void onSessionReset() {
         turnIndicatorLabel.setManaged(!isReplay);
     }
 
-   private void startRecordingIndicator() {
+    private void startRecordingIndicator() {
 
-    recordingBox.setVisible(true);
-    recordingBox.setManaged(true);
+        recordingBox.setVisible(true);
+        recordingBox.setManaged(true);
 
-    applyRecordingGlow();
+        applyRecordingGlow();
 
-    
-    PauseTransition delay = new PauseTransition(Duration.millis(300));
-    delay.setOnFinished(e -> startPulseAnimation());
-    delay.play();
-}
+        PauseTransition delay = new PauseTransition(Duration.millis(300));
+        delay.setOnFinished(e -> startPulseAnimation());
+        delay.play();
+    }
 
     private void stopRecordingIndicator() {
 
-    if (recordingPulse != null) {
-        recordingPulse.stop();
+        if (recordingPulse != null) {
+            recordingPulse.stop();
+        }
+
+        recordingBox.setVisible(false);
+        recordingBox.setManaged(false);
+
+        recordingIndicator.setOpacity(1.0);
+        recordingIndicator.setEffect(null);
     }
-
-    recordingBox.setVisible(false);
-    recordingBox.setManaged(false);
-
-    recordingIndicator.setOpacity(1.0);
-    recordingIndicator.setEffect(null);
-}
 
     private void updateRecordButtonUI(boolean recording) {
         recordGame.setText(recording ? "⏹ Stop" : "⏺ Record");
     }
+
     private void applyRecordingGlow() {
-    DropShadow glow = new DropShadow();
-    glow.setRadius(8);
-    glow.setColor(Color.web("#dc2626")); // Red glow
-    recordingIndicator.setEffect(glow);
-}
-private void startPulseAnimation() {
+        DropShadow glow = new DropShadow();
+        glow.setRadius(8);
+        glow.setColor(Color.web("#dc2626")); // Red glow
+        recordingIndicator.setEffect(glow);
+    }
 
-    recordingPulse = new Timeline(
-        new KeyFrame(Duration.ZERO, e -> {
-            recordingIndicator.setOpacity(1.0);
-            recordingLabel.setOpacity(1.0);
-        }),
-        new KeyFrame(Duration.seconds(0.6), e -> {
-            recordingIndicator.setOpacity(0.4);
-            recordingLabel.setOpacity(0.4);
-        }),
-        new KeyFrame(Duration.seconds(1.2), e -> {
-            recordingIndicator.setOpacity(1.0);
-            recordingLabel.setOpacity(1.0);
-        })
-    );
+    private void startPulseAnimation() {
 
-    recordingPulse.setCycleCount(Timeline.INDEFINITE);
-    recordingPulse.play();
-}
-private void askRecordingDecision() {
+        recordingPulse = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> {
+                    recordingIndicator.setOpacity(1.0);
+                    recordingLabel.setOpacity(1.0);
+                }),
+                new KeyFrame(Duration.seconds(0.6), e -> {
+                    recordingIndicator.setOpacity(0.4);
+                    recordingLabel.setOpacity(0.4);
+                }),
+                new KeyFrame(Duration.seconds(1.2), e -> {
+                    recordingIndicator.setOpacity(1.0);
+                    recordingLabel.setOpacity(1.0);
+                }));
 
-    if (recordingDecisionAsked) return;
-    recordingDecisionAsked = true;
+        recordingPulse.setCycleCount(Timeline.INDEFINITE);
+        recordingPulse.play();
+    }
 
-    Platform.runLater(() -> {
+    private void askRecordingDecision() {
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Record Match");
-        alert.setHeaderText("🎥 Record this match?");
-        alert.setContentText("Do you want to record this game?");
+        if (recordingDecisionAsked)
+            return;
+        recordingDecisionAsked = true;
 
-        ButtonType yesBtn = new ButtonType("Yes");
-        ButtonType noBtn = new ButtonType("No");
+        Platform.runLater(() -> {
 
-        alert.getButtonTypes().setAll(yesBtn, noBtn);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Record Match");
+            alert.setHeaderText("🎥 Record this match?");
+            alert.setContentText("Do you want to record this game?");
 
-        alert.showAndWait().ifPresent(response -> {
-            if (response == yesBtn) {
-                enableAutoRecording();
-            } else {
-                disableRecordingButtonOnly();
+            ButtonType yesBtn = new ButtonType("Yes");
+            ButtonType noBtn = new ButtonType("No");
+
+            alert.getButtonTypes().setAll(yesBtn, noBtn);
+
+            alert.showAndWait().ifPresent(response -> {
+                if (response == yesBtn) {
+                    enableAutoRecording();
+                } else {
+                    disableRecordingButtonOnly();
+                }
+            });
+        });
+    }
+
+    private void enableAutoRecording() {
+
+        isRecordingEnabled = true;
+        recordingStoppedManually = false;
+
+        gameRecorder.startRecording(
+                GameMode.TWO_PLAYERS,
+                currentSession.getPlayer1Name(),
+                currentSession.getPlayer2Name(),
+                'X');
+
+        // REC effect
+        startRecordingIndicator();
+
+        recordGame.setVisible(false);
+        recordGame.setManaged(false);
+    }
+
+    private void disableRecordingButtonOnly() {
+
+        isRecordingEnabled = false;
+
+        recordGame.setDisable(true);
+        recordGame.setOpacity(0.5);
+        recordGame.setText("Recording Disabled");
+
+        stopRecordingIndicator();
+    }
+
+    private void resetRecordingDecision() {
+        recordingDecisionAsked = false;
+        recordGame.setDisable(false);
+        recordGame.setVisible(true);
+        recordGame.setManaged(true);
+        recordGame.setOpacity(1.0);
+        recordGame.setText("⏺ Record");
+    }
+
+    private void goToMainMenuDirectly() {
+        Platform.runLater(() -> {
+            replayManager.reset();
+            try {
+                stopTimer();
+                if (currentSession != null) {
+                    currentSession.stop();
+                }
+
+                Parent root = NavigationService.loadFXML("main-menu");
+                NavigationService.navigateTo(root);
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
-    });
-}
-private void enableAutoRecording() {
-
-    isRecordingEnabled = true;
-    recordingStoppedManually = false;
-
-    gameRecorder.startRecording(
-            GameMode.TWO_PLAYERS,
-            currentSession.getPlayer1Name(),
-            currentSession.getPlayer2Name(),
-            'X'
-    );
-
-    // REC effect
-    startRecordingIndicator();
-
-   
-    recordGame.setVisible(false);
-    recordGame.setManaged(false);
-}
-private void disableRecordingButtonOnly() {
-
-    isRecordingEnabled = false;
-
-    recordGame.setDisable(true);
-    recordGame.setOpacity(0.5);
-    recordGame.setText("Recording Disabled");
-
-  
-    stopRecordingIndicator();
-}
-
-private void resetRecordingDecision() {
-    recordingDecisionAsked = false;
-    recordGame.setDisable(false);
-    recordGame.setVisible(true);
-    recordGame.setManaged(true);
-    recordGame.setOpacity(1.0);
-    recordGame.setText("⏺ Record");
-}
-private void goToMainMenuDirectly() {
-    Platform.runLater(() -> {
-        replayManager.reset();
-        try {
-            stopTimer();
-            if (currentSession != null) {
-                currentSession.stop();
-            }
-
-            Parent root = NavigationService.loadFXML("main-menu");
-            NavigationService.navigateTo(root);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    });
-}
+    }
 
 }
