@@ -89,13 +89,13 @@
                      </children>
                   </VBox>
                   <Region minWidth="355.0" prefHeight="100.0" prefWidth="355.0" />
-                  <Button fx:id="quickPlayBtn" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onQuickPlayPressed" styleClass="quick-play" text="Quick Play">
+                  <!-- <Button fx:id="quickPlayBtn" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onQuickPlayPressed" styleClass="quick-play" text="Quick Play">
                      <HBox.margin>
                         <Insets right="10.0" top="10.0" />
                      </HBox.margin>
                      <font>
                         <Font size="18.0" />
-                     </font></Button>
+                     </font></Button> -->
                </children>
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="15.0">
