@@ -236,56 +236,44 @@ public class GameBoardController implements GameSession.SessionListener {
 
     @Override
     public void onGameEnd(Board.WinInfo winInfo) {
-        stopTimer();
+     stopTimer();
 
-       if (isRecordingEnabled && !recordingStoppedManually) {
+    if (isRecordingEnabled && !recordingStoppedManually) {
 
-    String status;
+        String status;
 
-    if (winInfo == null) {
-        status = "DRAW";
-    } else {
-
-<<<<<<< HEAD
-        // ✅ Online: احسب من منظور اللاعب
-        if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
-
-            com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession =
-                    (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
-
-            char mySymbol = onlineSession.getMySymbol().charAt(0);
-            status = (winInfo.winner == mySymbol) ? "WIN" : "LOSE";
-=======
-            gameRecorder.stopRecording(status);
-            String ownerUsername = UserSession.getInstance().getUsername();
-
-            recordingManager.saveRecording(
-                    gameRecorder.getRecording(),
-                    ownerUsername);
-
-            // recordingManager.saveRecording(
-            // gameRecorder.getRecording(),
-            // currentSession.getPlayer1Name());
->>>>>>> main
-
+        if (winInfo == null) {
+            status = "DRAW";
         } else {
-            // ✅ Local / Single: X = Player1 (السلوك القديم)
-            status = (winInfo.winner == 'X') ? "WIN" : "LOSE";
+
+            // Online pov
+            if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+
+                com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession =
+                        (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
+
+                char mySymbol = onlineSession.getMySymbol().charAt(0);
+                status = (winInfo.winner == mySymbol) ? "WIN" : "LOSE";
+
+            } else {
+                //Local / Single
+                status = (winInfo.winner == 'X') ? "WIN" : "LOSE";
+            }
         }
+
+       
+        gameRecorder.stopRecording(status);
+
+        String ownerUsername = UserSession.getInstance().getUsername();
+        recordingManager.saveRecording(
+                gameRecorder.getRecording(),
+                ownerUsername
+        );
+
+        isRecordingEnabled = false;
+        stopRecordingIndicator();
+        updateRecordButtonUI(false);
     }
-
-    gameRecorder.stopRecording(status);
-
-    String ownerUsername = UserSession.getInstance().getUsername();
-    recordingManager.saveRecording(
-            gameRecorder.getRecording(),
-            ownerUsername
-    );
-
-    isRecordingEnabled = false;
-    stopRecordingIndicator();
-    updateRecordButtonUI(false);
-}
 
         
 
