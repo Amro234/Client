@@ -459,22 +459,22 @@ public class GameBoardController implements GameSession.SessionListener {
             closeActiveDialog();
 
             if (isGameEnded) {
-                // Game over, opponent left -> Just go back
+                // Game was already over (e.g. at Game Over dialog), and opponent left
                 com.mycompany.client.match_recording.RecordingManager.showToast("Opponent left the session.",
                         backButton.getScene());
-                handleBackButton();
+                // Directly quit without confirmation since game is ended
+                executeQuit(true);
             } else {
-                // Game in progress -> Win by default logic
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Game Over");
-                if ("OPPONENT_DISCONNECTED".equals(status)) {
-                    alert.setHeaderText("Opponent Disconnected!");
-                } else {
-                    alert.setHeaderText("Opponent Left the Game!");
-                }
-                alert.setContentText("You win by default.");
-                alert.showAndWait();
-                handleBackButton();
+                // Game was in progress -> Win by default logic
+                isGameEnded = true; // Mark ended to prevent exit confirmation
+
+                com.mycompany.client.match_recording.RecordingManager.showToast("Opponent Left! You Win!",
+                        backButton.getScene());
+
+                // Play Win Video, then automatically go back to lobby
+                com.mycompany.client.GameResultVideoManager.GameResultVideoManager.showWinVideo(() -> {
+                    executeQuit(true);
+                });
             }
         });
     }
@@ -687,7 +687,7 @@ public class GameBoardController implements GameSession.SessionListener {
                 NavigationService.goBack();
             }
         } else {
-            NavigationService.goBack();
+            executeQuit(true);
         }
     }
 
@@ -708,16 +708,63 @@ public class GameBoardController implements GameSession.SessionListener {
 
     @FXML
     public void handleMenuButton() {
-        SoundEffectsManager.playClick();
-        try {
-            stopTimer();
-            if (currentSession != null) {
-                currentSession.stop();
+        if (!isGameEnded && currentSession != null) {
+            showExitConfirmation(() -> executeQuit(false));
+        } else {
+            executeQuit(false);
+        }
+    }
+
+    private void showExitConfirmation(Runnable onConfirm) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit Game");
+        alert.setHeaderText("Do you want to leave the game?");
+        alert.setContentText("Your progress may be lost.");
+
+        ButtonType yesBtn = new ButtonType("Yes, Leave");
+        ButtonType noBtn = new ButtonType("No, Stay");
+
+        alert.getButtonTypes().setAll(yesBtn, noBtn);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == yesBtn) {
+                onConfirm.run();
             }
-            Parent root = NavigationService.loadFXML("main-menu");
-            NavigationService.navigateTo(root);
-        } catch (IOException e) {
-            e.printStackTrace();
+        });
+    }
+
+    private void executeQuit(boolean backToLobby) {
+        replayManager.reset();
+        stopTimer();
+        if (currentSession != null) {
+            currentSession.stop();
+        }
+
+        if (backToLobby && currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+            try {
+                Parent root = NavigationService.loadFXML("gameLobby");
+                NavigationService.goBackAndReplace(root);
+                return;
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Fallback
+                NavigationService.goBack();
+            }
+        } else if (backToLobby) {
+            NavigationService.goBack();
+        } else {
+            // Main Menu -> Logout and Clear Session
+            if (com.mycompany.client.core.server.ServerConnection.isConnected()) {
+                com.mycompany.client.core.server.ServerConnection.disconnect();
+            }
+            com.mycompany.client.core.session.UserSession.getInstance().clearSession();
+
+            try {
+                Parent root = NavigationService.loadFXML("main-menu");
+                NavigationService.navigateTo(root);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
