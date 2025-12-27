@@ -37,7 +37,7 @@ private void onStartClicked(ActionEvent event) {
         GameBoardController controller = loader.getController();
         controller.startLocalTwoPlayerGame(p1Name, p2Name);
 
-        NavigationService.navigateTo(gameBoardRoot);
+        NavigationService.replaceWith(gameBoardRoot);
     } catch (IOException e) {
         e.printStackTrace();
     }
