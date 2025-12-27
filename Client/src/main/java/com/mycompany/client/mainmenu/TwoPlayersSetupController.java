@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
 import java.io.IOException;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
 
 public class TwoPlayersSetupController {
 
@@ -19,29 +20,30 @@ public class TwoPlayersSetupController {
     @FXML
     private TextField p2NameField;
 
-@FXML
-private void onStartClicked(ActionEvent event) {
+    @FXML
+    private void onStartClicked(ActionEvent event) {
 
-    String p1Name = p1NameField.getText().trim();
-    String p2Name = p2NameField.getText().trim();
+        String p1Name = p1NameField.getText().trim();
+        String p2Name = p2NameField.getText().trim();
 
-    if (p1Name.isEmpty() || p2Name.isEmpty()) {
-        showAlert("Validation Error", "Both player names are required!");
-        return;
+        if (p1Name.isEmpty() || p2Name.isEmpty()) {
+            showAlert("Validation Error", "Both player names are required!");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = NavigationService.getFXMLLoader("game_board");
+            Parent gameBoardRoot = loader.load();
+
+            GameBoardController controller = loader.getController();
+            controller.startLocalTwoPlayerGame(p1Name, p2Name);
+            SoundEffectsManager.playClick();
+
+            NavigationService.navigateTo(gameBoardRoot);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
-    try {
-        FXMLLoader loader = NavigationService.getFXMLLoader("game_board");
-        Parent gameBoardRoot = loader.load();
-
-        GameBoardController controller = loader.getController();
-        controller.startLocalTwoPlayerGame(p1Name, p2Name);
-
-        NavigationService.navigateTo(gameBoardRoot);
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}
 
     private void showAlert(String title, String content) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
@@ -54,5 +56,6 @@ private void onStartClicked(ActionEvent event) {
     @FXML
     private void onBackClicked(ActionEvent event) {
         NavigationService.goBack();
+        SoundEffectsManager.playClick();
     }
 }

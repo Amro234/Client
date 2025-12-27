@@ -14,7 +14,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        // BackgroundMusicManager.init();
+        BackgroundMusicManager.init();
         SoundEffectsManager.init();
 
         // Load splash screen and create scene
