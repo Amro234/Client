@@ -101,14 +101,10 @@ public class ClientOnlineSession extends OnlineSession implements ServerMessageL
     @Override
     public void onConnectionLost() {
         Platform.runLater(() -> {
-            if (listener != null) {
-                // Reuse onGameEnd to show error or specialized method?
-                // Let's assume onGameEnd(null) but that means Draw.
-                // Better to alert controller.
-                // We will update interface GameBoardController later.
-                // For now print err.
-            }
             System.err.println("Connection Lost!");
+            if (listener != null) {
+                listener.onServerDisconnected();
+            }
         });
     }
 

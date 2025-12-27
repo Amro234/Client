@@ -37,6 +37,9 @@ public abstract class GameSession {
 
         default void onRematchDeclined() {
         }
+
+        default void onServerDisconnected() {
+        }
     }
 
     public GameSession(SessionListener listener, String p1Name, String p2Name) {
