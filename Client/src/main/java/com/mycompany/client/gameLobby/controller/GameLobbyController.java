@@ -218,20 +218,23 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
         } catch (GameLobbyException e) {
             System.err.println("Failed to load online users: " + e.getMessage());
             // Show error to user
-            Platform.runLater(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Failed to load online players");
-                alert.setContentText(e.getMessage());
-                shutdown();
-                try {
-                    NavigationService.navigateTo(NavigationService.loadFXML("main-menu"));
-                } catch (IOException e1) {
+            if (e.getMessage().equals("Unable to connect to server. Please check your connection.")) {
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Failed to load online players");
+                    alert.setContentText(e.getMessage());
+                    shutdown();
+                    try {
+                        NavigationService.navigateTo(NavigationService.loadFXML("main-menu"));
+                    } catch (IOException e1) {
 
-                    e1.printStackTrace();
-                }
-                alert.showAndWait();
-            });
+                        e1.printStackTrace();
+                    }
+                    alert.showAndWait();
+                });
+            }
+
         }
     }
 
