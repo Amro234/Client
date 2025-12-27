@@ -132,6 +132,7 @@ public class MatchHistoryController implements Initializable {
             applyFilter(winsBtn, FilterType.VICTORY);
         });
         lossesBtn.setOnAction(e -> {
+            
             SoundEffectsManager.playClick();
             applyFilter(lossesBtn, FilterType.DEFEAT);
         });
