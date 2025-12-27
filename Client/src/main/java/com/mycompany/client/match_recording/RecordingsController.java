@@ -5,6 +5,7 @@
 package com.mycompany.client.match_recording;
 
 import com.mycompany.client.App;
+import com.mycompany.client.core.CustomAlertDialog;
 import com.mycompany.client.gameboard.controller.GameBoardController;
 
 import java.io.File;
@@ -16,7 +17,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
@@ -106,11 +106,8 @@ public class RecordingsController implements Initializable {
     }
 
     private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Replay");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.show();
+        Stage stage = (Stage) recordingsList.getScene().getWindow();
+        CustomAlertDialog.show(stage, "Replay", message);
     }
 
 }
