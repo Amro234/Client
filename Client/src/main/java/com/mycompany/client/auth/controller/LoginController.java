@@ -2,6 +2,7 @@
 package com.mycompany.client.auth.controller;
 
 import com.mycompany.client.auth.AuthClient;
+import com.mycompany.client.core.CustomAlertDialog;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.session.UserSession;
 import com.mycompany.client.settings.manager.SoundEffectsManager;
@@ -98,12 +99,7 @@ public class LoginController implements Initializable {
     }
 
     private void showDialog(String title, String header, String content) {
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                javafx.scene.control.Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
+        CustomAlertDialog.show((javafx.stage.Stage) usernameField.getScene().getWindow(), title, header + "\n" + content);
     }
 
     private void navigateToGameLobby() {

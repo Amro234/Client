@@ -224,8 +224,13 @@ public class SignController implements Initializable {
 
     @FXML
     private void handleBack(ActionEvent event) {
-        SoundEffectsManager.playClick();
-        NavigationService.goBack();
+        try {
+            SoundEffectsManager.playClick();
+            Parent root = NavigationService.loadFXML("login");
+            NavigationService.replaceWith(root);
+        } catch (IOException ex) {
+            System.err.println("Error loading login screen: " + ex.getMessage());
+        }
     }
 
 }

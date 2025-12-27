@@ -3,6 +3,7 @@ package com.mycompany.client.mainmenu;
 import com.mycompany.client.core.CustomAlertDialog;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.server.ServerConnection;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -41,6 +42,7 @@ public class ServerConnectionDialog {
 
         // Connect button action
         connectButton.setOnAction(e -> {
+            SoundEffectsManager.playClick();
             String serverIp = serverIpField.getText().trim();
             if (!serverIp.isEmpty()) {
                 System.out.println("Connecting to server: " + serverIp);
