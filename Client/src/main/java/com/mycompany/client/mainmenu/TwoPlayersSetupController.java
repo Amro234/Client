@@ -40,7 +40,6 @@ public class TwoPlayersSetupController {
             GameBoardController controller = loader.getController();
             controller.startLocalTwoPlayerGame(p1Name, p2Name);
             SoundEffectsManager.playClick();
-
             NavigationService.navigateTo(gameBoardRoot);
         } catch (IOException e) {
             e.printStackTrace();
