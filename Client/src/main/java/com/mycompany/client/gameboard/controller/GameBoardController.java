@@ -230,8 +230,6 @@ public class GameBoardController implements GameSession.SessionListener {
                 labels[row][col].getStyleClass().add("cell-label-o");
             }
         }
-        SoundEffectsManager.playClick();
-
 
         if (isRecordingEnabled) {
             gameRecorder.recordMove(row, col);
@@ -240,41 +238,46 @@ public class GameBoardController implements GameSession.SessionListener {
 
     @Override
     public void onGameEnd(Board.WinInfo winInfo) {
-        stopTimer();
+     stopTimer();
 
-        if (isRecordingEnabled && !recordingStoppedManually) {
+    if (isRecordingEnabled && !recordingStoppedManually) {
 
-            String status;
+        String status;
 
-            if (winInfo == null) {
-                status = "DRAW";
+        if (winInfo == null) {
+            status = "DRAW";
+        } else {
+
+            // Online pov
+            if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+
+                com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession =
+                        (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
+
+                char mySymbol = onlineSession.getMySymbol().charAt(0);
+                status = (winInfo.winner == mySymbol) ? "WIN" : "LOSE";
+
             } else {
-
-                // Online pov
-                if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
-
-                    com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession = (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
-
-                    char mySymbol = onlineSession.getMySymbol().charAt(0);
-                    status = (winInfo.winner == mySymbol) ? "WIN" : "LOSE";
-
-                } else {
-                    // Local / Single
-                    status = (winInfo.winner == 'X') ? "WIN" : "LOSE";
-                }
+                //Local / Single
+                status = (winInfo.winner == 'X') ? "WIN" : "LOSE";
             }
-
-            gameRecorder.stopRecording(status);
-
-            String ownerUsername = UserSession.getInstance().getUsername();
-            recordingManager.saveRecording(
-                    gameRecorder.getRecording(),
-                    ownerUsername);
-
-            isRecordingEnabled = false;
-            stopRecordingIndicator();
-            updateRecordButtonUI(false);
         }
+
+       
+        gameRecorder.stopRecording(status);
+
+        String ownerUsername = UserSession.getInstance().getUsername();
+        recordingManager.saveRecording(
+                gameRecorder.getRecording(),
+                ownerUsername
+        );
+
+        isRecordingEnabled = false;
+        stopRecordingIndicator();
+        updateRecordButtonUI(false);
+    }
+
+        
 
         if (winInfo != null) {
 
@@ -296,10 +299,12 @@ public class GameBoardController implements GameSession.SessionListener {
 
             } else if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
                 // Online Session
-                ClientOnlineSession onlineSession = (ClientOnlineSession) currentSession;
+                ClientOnlineSession onlineSession =
+        (ClientOnlineSession) currentSession;
 
-                char mySymbol = onlineSession.getMySymbol().charAt(0);
-                boolean iWon = (winInfo.winner == mySymbol);
+char mySymbol = onlineSession.getMySymbol().charAt(0);
+boolean iWon = (winInfo.winner == mySymbol);
+
 
                 if (iWon) {
                     GameResultVideoManager.showWinVideo(
@@ -404,6 +409,7 @@ public class GameBoardController implements GameSession.SessionListener {
     public void onServerDisconnected() {
         Platform.runLater(() -> {
             closeActiveDialog();
+            asa
             stopTimer();
             if (currentSession != null) {
                 currentSession.stop();
@@ -547,7 +553,6 @@ public class GameBoardController implements GameSession.SessionListener {
                 }
                 labels[i][j].getStyleClass().removeAll("cell-label", "cell-label-x", "cell-label-o");
                 labels[i][j].getStyleClass().add("cell-label");
-                labels[i][j].setMouseTransparent(true);
             }
         }
     }
@@ -1011,8 +1016,7 @@ public class GameBoardController implements GameSession.SessionListener {
     }
 
     private void closeActiveDialog() {
-        // Placeholder method to close any active dialogs if needed
-        // Currently, no active dialog management is implemented
+     
     }
 
 }
