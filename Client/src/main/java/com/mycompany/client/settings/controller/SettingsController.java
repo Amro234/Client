@@ -233,6 +233,7 @@ public class SettingsController implements Initializable {
 
     @FXML
     private void handleBack() {
+        System.out.println("Back button clicked!"); // Debug line
         SoundEffectsManager.playClick();
         NavigationService.goBack();
     }
