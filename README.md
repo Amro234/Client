@@ -329,6 +329,14 @@ Local recordings are saved to the file system.
 - Friend system
 - Achievements
 
+## 👥 Authors
+
+- **Amro Mohamed Ali Mahmoud**
+- **Eslam Ehab Mohamed Lotfy**
+- **Ahmed Khaled Mahmoud**
+- **Antoneos Philip Samir**
+- **Mohamed Ali Abdelfattah**
+
 ---
 
 **Made with ❤️ using JavaFX**
