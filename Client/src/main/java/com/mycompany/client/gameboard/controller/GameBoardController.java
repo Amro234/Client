@@ -367,6 +367,10 @@ boolean iWon = (winInfo.winner == mySymbol);
                 () -> {
                     SoundEffectsManager.playClick();
                     handleBack(null); // Disconnects session and goes back
+                },
+                () -> {
+                    SoundEffectsManager.playClick();
+                    handleBack(null); // Go to lobby on close
                 });
         });
     }
@@ -751,6 +755,10 @@ boolean iWon = (winInfo.winner == mySymbol);
                 () -> {
                     SoundEffectsManager.playClick();
                     goToMainMenuDirectly();
+                },
+                () -> {
+                    SoundEffectsManager.playClick();
+                    goToMainMenuDirectly(); // Go to main menu on close for local matches
                 });
         });
     }

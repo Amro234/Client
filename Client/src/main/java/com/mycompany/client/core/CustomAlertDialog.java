@@ -75,6 +75,10 @@ public class CustomAlertDialog {
     }
 
     public static void showConfirmation(Stage parentStage, String title, String header, String content, Runnable onConfirm, Runnable onCancel) {
+        showConfirmation(parentStage, title, header, content, onConfirm, onCancel, null);
+    }
+
+    public static void showConfirmation(Stage parentStage, String title, String header, String content, Runnable onConfirm, Runnable onCancel, Runnable onClose) {
         Platform.runLater(() -> {
             Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
@@ -152,6 +156,10 @@ public class CustomAlertDialog {
             scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
             dialog.setScene(scene);
             dialog.setResizable(false);
+
+            dialog.setOnCloseRequest(e -> {
+                if (onClose != null) onClose.run();
+            });
 
             dialog.show();
 
