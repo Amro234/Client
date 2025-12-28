@@ -1,6 +1,5 @@
 package com.mycompany.client.GameResultVideoManager;
 
-import java.io.File;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -12,6 +11,8 @@ import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import com.mycompany.client.settings.manager.SoundEffectsManager;
+
 public class GameResultVideoManager {
 
     private static final int WIN_VIDEOS_COUNT = 7;
@@ -22,8 +23,37 @@ public class GameResultVideoManager {
     private static final String DRAW_VIDEO_TEMPLATE = "/videos/draw/game_draw_%d.mp4";
     private static final String LOSE_VIDEO_TEMPLATE = "/videos/lose/game_loser_%d.mp4";
 
+    // Track active video dialog
+    private static Stage activeVideoStage = null;
+    private static MediaPlayer activePlayer = null;
+    private static boolean callbackCanceled = false;
+
+    public static boolean isActive() {
+        return activeVideoStage != null;
+    }
+
     private static int randomIndex(int max) {
         return 1 + (int) (Math.random() * max);
+    }
+
+    /**
+     * Closes any active video dialog and cancels its callback.
+     * This should be called when a rematch is accepted to prevent
+     * the old game over dialog from appearing.
+     */
+    public static void closeActiveVideoAndCancelCallback() {
+        Platform.runLater(() -> {
+            callbackCanceled = true;
+            if (activePlayer != null) {
+                activePlayer.stop();
+                activePlayer.dispose();
+                activePlayer = null;
+            }
+            if (activeVideoStage != null) {
+                activeVideoStage.close();
+                activeVideoStage = null;
+            }
+        });
     }
 
     public static void showWinVideo(Runnable onFinish) {
@@ -51,6 +81,9 @@ public class GameResultVideoManager {
 
         Platform.runLater(() -> {
             try {
+                // Reset cancellation flag for new video
+                callbackCanceled = false;
+
                 var videoUrl = GameResultVideoManager.class.getResource(path);
                 if (videoUrl == null) {
                     System.err.println("Video not found: " + path);
@@ -64,6 +97,10 @@ public class GameResultVideoManager {
                 MediaPlayer player = new MediaPlayer(
                         new Media(videoUrl.toExternalForm()));
 
+                // Track active video
+                activeVideoStage = stage;
+                activePlayer = player;
+
                 MediaView view = new MediaView(player);
                 view.setFitWidth(600);
                 view.setFitHeight(400);
@@ -71,6 +108,7 @@ public class GameResultVideoManager {
 
                 Button skip = new Button("Skip ⏭");
                 skip.setOnAction(e -> {
+                    SoundEffectsManager.playClick();
                     player.stop();
                     stage.close();
                 });
@@ -81,8 +119,17 @@ public class GameResultVideoManager {
                 stage.setScene(new Scene(root));
 
                 stage.setOnHidden(e -> {
-                    player.stop();
-                    safeFinish(onFinish);
+                    // Clear active references
+                    activeVideoStage = null;
+                    activePlayer = null;
+
+                    // Only execute callback if not canceled
+                    if (!callbackCanceled) {
+                        safeFinish(onFinish);
+                    } else {
+                        // Reset flag for next video
+                        callbackCanceled = false;
+                    }
                 });
 
                 player.setOnEndOfMedia(stage::close);
@@ -92,7 +139,12 @@ public class GameResultVideoManager {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                safeFinish(onFinish);
+                // Clear active references on error
+                activeVideoStage = null;
+                activePlayer = null;
+                if (!callbackCanceled) {
+                    safeFinish(onFinish);
+                }
             }
         });
     }

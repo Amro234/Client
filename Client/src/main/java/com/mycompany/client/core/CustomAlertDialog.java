@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
 
 public class CustomAlertDialog {
 
@@ -77,7 +78,10 @@ public class CustomAlertDialog {
                         okBtn.setOnMouseExited(e -> okBtn.setStyle(
                                         okBtn.getStyle().replace("-fx-background-color: #2980B9;", "") +
                                                         "-fx-background-color: #3498DB;"));
-                        okBtn.setOnAction(e -> dialog.close());
+                        okBtn.setOnAction(e -> {
+                                SoundEffectsManager.playClick();
+                                dialog.close();
+                        });
 
                         container.getChildren().addAll(messageLabel, okBtn);
 
@@ -102,10 +106,16 @@ public class CustomAlertDialog {
 
         public static void showConfirmation(Stage parentStage, String title, String header, String content,
                         Runnable onConfirm, Runnable onCancel) {
-                showConfirmation(parentStage, title, header, content, onConfirm, onCancel, null);
+                showConfirmation(parentStage, title, header, content, "OK", "Cancel", onConfirm, onCancel, null);
         }
 
         public static void showConfirmation(Stage parentStage, String title, String header, String content,
+                        Runnable onConfirm, Runnable onCancel, Runnable onClose) {
+                showConfirmation(parentStage, title, header, content, "OK", "Cancel", onConfirm, onCancel, onClose);
+        }
+
+        public static void showConfirmation(Stage parentStage, String title, String header, String content,
+                        String confirmText, String cancelText,
                         Runnable onConfirm, Runnable onCancel, Runnable onClose) {
                 Platform.runLater(() -> {
                         Stage dialog = new Stage();
@@ -140,7 +150,7 @@ public class CustomAlertDialog {
                         HBox buttonBox = new HBox(15);
                         buttonBox.setAlignment(Pos.CENTER);
 
-                        Button okBtn = new Button("OK");
+                        Button okBtn = new Button(confirmText);
                         okBtn.setStyle(
                                         "-fx-background-color: #27AE60;" +
                                                         "-fx-text-fill: white;" +
@@ -155,12 +165,13 @@ public class CustomAlertDialog {
                                         okBtn.getStyle().replace("-fx-background-color: #229954;", "") +
                                                         "-fx-background-color: #27AE60;"));
                         okBtn.setOnAction(e -> {
+                                SoundEffectsManager.playClick();
                                 dialog.close();
                                 if (onConfirm != null)
                                         onConfirm.run();
                         });
 
-                        Button cancelBtn = new Button("Cancel");
+                        Button cancelBtn = new Button(cancelText);
                         cancelBtn.setStyle(
                                         "-fx-background-color: #E74C3C;" +
                                                         "-fx-text-fill: white;" +
@@ -175,6 +186,7 @@ public class CustomAlertDialog {
                                         cancelBtn.getStyle().replace("-fx-background-color: #C0392B;", "") +
                                                         "-fx-background-color: #E74C3C;"));
                         cancelBtn.setOnAction(e -> {
+                                SoundEffectsManager.playClick();
                                 dialog.close();
                                 if (onCancel != null)
                                         onCancel.run();
