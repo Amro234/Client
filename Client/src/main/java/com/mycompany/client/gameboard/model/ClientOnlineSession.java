@@ -34,18 +34,20 @@ public class ClientOnlineSession extends OnlineSession implements ServerMessageL
     }
 
     @Override
-    public void handleCellClick(int row, int col) {
+    public boolean handleCellClick(int row, int col) {
         boolean isMyTurn = (mySymbol.equals("X") && isPlayer1Turn) || (mySymbol.equals("O") && !isPlayer1Turn);
         if (!isMyTurn) {
             System.out.println("Not my turn!");
-            return;
+            return false;
         }
 
         try {
             sendMoveToServer(row, col);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     @Override

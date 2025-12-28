@@ -92,5 +92,17 @@
             <Insets bottom="30.0" top="30.0" />
          </padding>
       </VBox>
+      <Button fx:id="backBtn" onAction="#handleBack" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 10;" StackPane.alignment="TOP_LEFT" pickOnBounds="false">
+         <StackPane.margin>
+            <Insets left="50.0" top="30.0" />
+         </StackPane.margin>
+         <graphic>
+            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true" pickOnBounds="true">
+               <image>
+                  <Image url="@../../../assets/images/arrow-back.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
    </children>
 </StackPane>

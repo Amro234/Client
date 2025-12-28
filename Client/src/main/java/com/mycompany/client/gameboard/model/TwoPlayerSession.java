@@ -7,9 +7,9 @@ public class TwoPlayerSession extends GameSession {
     }
 
     @Override
-    public void handleCellClick(int row, int col) {
-      
+    public boolean handleCellClick(int row, int col) {
+
         char symbol = isPlayer1Turn ? 'X' : 'O';
-        processMove(row, col, symbol);
+        return processMove(row, col, symbol);
     }
 }

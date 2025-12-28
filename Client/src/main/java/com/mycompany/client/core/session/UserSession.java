@@ -9,7 +9,8 @@ public class UserSession {
 
     private static UserSession instance;
     private User currentUser;
- private String guestUsername = "Guest";
+    private String guestUsername = "Player";
+
     private UserSession() {
     }
 
@@ -27,7 +28,8 @@ public class UserSession {
     public User getCurrentUser() {
         return currentUser;
     }
-  public void setGuestUsername(String name) {
+
+    public void setGuestUsername(String name) {
         if (name != null && !name.isBlank()) {
             this.guestUsername = name;
         }
@@ -39,9 +41,10 @@ public class UserSession {
         }
         return guestUsername;
     }
+
     public void clearSession() {
-         currentUser = null;
-        guestUsername = "Guest";
+        currentUser = null;
+        guestUsername = "Player";
     }
 
     public boolean isLoggedIn() {

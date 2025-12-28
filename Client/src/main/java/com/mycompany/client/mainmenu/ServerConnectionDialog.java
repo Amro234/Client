@@ -1,13 +1,13 @@
 package com.mycompany.client.mainmenu;
 
+import com.mycompany.client.core.CustomAlertDialog;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.server.ServerConnection;
+import com.mycompany.client.settings.manager.SoundEffectsManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -23,25 +23,43 @@ public class ServerConnectionDialog {
     public static void show(Window owner) {
         // Create a dialog stage
         Stage dialog = new Stage();
+        CustomAlertDialog.registerStage(dialog);
         dialog.setTitle("Connect to Server");
         dialog.initOwner(owner);
         dialog.initModality(Modality.WINDOW_MODAL);
+        dialog.initStyle(javafx.stage.StageStyle.UTILITY);
 
         // Create UI components
         Label serverIpLabel = new Label("Server IP:");
-        serverIpLabel.setStyle("-fx-font-size: 14px;");
+        serverIpLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: white; -fx-font-weight: bold;");
 
         TextField serverIpField = new TextField();
         serverIpField.setPromptText("Enter server IP address");
         serverIpField.setPrefWidth(250);
+        serverIpField.setStyle(
+                "-fx-background-color: #34495E; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5;");
         serverIpField.setText(ServerConnection.getServerHost()); // Default to current server
 
         Button connectButton = new Button("Connect");
-        connectButton.setPrefWidth(100);
-        connectButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-cursor: hand;");
+        connectButton.setPrefWidth(120);
+
+        String buttonStyle = "-fx-background-color: #3498DB;" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-padding: 10 20;" +
+                "-fx-background-radius: 5;" +
+                "-fx-cursor: hand;";
+
+        connectButton.setStyle(buttonStyle);
+
+        connectButton.setOnMouseEntered(e -> connectButton.setStyle(
+                buttonStyle.replace("#3498DB", "#2980B9")));
+        connectButton.setOnMouseExited(e -> connectButton.setStyle(buttonStyle));
 
         // Connect button action
         connectButton.setOnAction(e -> {
+            SoundEffectsManager.playClick();
             String serverIp = serverIpField.getText().trim();
             if (!serverIp.isEmpty()) {
                 System.out.println("Connecting to server: " + serverIp);
@@ -73,35 +91,31 @@ public class ServerConnectionDialog {
                             ex.printStackTrace();
                         }
                     } else {
-                        Alert alert = new Alert(AlertType.ERROR);
-                        alert.setTitle("Connection Failed");
-                        alert.setHeaderText("Unable to establish connection");
-                        alert.setContentText("Could not establish persistent connection to server.");
-                        alert.showAndWait();
+
+                        CustomAlertDialog.show(dialog, "Connection Failed",
+                                "Could not establish persistent connection to server.");
                     }
                 } else {
                     // Show error dialog
-                    Alert alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Connection Failed");
-                    alert.setHeaderText("Unable to connect to server");
-                    alert.setContentText("Could not connect to " + serverIp + ":" + "5000"
-                            + "\nPlease check the server address and try again.");
-                    alert.initOwner(dialog);
-                    alert.showAndWait();
+                    CustomAlertDialog.show(dialog, "Connection Failed",
+                            "Could not connect to " + serverIp + ":" + "5000"
+                                    + "\nPlease check the server address and try again.");
                 }
             }
         });
 
-        
-     
         // Layout
-        VBox layout = new VBox(15);
-        layout.setPadding(new Insets(20));
+        VBox layout = new VBox(20);
+        layout.setPadding(new Insets(30));
         layout.setAlignment(Pos.CENTER);
+        layout.setStyle(
+                "-fx-background-color: #2C3E50; -fx-border-color: #34495E; -fx-border-width: 2;");
         layout.getChildren().addAll(serverIpLabel, serverIpField, connectButton);
 
-        Scene dialogScene = new Scene(layout, 300, 150);
+        Scene dialogScene = new Scene(layout);
+        dialogScene.setFill(javafx.scene.paint.Color.web("#2C3E50"));
         dialog.setScene(dialogScene);
+        dialog.setResizable(false);
         dialog.show();
     }
 }

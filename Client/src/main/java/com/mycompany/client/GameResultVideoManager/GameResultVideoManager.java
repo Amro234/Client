@@ -1,6 +1,5 @@
 package com.mycompany.client.GameResultVideoManager;
 
-import java.io.File;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -12,20 +11,26 @@ import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import com.mycompany.client.settings.manager.SoundEffectsManager;
+
 public class GameResultVideoManager {
 
     private static final int WIN_VIDEOS_COUNT = 7;
     private static final int DRAW_VIDEOS_COUNT = 1;
     private static final int LOSE_VIDEOS_COUNT = 8;
 
-    private static final String WIN_VIDEO_TEMPLATE = "src/main/resources/videos/win/game_winner_%d.mp4";
-    private static final String DRAW_VIDEO_TEMPLATE = "src/main/resources/videos/draw/game_draw_%d.mp4";
-    private static final String LOSE_VIDEO_TEMPLATE = "src/main/resources/videos/lose/game_loser_%d.mp4";
+    private static final String WIN_VIDEO_TEMPLATE = "/videos/win/game_winner_%d.mp4";
+    private static final String DRAW_VIDEO_TEMPLATE = "/videos/draw/game_draw_%d.mp4";
+    private static final String LOSE_VIDEO_TEMPLATE = "/videos/lose/game_loser_%d.mp4";
 
     // Track active video dialog
     private static Stage activeVideoStage = null;
     private static MediaPlayer activePlayer = null;
     private static boolean callbackCanceled = false;
+
+    public static boolean isActive() {
+        return activeVideoStage != null;
+    }
 
     private static int randomIndex(int max) {
         return 1 + (int) (Math.random() * max);
@@ -79,8 +84,9 @@ public class GameResultVideoManager {
                 // Reset cancellation flag for new video
                 callbackCanceled = false;
 
-                File file = new File(path);
-                if (!file.exists()) {
+                var videoUrl = GameResultVideoManager.class.getResource(path);
+                if (videoUrl == null) {
+                    System.err.println("Video not found: " + path);
                     safeFinish(onFinish);
                     return;
                 }
@@ -89,7 +95,7 @@ public class GameResultVideoManager {
                 stage.setTitle(title);
 
                 MediaPlayer player = new MediaPlayer(
-                        new Media(file.toURI().toString()));
+                        new Media(videoUrl.toExternalForm()));
 
                 // Track active video
                 activeVideoStage = stage;
@@ -102,6 +108,7 @@ public class GameResultVideoManager {
 
                 Button skip = new Button("Skip ⏭");
                 skip.setOnAction(e -> {
+                    SoundEffectsManager.playClick();
                     player.stop();
                     stage.close();
                 });

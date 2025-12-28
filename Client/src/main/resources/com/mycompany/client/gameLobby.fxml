@@ -7,6 +7,8 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -21,9 +23,13 @@
             <Insets top="20.0" />
          </padding>
          <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
                <children>
-                  <Circle fx:id="profileAvatar" fill="DODGERBLUE" radius="26.0" stroke="BLACK" strokeType="INSIDE" />
+                  <ImageView fx:id="profileAvatar" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../assets/images/avatar1.png" />
+                     </image>
+                  </ImageView>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="1.0">
                      <children>
                         <Label fx:id="usernameLabel" text="Mohamed_ALi">
@@ -40,12 +46,16 @@
                   </VBox>
                </children>
                <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" />
+                  <Insets bottom="10.0" left="25.0" right="5.0" />
                </VBox.margin>
             </HBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                <children>
                   <Button fx:id="lobbyBtn" maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" styleClass="menu-button" text="👥       Lobby">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Button>
+                  <Button fx:id="recordingsBtn" maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" onAction="#onRecordingsPressed" styleClass="menu-button" text="🎥       Recordings">
                      <font>
                         <Font size="15.0" />
                      </font></Button>
@@ -64,7 +74,7 @@
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
          <padding>
-            <Insets bottom="30.0" left="99.0" right="30.0" top="30.0" />
+            <Insets bottom="30.0" left="40.0" right="30.0" top="30.0" />
          </padding>
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
@@ -79,7 +89,7 @@
                         <HBox alignment="BASELINE_LEFT" prefHeight="74.0" prefWidth="326.0">
                            <children>
                               <Circle fx:id="onlineDot" fill="#059669" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
-                              <Label fx:id="onlineCountLabel" text=" 342 Online " textFill="#4c739a">
+                              <Label fx:id="onlineCountLabel" text=" ... Online " textFill="#4c739a">
                                  <font>
                                     <Font size="16.0" />
                                  </font>

@@ -14,7 +14,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        //BackgroundMusicManager.init();
+        BackgroundMusicManager.init();
         SoundEffectsManager.init();
 
         // Load splash screen and create scene
@@ -29,6 +29,9 @@ public class App extends Application {
                 App.class.getResource("/styles/style.css").toExternalForm(),
                 App.class.getResource("/styles/table.css").toExternalForm());
 
+        stage.getIcons()
+                .add(new javafx.scene.image.Image(getClass().getResourceAsStream("/assets/images/Main-logo.png")));
+        stage.setTitle("Tic Tac Toe Pro");
         stage.setScene(scene);
         stage.show();
     }

@@ -1,6 +1,7 @@
 package com.mycompany.client.gameLobby.controller;
 
 import com.mycompany.client.auth.model.User;
+import com.mycompany.client.core.CustomAlertDialog;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.notification.ToastNotification;
 import com.mycompany.client.core.server.ServerConnection;
@@ -35,6 +36,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 
 public class GameLobbyController implements Initializable, GameLobbyNotificationListener {
@@ -47,6 +49,8 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     private Button logOutBtn;
     @FXML
     private Button settingsBtn;
+    @FXML
+    private Button recordingsBtn;
     @FXML
     private Button quickPlayBtn;
 
@@ -66,7 +70,7 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     private TextField searchField;
 
     @FXML
-    private Circle profileAvatar;
+    private ImageView profileAvatar;
     @FXML
     private Label usernameLabel;
     @FXML
@@ -105,7 +109,6 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
         statusComboBox.getItems().add(null);
         statusComboBox.getItems().addAll(PlayerStatus.values());
         statusComboBox.setValue(null);
-
         statusComboBox.setCellFactory(cb -> new ListCell<>() {
             @Override
             protected void updateItem(PlayerStatus item, boolean empty) {
@@ -225,6 +228,7 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
                     alert.setHeaderText("Failed to load online players");
                     alert.setContentText(e.getMessage());
                     shutdown();
+                    UserSession.getInstance().clearSession();
                     try {
                         NavigationService.navigateTo(NavigationService.loadFXML("main-menu"));
                     } catch (IOException e1) {
@@ -247,7 +251,7 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
 
         // Disconnect from server
         ServerConnection.disconnect();
-
+        UserSession.getInstance().clearSession();
         // Navigate back to main menu
         try {
             Parent root = NavigationService.loadFXML("main-menu");
@@ -263,6 +267,13 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     private void onSettingsPressed(ActionEvent event) throws IOException {
         SoundEffectsManager.playClick();
         Parent root = NavigationService.loadFXML("settings");
+        NavigationService.navigateTo(root);
+    }
+
+    @FXML
+    private void onRecordingsPressed(ActionEvent event) throws IOException {
+        SoundEffectsManager.playClick();
+        Parent root = NavigationService.loadFXML("match_history");
         NavigationService.navigateTo(root);
     }
 
@@ -323,13 +334,11 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     public void onServerDisconnected() {
         System.out.println("[GameLobby] Server disconnected. Navigating to Main Menu.");
         shutdown(); // Stop Auto-Refresh
+        UserSession.getInstance().clearSession();
 
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Connection Lost");
-            alert.setHeaderText("Server Disconnected");
-            alert.setContentText("You have been disconnected from the server.");
-            alert.showAndWait();
+            CustomAlertDialog.show((javafx.stage.Stage) playerTable.getScene().getWindow(), "Connection Lost",
+                    "Server Disconnected");
 
             try {
                 NavigationService.navigateTo(NavigationService.loadFXML("main-menu"));
