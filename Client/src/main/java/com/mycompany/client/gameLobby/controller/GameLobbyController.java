@@ -50,6 +50,8 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     @FXML
     private Button settingsBtn;
     @FXML
+    private Button recordingsBtn;
+    @FXML
     private Button quickPlayBtn;
 
     @FXML
@@ -264,6 +266,13 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     private void onSettingsPressed(ActionEvent event) throws IOException {
         SoundEffectsManager.playClick();
         Parent root = NavigationService.loadFXML("settings");
+        NavigationService.navigateTo(root);
+    }
+
+    @FXML
+    private void onRecordingsPressed(ActionEvent event) throws IOException {
+        SoundEffectsManager.playClick();
+        Parent root = NavigationService.loadFXML("match_history");
         NavigationService.navigateTo(root);
     }
 

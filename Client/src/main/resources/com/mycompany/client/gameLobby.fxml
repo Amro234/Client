@@ -55,6 +55,10 @@
                      <font>
                         <Font size="15.0" />
                      </font></Button>
+                  <Button fx:id="recordingsBtn" maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" onAction="#onRecordingsPressed" styleClass="menu-button" text="🎥       Recordings">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Button>
                   <Button fx:id="settingsBtn" maxWidth="180.0" minHeight="40.0" mnemonicParsing="false" onAction="#onSettingsPressed" styleClass="menu-button" text="⚙       Settings" />
                </children>
             </VBox>
