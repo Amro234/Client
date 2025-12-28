@@ -215,7 +215,13 @@ public class GameBoardController implements GameSession.SessionListener {
                 final int c = j;
                 cells[i][j].setOnMouseClicked(e -> {
                     if (currentSession != null) {
-                        currentSession.handleCellClick(r, c);
+                        try {
+                            if (currentSession.handleCellClick(r, c)) {
+                                SoundEffectsManager.playClick();
+                            }
+                        } catch (Exception ex) {
+                            // Ignored (e.g. replay session)
+                        }
                     }
                 });
             }
