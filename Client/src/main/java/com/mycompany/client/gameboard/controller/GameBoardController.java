@@ -153,6 +153,7 @@ public class GameBoardController implements GameSession.SessionListener {
     public void startNewGame(GameMode mode, Difficulty difficulty) {
 
         boardMode = BoardMode.NORMAL;
+        isGameEnded = false;
         updateUIForMode();
 
         if (mode == GameMode.SINGLE_PLAYER) {
@@ -169,6 +170,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
     public void startLocalTwoPlayerGame(String p1Name, String p2Name) {
         boardMode = BoardMode.NORMAL;
+        isGameEnded = false;
         updateUIForMode();
 
         currentSession = new TwoPlayerSession(this, p1Name, p2Name);
@@ -183,6 +185,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
     public void startOnlineGame(String opponentName, String mySymbol) {
         boardMode = BoardMode.NORMAL;
+        isGameEnded = false;
         updateUIForMode();
         hasPendingRematchRequest = false;
 
@@ -238,6 +241,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
     @Override
     public void onGameEnd(Board.WinInfo winInfo) {
+        isGameEnded = true;
         stopTimer();
 
         if (isRecordingEnabled && !recordingStoppedManually) {
@@ -342,6 +346,8 @@ public class GameBoardController implements GameSession.SessionListener {
             }
 
             isGameEnded = true;
+            // isGameEnded logic is now handled in onGameEnd to prevent race conditions
+            // during video playback
             String header = title;
             if (title.equals("It's a Draw!")) {
                 header = "🤝 " + title + " 🤝";
