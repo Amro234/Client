@@ -1,53 +1,59 @@
 package com.mycompany.client.GameResultVideoManager;
 
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-
-import com.mycompany.client.settings.manager.SoundEffectsManager;
+import javafx.stage.StageStyle;
+import java.io.IOException;
 
 public class GameResultVideoManager {
 
-    private static final int WIN_VIDEOS_COUNT = 7;
-    private static final int DRAW_VIDEOS_COUNT = 1;
-    private static final int LOSE_VIDEOS_COUNT = 8;
+    private static final java.util.List<String> WIN_VIDEOS = java.util.Arrays.asList(
+            "/videos/win/game_winner_1.mp4",
+            "/videos/win/game_winner_2.mp4",
+            "/videos/win/game_winner_3.mp4",
+            "/videos/win/game_winner_4.mp4",
+            "/videos/win/game_winner_5.mp4",
+            "/videos/win/game_winner_6.mp4",
+            "/videos/win/game_winner_7.mp4");
+    private static final java.util.List<String> DRAW_VIDEOS = java.util.Arrays.asList(
+            "/videos/draw/game_draw_1.mp4");
+    private static final java.util.List<String> LOSE_VIDEOS = java.util.Arrays.asList(
+            "/videos/lose/game_loser_1.mp4",
+            "/videos/lose/game_loser_2.mp4",
+            "/videos/lose/game_loser_3.mp4",
+            "/videos/lose/game_loser_4.mp4",
+            "/videos/lose/game_loser_5.mp4",
+            "/videos/lose/game_loser_6.mp4",
+            "/videos/lose/game_loser_7.mp4",
+            "/videos/lose/game_loser_8.mp4");
 
-    private static final String WIN_VIDEO_TEMPLATE = "/videos/win/game_winner_%d.mp4";
-    private static final String DRAW_VIDEO_TEMPLATE = "/videos/draw/game_draw_%d.mp4";
-    private static final String LOSE_VIDEO_TEMPLATE = "/videos/lose/game_loser_%d.mp4";
+    private static final java.util.Random random = new java.util.Random();
 
-    // Track active video dialog
     private static Stage activeVideoStage = null;
-    private static MediaPlayer activePlayer = null;
+    private static PopUpGameController activeController = null;
     private static boolean callbackCanceled = false;
 
     public static boolean isActive() {
         return activeVideoStage != null;
     }
 
-    private static int randomIndex(int max) {
-        return 1 + (int) (Math.random() * max);
+    private static String getRandomPath(java.util.List<String> paths) {
+        if (paths == null || paths.isEmpty())
+            return null;
+        return paths.get(random.nextInt(paths.size()));
     }
 
-    /**
-     * Closes any active video dialog and cancels its callback.
-     * This should be called when a rematch is accepted to prevent
-     * the old game over dialog from appearing.
-     */
     public static void closeActiveVideoAndCancelCallback() {
         Platform.runLater(() -> {
             callbackCanceled = true;
-            if (activePlayer != null) {
-                activePlayer.stop();
-                activePlayer.dispose();
-                activePlayer = null;
+            if (activeController != null) {
+                activeController.stopVideo();
+                activeController = null;
             }
             if (activeVideoStage != null) {
                 activeVideoStage.close();
@@ -56,102 +62,83 @@ public class GameResultVideoManager {
         });
     }
 
-    public static void showWinVideo(Runnable onFinish) {
-        playVideo(
-                String.format(WIN_VIDEO_TEMPLATE, randomIndex(WIN_VIDEOS_COUNT)),
-                "Winner 🎉",
-                onFinish);
+    public static void showWinVideo(Stage parentStage, Runnable onPlayAgain, Runnable onExit) {
+        playVideo(parentStage, getRandomPath(WIN_VIDEOS), "You Won! 🎉", onPlayAgain, onExit);
     }
 
-    public static void showLoseVideo(Runnable onFinish) {
-        playVideo(
-                String.format(LOSE_VIDEO_TEMPLATE, randomIndex(LOSE_VIDEOS_COUNT)),
-                "You Lost 💔",
-                onFinish);
+    public static void showLoseVideo(Stage parentStage, Runnable onPlayAgain, Runnable onExit) {
+        playVideo(parentStage, getRandomPath(LOSE_VIDEOS), "Game Over 💔", onPlayAgain, onExit);
     }
 
-    public static void showDrawVideo(Runnable onFinish) {
-        playVideo(
-                String.format(DRAW_VIDEO_TEMPLATE, randomIndex(DRAW_VIDEOS_COUNT)),
-                "Draw 🤝",
-                onFinish);
+    public static void showDrawVideo(Stage parentStage, Runnable onPlayAgain, Runnable onExit) {
+        playVideo(parentStage, getRandomPath(DRAW_VIDEOS), "It's a Draw! 🤝", onPlayAgain, onExit);
     }
 
-    private static void playVideo(String path, String title, Runnable onFinish) {
-
+    private static void playVideo(Stage parentStage, String path, String title, Runnable onPlayAgain, Runnable onExit) {
         Platform.runLater(() -> {
             try {
-                // Reset cancellation flag for new video
                 callbackCanceled = false;
 
-                var videoUrl = GameResultVideoManager.class.getResource(path);
-                if (videoUrl == null) {
-                    System.err.println("Video not found: " + path);
-                    safeFinish(onFinish);
-                    return;
-                }
+                FXMLLoader loader = new FXMLLoader(
+                        GameResultVideoManager.class.getResource("/com/mycompany/client/game_result_popup.fxml"));
+                Parent root = loader.load();
+
+                Scene scene = new Scene(root);
+                scene.setFill(Color.TRANSPARENT);
 
                 Stage stage = new Stage();
-                stage.setTitle(title);
+                stage.initOwner(parentStage);
+                stage.initModality(Modality.WINDOW_MODAL);
+                stage.initStyle(StageStyle.TRANSPARENT);
+                stage.setScene(scene);
 
-                MediaPlayer player = new MediaPlayer(
-                        new Media(videoUrl.toExternalForm()));
-
-                // Track active video
+                PopUpGameController controller = loader.getController();
+                activeController = controller;
                 activeVideoStage = stage;
-                activePlayer = player;
 
-                MediaView view = new MediaView(player);
-                view.setFitWidth(600);
-                view.setFitHeight(400);
-                view.setPreserveRatio(true);
+                controller.setPopupStage(stage);
+                controller.setPopupStatusMsg(title, path);
 
-                Button skip = new Button("Skip ⏭");
-                skip.setOnAction(e -> {
-                    SoundEffectsManager.playClick();
-                    player.stop();
-                    stage.close();
-                });
+                // Configure Play Again button
+                if (onPlayAgain != null) {
+                    controller.setPlayAgainVisablility(true);
+                    controller.setPlayAgainBtnFunc(() -> {
+                        callbackCanceled = true; // Prevent the onExit callback from showing the second dialog
+                        onPlayAgain.run();
+                        stage.close();
+                    });
+                } else {
+                    controller.setPlayAgainVisablility(false);
+                }
 
-                VBox root = new VBox(10, view, skip);
-                root.setStyle("-fx-alignment:center; -fx-padding:20");
-
-                stage.setScene(new Scene(root));
-
-                stage.setOnHidden(e -> {
-                    // Clear active references
-                    activeVideoStage = null;
-                    activePlayer = null;
-
-                    // Only execute callback if not canceled
-                    if (!callbackCanceled) {
-                        safeFinish(onFinish);
-                    } else {
-                        // Reset flag for next video
-                        callbackCanceled = false;
+                // Use a wrapper to ensure the callback is executed only once
+                final boolean[] callbackExecuted = { false };
+                Runnable safeOnExit = () -> {
+                    if (!callbackExecuted[0]) {
+                        callbackExecuted[0] = true;
+                        if (!callbackCanceled && onExit != null) {
+                            onExit.run();
+                        }
                     }
-                });
+                };
 
-                player.setOnEndOfMedia(stage::close);
+                // The stage's onHidden event will be our single point of truth for the callback
+                stage.setOnHidden(e -> {
+                    activeVideoStage = null;
+                    if (activeController != null) {
+                        activeController.stopVideo();
+                        activeController = null;
+                    }
+                    safeOnExit.run();
+                });
 
                 stage.show();
-                player.play();
 
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-                // Clear active references on error
-                activeVideoStage = null;
-                activePlayer = null;
-                if (!callbackCanceled) {
-                    safeFinish(onFinish);
-                }
+                if (onExit != null)
+                    onExit.run();
             }
         });
-    }
-
-    private static void safeFinish(Runnable onFinish) {
-        PauseTransition pause = new PauseTransition(Duration.millis(80));
-        pause.setOnFinished(e -> Platform.runLater(onFinish));
-        pause.play();
     }
 }

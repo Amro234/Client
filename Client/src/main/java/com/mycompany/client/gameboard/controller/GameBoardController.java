@@ -297,10 +297,14 @@ public class GameBoardController implements GameSession.SessionListener {
 
                 if (playerWon) {
                     GameResultVideoManager.showWinVideo(
+                            (Stage) backBtn.getScene().getWindow(),
+                            this::resetGameAndUI,
                             () -> showPlayAgainDialog("You WIN "));
 
                 } else {
                     GameResultVideoManager.showLoseVideo(
+                            (Stage) backBtn.getScene().getWindow(),
+                            this::resetGameAndUI,
                             () -> showPlayAgainDialog("You Lost 💔"));
 
                 }
@@ -314,9 +318,13 @@ public class GameBoardController implements GameSession.SessionListener {
 
                 if (iWon) {
                     GameResultVideoManager.showWinVideo(
+                            (Stage) backBtn.getScene().getWindow(),
+                            null, // Online handled via second dialog
                             () -> showOnlineGameEndDialog("You Win!", true));
                 } else {
                     GameResultVideoManager.showLoseVideo(
+                            (Stage) backBtn.getScene().getWindow(),
+                            null,
                             () -> showOnlineGameEndDialog("You Lost", false));
                 }
             } else {
@@ -326,6 +334,8 @@ public class GameBoardController implements GameSession.SessionListener {
                         : currentSession.getPlayer2Name();
 
                 GameResultVideoManager.showWinVideo(
+                        (Stage) backBtn.getScene().getWindow(),
+                        this::resetGameAndUI,
                         () -> showPlayAgainDialog(winnerName + " Wins!"));
             }
 
@@ -333,9 +343,13 @@ public class GameBoardController implements GameSession.SessionListener {
             // Draw
             if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
                 GameResultVideoManager.showDrawVideo(
+                        (Stage) backBtn.getScene().getWindow(),
+                        null,
                         () -> showOnlineGameEndDialog("It's a Draw!", false));
             } else {
                 GameResultVideoManager.showDrawVideo(
+                        (Stage) backBtn.getScene().getWindow(),
+                        this::resetGameAndUI,
                         () -> showPlayAgainDialog("It's a Draw!"));
             }
         }
@@ -464,9 +478,12 @@ public class GameBoardController implements GameSession.SessionListener {
                         backBtn.getScene());
 
                 // Play Win Video, then automatically go back to lobby
-                com.mycompany.client.GameResultVideoManager.GameResultVideoManager.showWinVideo(() -> {
-                    executeQuit(true);
-                });
+                com.mycompany.client.GameResultVideoManager.GameResultVideoManager.showWinVideo(
+                        (Stage) backBtn.getScene().getWindow(),
+                        null,
+                        () -> {
+                            executeQuit(true);
+                        });
             }
         });
     }
@@ -741,6 +758,17 @@ public class GameBoardController implements GameSession.SessionListener {
         }
     }
 
+    private void resetGameAndUI() {
+        if (currentSession != null) {
+            currentSession.resetGame();
+            resetBoardUI();
+            startTimer();
+            resetRecording();
+            resetRecordingDecision();
+            askRecordingDecision();
+        }
+    }
+
     private void showPlayAgainDialog(String message) {
         Platform.runLater(() -> {
             String header;
@@ -755,14 +783,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
             CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Game Over", header, content,
                     "Play Again", "Main Menu",
-                    () -> {
-                        currentSession.resetGame();
-                        resetBoardUI();
-                        startTimer();
-                        resetRecording();
-                        resetRecordingDecision();
-                        askRecordingDecision();
-                    },
+                    this::resetGameAndUI,
                     () -> {
                         executeQuit(false);
                     },
