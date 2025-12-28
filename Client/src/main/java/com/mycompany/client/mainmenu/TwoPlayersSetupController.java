@@ -1,6 +1,7 @@
 package com.mycompany.client.mainmenu;
 
 import com.mycompany.client.App;
+import com.mycompany.client.core.CustomAlertDialog;
 import com.mycompany.client.core.navigation.NavigationService;
 import com.mycompany.client.core.session.UserSession;
 import com.mycompany.client.gameboard.controller.GameBoardController;
@@ -9,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import java.io.IOException;
 import com.mycompany.client.settings.manager.SoundEffectsManager;
 
@@ -38,7 +40,6 @@ public class TwoPlayersSetupController {
             GameBoardController controller = loader.getController();
             controller.startLocalTwoPlayerGame(p1Name, p2Name);
             SoundEffectsManager.playClick();
-
             NavigationService.navigateTo(gameBoardRoot);
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,16 +47,17 @@ public class TwoPlayersSetupController {
     }
 
     private void showAlert(String title, String content) {
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+        CustomAlertDialog.show((Stage) p1NameField.getScene().getWindow(), title, content);
     }
 
     @FXML
     private void onBackClicked(ActionEvent event) {
         NavigationService.goBack();
         SoundEffectsManager.playClick();
+    }
+
+    @FXML
+    private void handleBack(ActionEvent event) {
+        onBackClicked(event);
     }
 }
