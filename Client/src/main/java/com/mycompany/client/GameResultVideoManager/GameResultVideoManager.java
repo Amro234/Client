@@ -18,9 +18,9 @@ public class GameResultVideoManager {
     private static final int DRAW_VIDEOS_COUNT = 1;
     private static final int LOSE_VIDEOS_COUNT = 8;
 
-    private static final String WIN_VIDEO_TEMPLATE = "src/main/resources/videos/win/game_winner_%d.mp4";
-    private static final String DRAW_VIDEO_TEMPLATE = "src/main/resources/videos/draw/game_draw_%d.mp4";
-    private static final String LOSE_VIDEO_TEMPLATE = "src/main/resources/videos/lose/game_loser_%d.mp4";
+    private static final String WIN_VIDEO_TEMPLATE = "/videos/win/game_winner_%d.mp4";
+    private static final String DRAW_VIDEO_TEMPLATE = "/videos/draw/game_draw_%d.mp4";
+    private static final String LOSE_VIDEO_TEMPLATE = "/videos/lose/game_loser_%d.mp4";
 
     private static int randomIndex(int max) {
         return 1 + (int) (Math.random() * max);
@@ -51,8 +51,9 @@ public class GameResultVideoManager {
 
         Platform.runLater(() -> {
             try {
-                File file = new File(path);
-                if (!file.exists()) {
+                var videoUrl = GameResultVideoManager.class.getResource(path);
+                if (videoUrl == null) {
+                    System.err.println("Video not found: " + path);
                     safeFinish(onFinish);
                     return;
                 }
@@ -61,7 +62,7 @@ public class GameResultVideoManager {
                 stage.setTitle(title);
 
                 MediaPlayer player = new MediaPlayer(
-                        new Media(file.toURI().toString()));
+                        new Media(videoUrl.toExternalForm()));
 
                 MediaView view = new MediaView(player);
                 view.setFitWidth(600);
