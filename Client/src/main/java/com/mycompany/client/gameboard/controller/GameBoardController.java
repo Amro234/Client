@@ -1033,6 +1033,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
                 Parent root = NavigationService.loadFXML("main-menu");
                 NavigationService.navigateTo(root);
+                UserSession.getInstance().clearSession();
 
             } catch (IOException e) {
                 e.printStackTrace();

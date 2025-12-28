@@ -228,6 +228,7 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
                     alert.setHeaderText("Failed to load online players");
                     alert.setContentText(e.getMessage());
                     shutdown();
+                    UserSession.getInstance().clearSession();
                     try {
                         NavigationService.navigateTo(NavigationService.loadFXML("main-menu"));
                     } catch (IOException e1) {
@@ -250,7 +251,7 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
 
         // Disconnect from server
         ServerConnection.disconnect();
-
+        UserSession.getInstance().clearSession();
         // Navigate back to main menu
         try {
             Parent root = NavigationService.loadFXML("main-menu");
@@ -333,6 +334,7 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     public void onServerDisconnected() {
         System.out.println("[GameLobby] Server disconnected. Navigating to Main Menu.");
         shutdown(); // Stop Auto-Refresh
+        UserSession.getInstance().clearSession();
 
         Platform.runLater(() -> {
             CustomAlertDialog.show((javafx.stage.Stage) playerTable.getScene().getWindow(), "Connection Lost",
