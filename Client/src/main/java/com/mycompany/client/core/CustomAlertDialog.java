@@ -1,5 +1,8 @@
 package com.mycompany.client.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,159 +17,189 @@ import javafx.stage.StageStyle;
 
 public class CustomAlertDialog {
 
-    public static void show(Stage parentStage, String title, String message) {
-        Platform.runLater(() -> {
-            Stage dialog = new Stage();
-            dialog.initModality(Modality.APPLICATION_MODAL);
-            dialog.initStyle(StageStyle.UTILITY);
-            dialog.setTitle(title);
+        private static List<Stage> openStages = new ArrayList<>();
 
-            VBox container = new VBox(20);
-            container.setAlignment(Pos.CENTER);
-            container.setPadding(new Insets(30));
-            container.setStyle(
-                    "-fx-background-color: #2C3E50;" +
-                            "-fx-background-radius: 10;");
+        public static void closeAll() {
+                Platform.runLater(() -> {
+                        List<Stage> stagesToClose = new ArrayList<>(openStages);
+                        for (Stage stage : stagesToClose) {
+                                if (stage.isShowing()) {
+                                        stage.close();
+                                }
+                        }
+                        openStages.clear();
+                });
+        }
 
-            Label messageLabel = new Label(message);
-            messageLabel.setStyle(
-                    "-fx-font-size: 16px;" +
-                            "-fx-text-fill: white;" +
-                            "-fx-wrap-text: true;");
-            messageLabel.setAlignment(Pos.CENTER);
-            messageLabel.setMaxWidth(300);
+        public static void registerStage(Stage stage) {
+                Platform.runLater(() -> {
+                        openStages.add(stage);
+                        stage.setOnHidden(e -> openStages.remove(stage));
+                });
+        }
 
-            Button okBtn = new Button("OK");
-           
-            
-            okBtn.setStyle(
-                    "-fx-background-color: #3498DB;" +
-                            "-fx-text-fill: white;" +
-                            "-fx-font-size: 14px;" +
-                            "-fx-font-weight: bold;" +
-                            "-fx-padding: 10 30;" +
-                            "-fx-background-radius: 5;" +
-                            "-fx-cursor: hand;");
-            okBtn.setOnMouseEntered(e -> okBtn.setStyle(
-                    okBtn.getStyle() + "-fx-background-color: #2980B9;"));
-            okBtn.setOnMouseExited(e -> okBtn.setStyle(
-                    okBtn.getStyle().replace("-fx-background-color: #2980B9;", "") +
-                            "-fx-background-color: #3498DB;"));
-            okBtn.setOnAction(e -> dialog.close());
+        public static void show(Stage parentStage, String title, String message) {
+                Platform.runLater(() -> {
+                        Stage dialog = new Stage();
+                        openStages.add(dialog);
+                        dialog.setOnHidden(e -> openStages.remove(dialog));
+                        dialog.initModality(Modality.APPLICATION_MODAL);
+                        dialog.initStyle(StageStyle.UTILITY);
+                        dialog.setTitle(title);
 
-            container.getChildren().addAll(messageLabel, okBtn);
+                        VBox container = new VBox(20);
+                        container.setAlignment(Pos.CENTER);
+                        container.setPadding(new Insets(30));
+                        container.setStyle(
+                                        "-fx-background-color: #2C3E50;" +
+                                                        "-fx-background-radius: 10;");
 
-            Scene scene = new Scene(container);
-            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-            dialog.setScene(scene);
-            dialog.setResizable(false);
+                        Label messageLabel = new Label(message);
+                        messageLabel.setStyle(
+                                        "-fx-font-size: 16px;" +
+                                                        "-fx-text-fill: white;" +
+                                                        "-fx-wrap-text: true;");
+                        messageLabel.setAlignment(Pos.CENTER);
+                        messageLabel.setMaxWidth(300);
 
-            dialog.show();
+                        Button okBtn = new Button("OK");
 
-            double centerX = parentStage.getX() + (parentStage.getWidth() / 2) - (dialog.getWidth() / 2);
-            double centerY = parentStage.getY() + (parentStage.getHeight() / 2) - (dialog.getHeight() / 2);
-            dialog.setX(centerX);
-            dialog.setY(centerY);
-        });
-    }
+                        okBtn.setStyle(
+                                        "-fx-background-color: #3498DB;" +
+                                                        "-fx-text-fill: white;" +
+                                                        "-fx-font-size: 14px;" +
+                                                        "-fx-font-weight: bold;" +
+                                                        "-fx-padding: 10 30;" +
+                                                        "-fx-background-radius: 5;" +
+                                                        "-fx-cursor: hand;");
+                        okBtn.setOnMouseEntered(e -> okBtn.setStyle(
+                                        okBtn.getStyle() + "-fx-background-color: #2980B9;"));
+                        okBtn.setOnMouseExited(e -> okBtn.setStyle(
+                                        okBtn.getStyle().replace("-fx-background-color: #2980B9;", "") +
+                                                        "-fx-background-color: #3498DB;"));
+                        okBtn.setOnAction(e -> dialog.close());
 
-    public static void showConfirmation(Stage parentStage, String title, String header, String content, Runnable onConfirm) {
-        showConfirmation(parentStage, title, header, content, onConfirm, null);
-    }
+                        container.getChildren().addAll(messageLabel, okBtn);
 
-    public static void showConfirmation(Stage parentStage, String title, String header, String content, Runnable onConfirm, Runnable onCancel) {
-        showConfirmation(parentStage, title, header, content, onConfirm, onCancel, null);
-    }
+                        Scene scene = new Scene(container);
+                        scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+                        dialog.setScene(scene);
+                        dialog.setResizable(false);
 
-    public static void showConfirmation(Stage parentStage, String title, String header, String content, Runnable onConfirm, Runnable onCancel, Runnable onClose) {
-        Platform.runLater(() -> {
-            Stage dialog = new Stage();
-            dialog.initModality(Modality.APPLICATION_MODAL);
-            dialog.initStyle(StageStyle.UTILITY);
-            dialog.setTitle(title);
+                        dialog.show();
 
-            VBox container = new VBox(20);
-            container.setAlignment(Pos.CENTER);
-            container.setPadding(new Insets(30));
-            container.setStyle(
-                    "-fx-background-color: #2C3E50;" +
-                            "-fx-background-radius: 10;");
+                        double centerX = parentStage.getX() + (parentStage.getWidth() / 2) - (dialog.getWidth() / 2);
+                        double centerY = parentStage.getY() + (parentStage.getHeight() / 2) - (dialog.getHeight() / 2);
+                        dialog.setX(centerX);
+                        dialog.setY(centerY);
+                });
+        }
 
-            Label headerLabel = new Label(header);
-            headerLabel.setStyle(
-                    "-fx-font-size: 18px;" +
-                            "-fx-font-weight: bold;" +
-                            "-fx-text-fill: white;");
-            headerLabel.setAlignment(Pos.CENTER);
+        public static void showConfirmation(Stage parentStage, String title, String header, String content,
+                        Runnable onConfirm) {
+                showConfirmation(parentStage, title, header, content, onConfirm, null);
+        }
 
-            Label contentLabel = new Label(content);
-            contentLabel.setStyle(
-                    "-fx-font-size: 14px;" +
-                            "-fx-text-fill: white;" +
-                            "-fx-wrap-text: true;");
-            contentLabel.setAlignment(Pos.CENTER);
-            contentLabel.setMaxWidth(300);
+        public static void showConfirmation(Stage parentStage, String title, String header, String content,
+                        Runnable onConfirm, Runnable onCancel) {
+                showConfirmation(parentStage, title, header, content, onConfirm, onCancel, null);
+        }
 
-            HBox buttonBox = new HBox(15);
-            buttonBox.setAlignment(Pos.CENTER);
+        public static void showConfirmation(Stage parentStage, String title, String header, String content,
+                        Runnable onConfirm, Runnable onCancel, Runnable onClose) {
+                Platform.runLater(() -> {
+                        Stage dialog = new Stage();
+                        openStages.add(dialog);
+                        dialog.setOnHidden(e -> openStages.remove(dialog));
+                        dialog.initModality(Modality.APPLICATION_MODAL);
+                        dialog.initStyle(StageStyle.UTILITY);
+                        dialog.setTitle(title);
 
-            Button okBtn = new Button("OK");
-            okBtn.setStyle(
-                    "-fx-background-color: #27AE60;" +
-                            "-fx-text-fill: white;" +
-                            "-fx-font-size: 14px;" +
-                            "-fx-font-weight: bold;" +
-                            "-fx-padding: 10 30;" +
-                            "-fx-background-radius: 5;" +
-                            "-fx-cursor: hand;");
-            okBtn.setOnMouseEntered(e -> okBtn.setStyle(
-                    okBtn.getStyle() + "-fx-background-color: #229954;"));
-            okBtn.setOnMouseExited(e -> okBtn.setStyle(
-                    okBtn.getStyle().replace("-fx-background-color: #229954;", "") +
-                            "-fx-background-color: #27AE60;"));
-            okBtn.setOnAction(e -> {
-                dialog.close();
-                if (onConfirm != null) onConfirm.run();
-            });
+                        VBox container = new VBox(20);
+                        container.setAlignment(Pos.CENTER);
+                        container.setPadding(new Insets(30));
+                        container.setStyle(
+                                        "-fx-background-color: #2C3E50;" +
+                                                        "-fx-background-radius: 10;");
 
-            Button cancelBtn = new Button("Cancel");
-            cancelBtn.setStyle(
-                    "-fx-background-color: #E74C3C;" +
-                            "-fx-text-fill: white;" +
-                            "-fx-font-size: 14px;" +
-                            "-fx-font-weight: bold;" +
-                            "-fx-padding: 10 30;" +
-                            "-fx-background-radius: 5;" +
-                            "-fx-cursor: hand;");
-            cancelBtn.setOnMouseEntered(e -> cancelBtn.setStyle(
-                    cancelBtn.getStyle() + "-fx-background-color: #C0392B;"));
-            cancelBtn.setOnMouseExited(e -> cancelBtn.setStyle(
-                    cancelBtn.getStyle().replace("-fx-background-color: #C0392B;", "") +
-                            "-fx-background-color: #E74C3C;"));
-            cancelBtn.setOnAction(e -> {
-                dialog.close();
-                if (onCancel != null) onCancel.run();
-            });
+                        Label headerLabel = new Label(header);
+                        headerLabel.setStyle(
+                                        "-fx-font-size: 18px;" +
+                                                        "-fx-font-weight: bold;" +
+                                                        "-fx-text-fill: white;");
+                        headerLabel.setAlignment(Pos.CENTER);
 
-            buttonBox.getChildren().addAll(okBtn, cancelBtn);
+                        Label contentLabel = new Label(content);
+                        contentLabel.setStyle(
+                                        "-fx-font-size: 14px;" +
+                                                        "-fx-text-fill: white;" +
+                                                        "-fx-wrap-text: true;");
+                        contentLabel.setAlignment(Pos.CENTER);
+                        contentLabel.setMaxWidth(300);
 
-            container.getChildren().addAll(headerLabel, contentLabel, buttonBox);
+                        HBox buttonBox = new HBox(15);
+                        buttonBox.setAlignment(Pos.CENTER);
 
-            Scene scene = new Scene(container);
-            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-            dialog.setScene(scene);
-            dialog.setResizable(false);
+                        Button okBtn = new Button("OK");
+                        okBtn.setStyle(
+                                        "-fx-background-color: #27AE60;" +
+                                                        "-fx-text-fill: white;" +
+                                                        "-fx-font-size: 14px;" +
+                                                        "-fx-font-weight: bold;" +
+                                                        "-fx-padding: 10 30;" +
+                                                        "-fx-background-radius: 5;" +
+                                                        "-fx-cursor: hand;");
+                        okBtn.setOnMouseEntered(e -> okBtn.setStyle(
+                                        okBtn.getStyle() + "-fx-background-color: #229954;"));
+                        okBtn.setOnMouseExited(e -> okBtn.setStyle(
+                                        okBtn.getStyle().replace("-fx-background-color: #229954;", "") +
+                                                        "-fx-background-color: #27AE60;"));
+                        okBtn.setOnAction(e -> {
+                                dialog.close();
+                                if (onConfirm != null)
+                                        onConfirm.run();
+                        });
 
-            dialog.setOnCloseRequest(e -> {
-                if (onClose != null) onClose.run();
-            });
+                        Button cancelBtn = new Button("Cancel");
+                        cancelBtn.setStyle(
+                                        "-fx-background-color: #E74C3C;" +
+                                                        "-fx-text-fill: white;" +
+                                                        "-fx-font-size: 14px;" +
+                                                        "-fx-font-weight: bold;" +
+                                                        "-fx-padding: 10 30;" +
+                                                        "-fx-background-radius: 5;" +
+                                                        "-fx-cursor: hand;");
+                        cancelBtn.setOnMouseEntered(e -> cancelBtn.setStyle(
+                                        cancelBtn.getStyle() + "-fx-background-color: #C0392B;"));
+                        cancelBtn.setOnMouseExited(e -> cancelBtn.setStyle(
+                                        cancelBtn.getStyle().replace("-fx-background-color: #C0392B;", "") +
+                                                        "-fx-background-color: #E74C3C;"));
+                        cancelBtn.setOnAction(e -> {
+                                dialog.close();
+                                if (onCancel != null)
+                                        onCancel.run();
+                        });
 
-            dialog.show();
+                        buttonBox.getChildren().addAll(okBtn, cancelBtn);
 
-            double centerX = parentStage.getX() + (parentStage.getWidth() / 2) - (dialog.getWidth() / 2);
-            double centerY = parentStage.getY() + (parentStage.getHeight() / 2) - (dialog.getHeight() / 2);
-            dialog.setX(centerX);
-            dialog.setY(centerY);
-        });
-    }
+                        container.getChildren().addAll(headerLabel, contentLabel, buttonBox);
+
+                        Scene scene = new Scene(container);
+                        scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+                        dialog.setScene(scene);
+                        dialog.setResizable(false);
+
+                        dialog.setOnCloseRequest(e -> {
+                                if (onClose != null)
+                                        onClose.run();
+                        });
+
+                        dialog.show();
+
+                        double centerX = parentStage.getX() + (parentStage.getWidth() / 2) - (dialog.getWidth() / 2);
+                        double centerY = parentStage.getY() + (parentStage.getHeight() / 2) - (dialog.getHeight() / 2);
+                        dialog.setX(centerX);
+                        dialog.setY(centerY);
+                });
+        }
 }

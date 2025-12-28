@@ -153,6 +153,7 @@ public class GameBoardController implements GameSession.SessionListener {
     public void startNewGame(GameMode mode, Difficulty difficulty) {
 
         boardMode = BoardMode.NORMAL;
+        isGameEnded = false;
         updateUIForMode();
 
         if (mode == GameMode.SINGLE_PLAYER) {
@@ -169,6 +170,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
     public void startLocalTwoPlayerGame(String p1Name, String p2Name) {
         boardMode = BoardMode.NORMAL;
+        isGameEnded = false;
         updateUIForMode();
 
         currentSession = new TwoPlayerSession(this, p1Name, p2Name);
@@ -183,6 +185,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
     public void startOnlineGame(String opponentName, String mySymbol) {
         boardMode = BoardMode.NORMAL;
+        isGameEnded = false;
         updateUIForMode();
         hasPendingRematchRequest = false;
 
@@ -238,46 +241,42 @@ public class GameBoardController implements GameSession.SessionListener {
 
     @Override
     public void onGameEnd(Board.WinInfo winInfo) {
-     stopTimer();
+        isGameEnded = true;
+        stopTimer();
 
-    if (isRecordingEnabled && !recordingStoppedManually) {
+        if (isRecordingEnabled && !recordingStoppedManually) {
 
-        String status;
+            String status;
 
-        if (winInfo == null) {
-            status = "DRAW";
-        } else {
-
-            // Online pov
-            if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
-
-                com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession =
-                        (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
-
-                char mySymbol = onlineSession.getMySymbol().charAt(0);
-                status = (winInfo.winner == mySymbol) ? "WIN" : "LOSE";
-
+            if (winInfo == null) {
+                status = "DRAW";
             } else {
-                //Local / Single
-                status = (winInfo.winner == 'X') ? "WIN" : "LOSE";
+
+                // Online pov
+                if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+
+                    com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession = (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
+
+                    char mySymbol = onlineSession.getMySymbol().charAt(0);
+                    status = (winInfo.winner == mySymbol) ? "WIN" : "LOSE";
+
+                } else {
+                    // Local / Single
+                    status = (winInfo.winner == 'X') ? "WIN" : "LOSE";
+                }
             }
+
+            gameRecorder.stopRecording(status);
+
+            String ownerUsername = UserSession.getInstance().getUsername();
+            recordingManager.saveRecording(
+                    gameRecorder.getRecording(),
+                    ownerUsername);
+
+            isRecordingEnabled = false;
+            stopRecordingIndicator();
+            updateRecordButtonUI(false);
         }
-
-       
-        gameRecorder.stopRecording(status);
-
-        String ownerUsername = UserSession.getInstance().getUsername();
-        recordingManager.saveRecording(
-                gameRecorder.getRecording(),
-                ownerUsername
-        );
-
-        isRecordingEnabled = false;
-        stopRecordingIndicator();
-        updateRecordButtonUI(false);
-    }
-
-        
 
         if (winInfo != null) {
 
@@ -299,12 +298,10 @@ public class GameBoardController implements GameSession.SessionListener {
 
             } else if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
                 // Online Session
-                ClientOnlineSession onlineSession =
-        (ClientOnlineSession) currentSession;
+                ClientOnlineSession onlineSession = (ClientOnlineSession) currentSession;
 
-char mySymbol = onlineSession.getMySymbol().charAt(0);
-boolean iWon = (winInfo.winner == mySymbol);
-
+                char mySymbol = onlineSession.getMySymbol().charAt(0);
+                boolean iWon = (winInfo.winner == mySymbol);
 
                 if (iWon) {
                     GameResultVideoManager.showWinVideo(
@@ -349,29 +346,33 @@ boolean iWon = (winInfo.winner == mySymbol);
             }
 
             isGameEnded = true;
+            // isGameEnded logic is now handled in onGameEnd to prevent race conditions
+            // during video playback
             String header = title;
             if (title.equals("It's a Draw!")) {
                 header = "🤝 " + title + " 🤝";
             } else {
                 header = "🎉 " + title + " 🎉";
             }
-            CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Game Over", header, "What would you like to do?",
-                () -> {
-                    SoundEffectsManager.playClick();
-                    if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
-                        ((com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession).requestRematch();
-                        com.mycompany.client.match_recording.RecordingManager.showToast("Rematch request sent...",
-                                backBtn.getScene());
-                    }
-                },
-                () -> {
-                    SoundEffectsManager.playClick();
-                    handleBack(null); // Disconnects session and goes back
-                },
-                () -> {
-                    SoundEffectsManager.playClick();
-                    handleBack(null); // Go to lobby on close
-                });
+            CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Game Over", header,
+                    "What would you like to do?",
+                    () -> {
+                        SoundEffectsManager.playClick();
+                        if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+                            ((com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession)
+                                    .requestRematch();
+                            com.mycompany.client.match_recording.RecordingManager.showToast("Rematch request sent...",
+                                    backBtn.getScene());
+                        }
+                    },
+                    () -> {
+                        SoundEffectsManager.playClick();
+                        handleBack(null); // Disconnects session and goes back
+                    },
+                    () -> {
+                        SoundEffectsManager.playClick();
+                        handleBack(null); // Go to lobby on close
+                    });
         });
     }
 
@@ -381,30 +382,34 @@ boolean iWon = (winInfo.winner == mySymbol);
         hasPendingRematchRequest = true;
 
         Platform.runLater(() -> {
-            CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Rematch Request", "Opponent wants a rematch!", "Do you accept?",
-                () -> {
-                    SoundEffectsManager.playClick();
-                    if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
-                        com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession = (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
-                        onlineSession.acceptRematch();
-                        isGameEnded = false;
-                        hasPendingRematchRequest = false; // Reset on accept
-                    }
-                },
-                () -> {
-                    SoundEffectsManager.playClick();
-                    if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
-                        ((com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession).declineRematch();
-                        handleBack(null);
-                    }
-                });
+            CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Rematch Request",
+                    "Opponent wants a rematch!", "Do you accept?",
+                    () -> {
+                        SoundEffectsManager.playClick();
+                        if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+                            com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession = (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
+                            onlineSession.acceptRematch();
+                            isGameEnded = false;
+                            hasPendingRematchRequest = false; // Reset on accept
+                            closeActiveDialog();
+                        }
+                    },
+                    () -> {
+                        SoundEffectsManager.playClick();
+                        if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+                            ((com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession)
+                                    .declineRematch();
+                            handleBack(null);
+                        }
+                    });
         });
     }
 
     @Override
     public void onRematchDeclined() {
         Platform.runLater(() -> {
-            CustomAlertDialog.show((Stage) backBtn.getScene().getWindow(), "Rematch Declined", "Opponent declined rematch.");
+            CustomAlertDialog.show((Stage) backBtn.getScene().getWindow(), "Rematch Declined",
+                    "Opponent declined rematch.");
             handleBack(null);
         });
     }
@@ -418,7 +423,8 @@ boolean iWon = (winInfo.winner == mySymbol);
                 currentSession.stop();
             }
 
-            CustomAlertDialog.show((Stage) backBtn.getScene().getWindow(), "Connection Lost", "Server Disconnected\nThe connection to the server was lost.");
+            CustomAlertDialog.show((Stage) backBtn.getScene().getWindow(), "Connection Lost",
+                    "Server Disconnected\nThe connection to the server was lost.");
 
             try {
                 Parent root = NavigationService.loadFXML("main-menu");
@@ -691,8 +697,9 @@ boolean iWon = (winInfo.winner == mySymbol);
     }
 
     private void showExitConfirmation(Runnable onConfirm) {
-        CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Exit Game", "Do you want to leave the game?", "Your progress may be lost.",
-            onConfirm, null);
+        CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Exit Game",
+                "Do you want to leave the game?", "Your progress may be lost.",
+                onConfirm, null);
     }
 
     private void executeQuit(boolean backToLobby) {
@@ -743,23 +750,23 @@ boolean iWon = (winInfo.winner == mySymbol);
             }
 
             CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Game Over", header, content,
-                () -> {
-                    SoundEffectsManager.playClick();
-                    currentSession.resetGame();
-                    resetBoardUI();
-                    startTimer();
-                    resetRecording();
-                    resetRecordingDecision();
-                    askRecordingDecision();
-                },
-                () -> {
-                    SoundEffectsManager.playClick();
-                    goToMainMenuDirectly();
-                },
-                () -> {
-                    SoundEffectsManager.playClick();
-                    goToMainMenuDirectly(); // Go to main menu on close for local matches
-                });
+                    () -> {
+                        SoundEffectsManager.playClick();
+                        currentSession.resetGame();
+                        resetBoardUI();
+                        startTimer();
+                        resetRecording();
+                        resetRecordingDecision();
+                        askRecordingDecision();
+                    },
+                    () -> {
+                        SoundEffectsManager.playClick();
+                        goToMainMenuDirectly();
+                    },
+                    () -> {
+                        SoundEffectsManager.playClick();
+                        goToMainMenuDirectly(); // Go to main menu on close for local matches
+                    });
         });
     }
 
@@ -954,15 +961,20 @@ boolean iWon = (winInfo.winner == mySymbol);
         recordingDecisionAsked = true;
 
         Platform.runLater(() -> {
-            CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Record Match", "🎥 Record this match?", "Do you want to record this game?",
-                () -> {
-                    SoundEffectsManager.playClick();
-                    enableAutoRecording();
-                },
-                () -> {
-                    SoundEffectsManager.playClick();
-                    disableRecordingButtonOnly();
-                });
+            CustomAlertDialog.showConfirmation((Stage) backBtn.getScene().getWindow(), "Record Match",
+                    "🎥 Record this match?", "Do you want to record this game?",
+                    () -> {
+                        SoundEffectsManager.playClick();
+                        enableAutoRecording();
+                    },
+                    () -> {
+                        SoundEffectsManager.playClick();
+                        disableRecordingButtonOnly();
+                    },
+                    () -> {
+                        // On Close (X button) -> Treat as Cancel
+                        disableRecordingButtonOnly();
+                    });
         });
     }
 
@@ -1023,7 +1035,7 @@ boolean iWon = (winInfo.winner == mySymbol);
     }
 
     private void closeActiveDialog() {
-     
+        CustomAlertDialog.closeAll();
     }
 
 }
