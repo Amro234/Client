@@ -36,6 +36,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 
 public class GameLobbyController implements Initializable, GameLobbyNotificationListener {
@@ -67,7 +68,7 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
     private TextField searchField;
 
     @FXML
-    private Circle profileAvatar;
+    private ImageView profileAvatar;
     @FXML
     private Label usernameLabel;
     @FXML
@@ -325,7 +326,8 @@ public class GameLobbyController implements Initializable, GameLobbyNotification
         shutdown(); // Stop Auto-Refresh
 
         Platform.runLater(() -> {
-            CustomAlertDialog.show((javafx.stage.Stage) playerTable.getScene().getWindow(), "Connection Lost", "Server Disconnected");
+            CustomAlertDialog.show((javafx.stage.Stage) playerTable.getScene().getWindow(), "Connection Lost",
+                    "Server Disconnected");
 
             try {
                 NavigationService.navigateTo(NavigationService.loadFXML("main-menu"));
