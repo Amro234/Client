@@ -58,7 +58,7 @@ public abstract class GameSession {
         return player2Name;
     }
 
-    public abstract void handleCellClick(int row, int col);
+    public abstract boolean handleCellClick(int row, int col);
 
     // 🔥 مهم جدًا
     public void stopSession() {
@@ -83,7 +83,7 @@ public abstract class GameSession {
         }
     }
 
-    protected void processMove(int row, int col, char symbol) {
+    protected boolean processMove(int row, int col, char symbol) {
         if (board.makeMove(row, col, symbol)) {
 
             if (listener != null) {
@@ -116,7 +116,9 @@ public abstract class GameSession {
                     listener.onTurnChange(isPlayer1Turn);
                 onTurnChanged();
             }
+            return true;
         }
+        return false;
     }
 
     protected void onTurnChanged() {

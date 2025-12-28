@@ -90,15 +90,14 @@ public class ReplayGameSession extends ReplaySession {
             timeline.getKeyFrames().add(frame);
         }
 
-       timeline.setOnFinished(e -> {
-    isPlaying = false;
-    isFinished = true;
+        timeline.setOnFinished(e -> {
+            isPlaying = false;
+            isFinished = true;
 
-    if (onReplayFinished != null) {
-        onReplayFinished.run();
-    }
-});
-
+            if (onReplayFinished != null) {
+                onReplayFinished.run();
+            }
+        });
 
         isPlaying = true;
         timeline.play();
@@ -192,7 +191,7 @@ public class ReplayGameSession extends ReplaySession {
     }
 
     @Override
-    public void handleCellClick(int row, int col) {
+    public boolean handleCellClick(int row, int col) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from
         // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
