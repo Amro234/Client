@@ -970,6 +970,10 @@ public class GameBoardController implements GameSession.SessionListener {
                     () -> {
                         SoundEffectsManager.playClick();
                         disableRecordingButtonOnly();
+                    },
+                    () -> {
+                        // On Close (X button) -> Treat as Cancel
+                        disableRecordingButtonOnly();
                     });
         });
     }
