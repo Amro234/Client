@@ -154,6 +154,8 @@ public class GameBoardController implements GameSession.SessionListener {
 
         boardMode = BoardMode.NORMAL;
         updateUIForMode();
+        isGameEnded = false;
+        shouldAutoGoToLobby = false;
 
         if (mode == GameMode.SINGLE_PLAYER) {
             currentSession = new SinglePlayerSession(this, "You", "Computer", difficulty);
@@ -170,6 +172,8 @@ public class GameBoardController implements GameSession.SessionListener {
     public void startLocalTwoPlayerGame(String p1Name, String p2Name) {
         boardMode = BoardMode.NORMAL;
         updateUIForMode();
+        isGameEnded = false;
+        shouldAutoGoToLobby = false;
 
         currentSession = new TwoPlayerSession(this, p1Name, p2Name);
 
@@ -184,6 +188,8 @@ public class GameBoardController implements GameSession.SessionListener {
     public void startOnlineGame(String opponentName, String mySymbol) {
         boardMode = BoardMode.NORMAL;
         updateUIForMode();
+        isGameEnded = false;
+        shouldAutoGoToLobby = false;
         hasPendingRematchRequest = false;
 
         currentSession = new com.mycompany.client.gameboard.model.ClientOnlineSession(
@@ -232,7 +238,6 @@ public class GameBoardController implements GameSession.SessionListener {
         }
         SoundEffectsManager.playClick();
 
-
         if (isRecordingEnabled) {
             gameRecorder.recordMove(row, col);
         }
@@ -240,6 +245,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
     @Override
     public void onGameEnd(Board.WinInfo winInfo) {
+        isGameEnded = true;
         stopTimer();
 
         if (isRecordingEnabled && !recordingStoppedManually) {
@@ -333,6 +339,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
     private Alert activeDialog;
     private boolean isGameEnded = false;
+    private boolean shouldAutoGoToLobby = false; // Flag to go to lobby automatically after video ends
 
     private void closeActiveDialog() {
         if (activeDialog != null) {
@@ -347,6 +354,12 @@ public class GameBoardController implements GameSession.SessionListener {
     // --- Online Game End Dialog with Rematch ---
     private void showOnlineGameEndDialog(String title, boolean isWin) {
         Platform.runLater(() -> {
+            if (shouldAutoGoToLobby) {
+                shouldAutoGoToLobby = false;
+                executeBackActionWithoutConfirmation();
+                return;
+            }
+
             // Prevent showing Game Over dialog if a Rematch Request is already pending
             if (hasPendingRematchRequest) {
                 return;
@@ -368,7 +381,7 @@ public class GameBoardController implements GameSession.SessionListener {
             alert.showAndWait().ifPresent(response -> {
                 SoundEffectsManager.playClick();
                 if (response == lobbyButton) {
-                    handleBack(null); // Disconnects session and goes back
+                    executeBackActionWithoutConfirmation(); // Leave to lobby without confirmation
                 } else if (response == rematchButton) {
                     if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
                         ((com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession).requestRematch();
@@ -395,7 +408,16 @@ public class GameBoardController implements GameSession.SessionListener {
         hasPendingRematchRequest = true;
 
         Platform.runLater(() -> {
+            // Close any active video dialog and cancel its callback
+            // This prevents the game over dialog from showing if the video is still playing
+            com.mycompany.client.GameResultVideoManager.GameResultVideoManager.closeActiveVideoAndCancelCallback();
+
             closeActiveDialog(); // Close "Game Over" dialog if open
+
+            // If opponent already left to lobby, don't show rematch dialog
+            if (!hasPendingRematchRequest) {
+                return;
+            }
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Rematch Request");
@@ -422,7 +444,7 @@ public class GameBoardController implements GameSession.SessionListener {
                         onlineSession.declineRematch();
                         // Explicitly close/clear dialog reference before navigating
                         activeDialog = null;
-                        handleBack(null);
+                        executeBackActionWithoutConfirmation(); // Leave without confirmation
                     }
                 }
                 activeDialog = null;
@@ -438,7 +460,7 @@ public class GameBoardController implements GameSession.SessionListener {
             alert.setTitle("Rematch Declined");
             alert.setHeaderText("Opponent declined rematch.");
             alert.showAndWait();
-            handleBack(null);
+            executeBackActionWithoutConfirmation(); // Leave without confirmation
         });
     }
 
@@ -468,16 +490,21 @@ public class GameBoardController implements GameSession.SessionListener {
 
     public void onOpponentLeft(String status) {
         Platform.runLater(() -> {
-            closeActiveDialog();
-
             if (isGameEnded) {
-                // Game was already over (e.g. at Game Over dialog), and opponent left
-                com.mycompany.client.match_recording.RecordingManager.showToast("Opponent left the session.",
-                        backBtn.getScene());
-                // Directly quit without confirmation since game is ended
-                executeQuit(true);
+                // Determine if video is playing or dialog is shown
+                if (activeDialog != null) {
+                    closeActiveDialog();
+                    executeBackActionWithoutConfirmation();
+                } else {
+                    // Video is likely playing. Set flag to auto-exit after video ends.
+                    shouldAutoGoToLobby = true;
+                }
             } else {
                 // Game was in progress -> Win by default logic
+                // Close any active video (unlikely here but for safety)
+                com.mycompany.client.GameResultVideoManager.GameResultVideoManager.closeActiveVideoAndCancelCallback();
+                closeActiveDialog();
+
                 isGameEnded = true; // Mark ended to prevent exit confirmation
 
                 com.mycompany.client.match_recording.RecordingManager.showToast("Opponent Left! You Win!",
@@ -485,7 +512,7 @@ public class GameBoardController implements GameSession.SessionListener {
 
                 // Play Win Video, then automatically go back to lobby
                 com.mycompany.client.GameResultVideoManager.GameResultVideoManager.showWinVideo(() -> {
-                    executeQuit(true);
+                    executeBackActionWithoutConfirmation();
                 });
             }
         });
@@ -676,32 +703,9 @@ public class GameBoardController implements GameSession.SessionListener {
     @FXML
     public void handleBack(ActionEvent event) {
         SoundEffectsManager.playClick();
-        replayManager.reset();
-        stopTimer();
-        if (currentSession != null) {
-            currentSession.stop();
-        }
 
-        if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
-            try {
-                // Determine CSS files to load? GameLobby usually doesn't apply dynamic CSS args
-                // in NavigationService calls in other places?
-                // Looking at GameLobbyController, it seems standard.
-                // NavigationService.loadFXML("gameLobby") should be enough if styles are
-                // attached in FXML or default.
-                // But wait, does gameLobby.fxml have stylesheets?
-                // Usually good to just loadFXML.
-                Parent root = NavigationService.loadFXML("gameLobby");
-                NavigationService.goBackAndReplace(root);
-                return;
-            } catch (IOException e) {
-                e.printStackTrace();
-                // Fallback
-                NavigationService.goBack();
-            }
-        } else {
-            executeQuit(true);
-        }
+        // Always show confirmation dialog
+        showBackConfirmation();
     }
 
     @FXML
@@ -721,18 +725,22 @@ public class GameBoardController implements GameSession.SessionListener {
 
     @FXML
     public void handleMenuButton() {
-        if (!isGameEnded && currentSession != null) {
-            showExitConfirmation(() -> executeQuit(false));
-        } else {
-            executeQuit(false);
-        }
+        SoundEffectsManager.playClick();
+
+        // Always show confirmation dialog
+        showMenuConfirmation();
     }
 
-    private void showExitConfirmation(Runnable onConfirm) {
+    private void showBackConfirmation() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Exit Game");
+        alert.setTitle("Leave Game");
         alert.setHeaderText("Do you want to leave the game?");
-        alert.setContentText("Your progress may be lost.");
+
+        if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+            alert.setContentText("Your opponent will win if you leave.");
+        } else {
+            alert.setContentText("Your progress may be lost.");
+        }
 
         ButtonType yesBtn = new ButtonType("Yes, Leave");
         ButtonType noBtn = new ButtonType("No, Stay");
@@ -741,9 +749,100 @@ public class GameBoardController implements GameSession.SessionListener {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == yesBtn) {
-                onConfirm.run();
+                executeBackAction();
             }
         });
+    }
+
+    private void showMenuConfirmation() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit to Main Menu");
+        alert.setHeaderText("Do you want to exit to main menu?");
+
+        if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+            alert.setContentText("Your opponent will win if you leave.");
+        } else {
+            alert.setContentText("Your progress may be lost.");
+        }
+
+        ButtonType yesBtn = new ButtonType("Yes, Exit");
+        ButtonType noBtn = new ButtonType("No, Stay");
+
+        alert.getButtonTypes().setAll(yesBtn, noBtn);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == yesBtn) {
+                executeMenuAction();
+            }
+        });
+    }
+
+    private void executeBackActionWithoutConfirmation() {
+        executeBackAction();
+    }
+
+    private void executeBackAction() {
+        replayManager.reset();
+        stopTimer();
+
+        if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+            // For online mode: leave game (opponent wins automatically on server)
+            com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession = (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
+            onlineSession.leaveGame();
+
+            if (currentSession != null) {
+                currentSession.stop();
+            }
+
+            // Navigate back to game lobby
+            try {
+                Parent root = NavigationService.loadFXML("gameLobby");
+                NavigationService.goBackAndReplace(root);
+            } catch (IOException e) {
+                e.printStackTrace();
+                NavigationService.goBack();
+            }
+        } else {
+            // For local modes: just quit
+            if (currentSession != null) {
+                currentSession.stop();
+            }
+            executeQuit(true);
+        }
+    }
+
+    private void executeMenuAction() {
+        replayManager.reset();
+        stopTimer();
+
+        if (currentSession instanceof com.mycompany.client.gameboard.model.ClientOnlineSession) {
+            // For online mode: leave game (opponent wins automatically on server)
+            com.mycompany.client.gameboard.model.ClientOnlineSession onlineSession = (com.mycompany.client.gameboard.model.ClientOnlineSession) currentSession;
+            onlineSession.leaveGame();
+
+            if (currentSession != null) {
+                currentSession.stop();
+            }
+
+            // Disconnect and go to main menu
+            if (com.mycompany.client.core.server.ServerConnection.isConnected()) {
+                com.mycompany.client.core.server.ServerConnection.disconnect();
+            }
+            com.mycompany.client.core.session.UserSession.getInstance().clearSession();
+
+            try {
+                Parent root = NavigationService.loadFXML("main-menu");
+                NavigationService.navigateTo(root);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // For local modes: just quit to main menu
+            if (currentSession != null) {
+                currentSession.stop();
+            }
+            executeQuit(false);
+        }
     }
 
     private void executeQuit(boolean backToLobby) {

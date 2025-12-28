@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class CustomAlertDialog {
-ش
+
     public static void show(Stage parentStage, String title, String message) {
         Platform.runLater(() -> {
             Stage dialog = new Stage();

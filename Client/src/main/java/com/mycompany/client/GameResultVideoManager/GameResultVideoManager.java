@@ -18,49 +18,67 @@ public class GameResultVideoManager {
     private static final int DRAW_VIDEOS_COUNT = 1;
     private static final int LOSE_VIDEOS_COUNT = 8;
 
-    private static final String WIN_VIDEO_TEMPLATE =
-            "src/main/resources/videos/win/game_winner_%d.mp4";
-    private static final String DRAW_VIDEO_TEMPLATE =
-            "src/main/resources/videos/draw/game_draw_%d.mp4";
-    private static final String LOSE_VIDEO_TEMPLATE =
-            "src/main/resources/videos/lose/game_loser_%d.mp4";
+    private static final String WIN_VIDEO_TEMPLATE = "src/main/resources/videos/win/game_winner_%d.mp4";
+    private static final String DRAW_VIDEO_TEMPLATE = "src/main/resources/videos/draw/game_draw_%d.mp4";
+    private static final String LOSE_VIDEO_TEMPLATE = "src/main/resources/videos/lose/game_loser_%d.mp4";
+
+    // Track active video dialog
+    private static Stage activeVideoStage = null;
+    private static MediaPlayer activePlayer = null;
+    private static boolean callbackCanceled = false;
 
     private static int randomIndex(int max) {
         return 1 + (int) (Math.random() * max);
     }
 
-    
+    /**
+     * Closes any active video dialog and cancels its callback.
+     * This should be called when a rematch is accepted to prevent
+     * the old game over dialog from appearing.
+     */
+    public static void closeActiveVideoAndCancelCallback() {
+        Platform.runLater(() -> {
+            callbackCanceled = true;
+            if (activePlayer != null) {
+                activePlayer.stop();
+                activePlayer.dispose();
+                activePlayer = null;
+            }
+            if (activeVideoStage != null) {
+                activeVideoStage.close();
+                activeVideoStage = null;
+            }
+        });
+    }
 
     public static void showWinVideo(Runnable onFinish) {
         playVideo(
                 String.format(WIN_VIDEO_TEMPLATE, randomIndex(WIN_VIDEOS_COUNT)),
                 "Winner 🎉",
-                onFinish
-        );
+                onFinish);
     }
 
     public static void showLoseVideo(Runnable onFinish) {
         playVideo(
                 String.format(LOSE_VIDEO_TEMPLATE, randomIndex(LOSE_VIDEOS_COUNT)),
                 "You Lost 💔",
-                onFinish
-        );
+                onFinish);
     }
 
     public static void showDrawVideo(Runnable onFinish) {
         playVideo(
                 String.format(DRAW_VIDEO_TEMPLATE, randomIndex(DRAW_VIDEOS_COUNT)),
                 "Draw 🤝",
-                onFinish
-        );
+                onFinish);
     }
-
-
 
     private static void playVideo(String path, String title, Runnable onFinish) {
 
         Platform.runLater(() -> {
             try {
+                // Reset cancellation flag for new video
+                callbackCanceled = false;
+
                 File file = new File(path);
                 if (!file.exists()) {
                     safeFinish(onFinish);
@@ -71,8 +89,11 @@ public class GameResultVideoManager {
                 stage.setTitle(title);
 
                 MediaPlayer player = new MediaPlayer(
-                        new Media(file.toURI().toString())
-                );
+                        new Media(file.toURI().toString()));
+
+                // Track active video
+                activeVideoStage = stage;
+                activePlayer = player;
 
                 MediaView view = new MediaView(player);
                 view.setFitWidth(600);
@@ -90,8 +111,19 @@ public class GameResultVideoManager {
 
                 stage.setScene(new Scene(root));
 
-              
-                stage.setOnHidden(e -> safeFinish(onFinish));
+                stage.setOnHidden(e -> {
+                    // Clear active references
+                    activeVideoStage = null;
+                    activePlayer = null;
+
+                    // Only execute callback if not canceled
+                    if (!callbackCanceled) {
+                        safeFinish(onFinish);
+                    } else {
+                        // Reset flag for next video
+                        callbackCanceled = false;
+                    }
+                });
 
                 player.setOnEndOfMedia(stage::close);
 
@@ -100,12 +132,15 @@ public class GameResultVideoManager {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                safeFinish(onFinish);
+                // Clear active references on error
+                activeVideoStage = null;
+                activePlayer = null;
+                if (!callbackCanceled) {
+                    safeFinish(onFinish);
+                }
             }
         });
     }
-
-   
 
     private static void safeFinish(Runnable onFinish) {
         PauseTransition pause = new PauseTransition(Duration.millis(80));
